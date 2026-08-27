@@ -26,10 +26,11 @@
   --accent-soft: #e7efff;
   --accent-ink: #ffffff;
 
-  /* Brand red — Crimson Red (#E11D48) */
-  --brand-red: #E11D48;
-  --brand-red-2: #be123c;
-  --brand-red-soft: #fff1f2;
+  /* Brand red — Bold Blog Red (#DC2626) */
+  --brand-red: #DC2626;
+  --brand-red-2: #b91c1c;
+  --brand-red-soft: #fef2f2;
+  --brand-red-border: #fca5a5;
 
   /* Status (rarely used on marketing) */
   --ok: #16a34a;

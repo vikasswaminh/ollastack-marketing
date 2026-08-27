@@ -25,6 +25,13 @@ const server = http.createServer((req, res) => {
   let safePath = path.normalize(req.url.split('?')[0]).replace(/^(\.\.[\/\\])+/, '');
   let filePath = path.join(__dirname, safePath === '/' || safePath === '\\' ? 'index.html' : safePath);
   
+  if (!fs.existsSync(filePath)) {
+    const publicPath = path.join(__dirname, 'public', safePath);
+    if (fs.existsSync(publicPath)) {
+      filePath = publicPath;
+    }
+  }
+
   if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
     filePath = path.join(filePath, 'index.html');
   }

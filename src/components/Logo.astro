@@ -1,51 +1,36 @@
 ---
-// ollastack mark — a "stack" icon in brand red (PMS 485, #DA291C).
-// A rounded red square with three EQUAL white bars: a stack of
-// communication channels (forms + agent mail + more), not just a form.
-// Fill-based, so it stays crisp from favicon-tiny to hero-large without
-// depending on stroke weight at small px. The wordmark ("ollastack")
-// sits next to it in ink, matching the brand-red announce-bar treatment.
+// New Ollastack brand logo: 3D Stack + AI Neural Node Cluster + Dual Wordmark + Built for AI Agents
 interface Props {
   size?: number;
+  variant?: "light" | "dark";
   withWordmark?: boolean;
 }
-const { size = 24, withWordmark = true } = Astro.props;
+const { size = 36, variant = "light" } = Astro.props;
+const logoSrc = variant === "dark" ? "/logo-white.svg" : "/logo.svg";
 ---
 
-<a href="/" aria-label="ollastack" class="logo-lockup">
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    aria-hidden="true"
-    class="logo-mark"
-  >
-    <rect x="2" y="2" width="20" height="20" rx="4" fill="#DA291C" />
-    <rect x="6" y="7"  width="12" height="2" rx="1" fill="#ffffff" />
-    <rect x="6" y="11" width="12" height="2" rx="1" fill="#ffffff" />
-    <rect x="6" y="15" width="12" height="2" rx="1" fill="#ffffff" />
-  </svg>
-  {withWordmark && (
-    <span class="wordmark">ollastack</span>
-  )}
+<a href="/" aria-label="Ollastack — Built for AI Agents" class="logo-lockup">
+  <img
+    src={logoSrc}
+    alt="Ollastack — Built for AI Agents"
+    class="brand-logo-img"
+    style={`height: ${size}px; width: auto;`}
+  />
 </a>
 
 <style>
   .logo-lockup {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    color: var(--ink);
     text-decoration: none;
   }
-  .logo-mark { display: block; flex-shrink: 0; }
-  .wordmark {
-    font-family: var(--font-sans);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    font-size: 16px;
-    color: var(--ink);
-    line-height: 1;
+  .brand-logo-img {
+    display: block;
+    height: 36px;
+    width: auto;
+    transition: transform 0.2s ease;
+  }
+  .brand-logo-img:hover {
+    transform: scale(1.02);
   }
 </style>

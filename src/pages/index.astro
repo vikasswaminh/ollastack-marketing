@@ -35,8 +35,8 @@ const siteLd = {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   
-  <script type="application/ld+json" is:inline>{JSON.stringify(orgLd)}</script>
-  <script type="application/ld+json" is:inline>{JSON.stringify(siteLd)}</script>
+  <script type="application/ld+json" set:html={JSON.stringify(orgLd)} is:inline />
+  <script type="application/ld+json" set:html={JSON.stringify(siteLd)} is:inline />
 
   <style is:global>
     /* CSS RESET & VARIABLES */
@@ -47,11 +47,12 @@ const siteLd = {
     }
 
     :root {
-      /* Brand colors */
-      --brand-red: #E11D48;
-      --brand-red-hover: #BE123C;
-      --brand-red-light: #FFF1F2;
-      --brand-red-glow: rgba(225, 29, 72, 0.15);
+      /* Brand colors — Bold Red matching Blog */
+      --brand-red: #DC2626;
+      --brand-red-hover: #B91C1C;
+      --brand-red-light: #FEF2F2;
+      --brand-red-border: #FCA5A5;
+      --brand-red-glow: rgba(220, 38, 38, 0.15);
 
       /* Primary neutrals */
       --text-main: #09090B;
@@ -198,26 +199,48 @@ const siteLd = {
     .nav-pill {
       display: flex;
       align-items: center;
-      gap: 28px;
+      gap: 4px;
+      background: rgba(248, 250, 252, 0.95);
+      border: 1px solid rgba(226, 232, 240, 0.95);
+      padding: 4px 6px;
+      border-radius: var(--radius-pill);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+      backdrop-filter: blur(8px);
     }
 
     .nav-link {
-      font-size: 0.93rem;
-      font-weight: 500;
-      color: var(--text-sub);
-      transition: color 0.15s ease;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #475569;
+      padding: 7px 15px;
+      border-radius: var(--radius-pill);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
+      text-decoration: none;
     }
 
     .nav-link:hover {
-      color: var(--text-main);
+      color: #09090B;
+      background: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     }
 
     .chevron {
-      font-size: 0.75rem;
-      opacity: 0.7;
+      font-size: 0.72rem;
+      opacity: 0.65;
+      transition: transform 0.2s ease, color 0.2s ease;
+      display: inline-block;
+    }
+
+    .nav-dropdown-wrap {
+      position: relative;
+    }
+
+    .nav-dropdown-wrap:hover .chevron {
+      transform: rotate(180deg);
+      color: var(--brand-red);
     }
 
     /* Right Nav Buttons */
@@ -251,19 +274,23 @@ const siteLd = {
       white-space: nowrap;
     }
 
-    .btn-dark-pill {
-      background: #000000;
+    .btn-dark-pill,
+    .btn-red-pill {
+      background: var(--brand-red);
       color: #FFFFFF;
       padding: 9px 20px;
       font-size: 0.9rem;
-      border: 1px solid #000000;
+      font-weight: 700;
+      border: 1px solid var(--brand-red);
+      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.25);
     }
 
-    .btn-dark-pill:hover {
-      background: #1e293b;
-      border-color: #1e293b;
+    .btn-dark-pill:hover,
+    .btn-red-pill:hover {
+      background: var(--brand-red-hover);
+      border-color: var(--brand-red-hover);
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
     }
 
     .btn-white-pill {
@@ -271,6 +298,7 @@ const siteLd = {
       color: var(--text-main);
       padding: 9px 20px;
       font-size: 0.9rem;
+      font-weight: 600;
       border: 1px solid var(--border-color);
     }
 
@@ -283,6 +311,7 @@ const siteLd = {
     .btn-hero {
       padding: 12px 28px;
       font-size: 0.98rem;
+      font-weight: 700;
     }
 
     .btn-full {
@@ -306,42 +335,49 @@ const siteLd = {
     .nav-mobile {
       display: none;
     }
-    /* ============================================================
-       3. HERO SECTION (SIMPLE & CENTERED, DIAGRAM REMOVED)
-       ============================================================ */
+
+    /* HERO SECTION (TIGHTENED WHITESPACE) */
     .hero-section {
-      padding: 24px 0 64px 0;
-      background-color: var(--bg-page);
-      background-image: 
-        radial-gradient(#E2E8F0 1.2px, transparent 1.2px), 
-        radial-gradient(#E2E8F0 1.2px, var(--bg-page) 1.2px);
-      background-size: 28px 28px;
-      background-position: 0 0, 14px 14px;
-      border-bottom: 1px solid var(--border-light);
+      padding: 32px 0 24px 0;
+      overflow: hidden;
+      text-align: center;
     }
 
-    .hero-simple-container {
-      max-width: 1040px;
-      margin: 0 auto;
-      text-align: center;
+    .hero-layout {
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
+    }
+
+    .hero-content {
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
     }
 
     .hero-tag-badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 16px;
       background: #F1F5F9;
       color: #475569;
-      padding: 6px 16px;
+      padding: 6px 18px;
       border-radius: var(--radius-pill);
       font-size: 0.76rem;
       font-weight: 700;
       letter-spacing: 0.05em;
-      margin-bottom: 24px;
-      border: 1px solid #E2E8F0;
+      margin-bottom: 20px;
+      white-space: nowrap;
+    }
+
+    .badge-feature-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .badge-blue-dot {
@@ -349,46 +385,39 @@ const siteLd = {
       height: 6px;
       background: #3B82F6;
       border-radius: 50%;
-    }
-
-    .dot-sep {
-      opacity: 0.5;
+      flex-shrink: 0;
     }
 
     .hero-main-title {
-      font-size: clamp(2.2rem, 3.8vw, 3.4rem);
+      font-size: clamp(2.4rem, 4.2vw, 4.1rem);
       font-weight: 800;
-      line-height: 1.2;
+      line-height: 1.15;
       letter-spacing: -0.035em;
       color: var(--text-main);
-      margin-bottom: 20px;
+      margin-bottom: 18px;
+      text-align: center;
     }
 
-    .hero-line-nowrap {
+    .nowrap-headline {
       white-space: nowrap;
-    }
-
-    @media (max-width: 768px) {
-      .hero-line-nowrap {
-        white-space: normal;
-      }
     }
 
     .text-brand-red {
       color: var(--brand-red);
       font-weight: 900;
-      font-size: 1.24em;
+      font-size: 1.16em;
       display: inline-block;
       letter-spacing: -0.04em;
-      margin-top: 4px;
+      text-shadow: 0 4px 24px rgba(220, 38, 38, 0.22);
     }
 
     .hero-description {
-      font-size: 1.08rem;
+      font-size: 1.12rem;
       line-height: 1.65;
       color: var(--text-sub);
-      margin-bottom: 36px;
       max-width: 720px;
+      margin: 0 auto 28px auto;
+      text-align: center;
     }
 
     .hero-cta-buttons {
@@ -396,8 +425,7 @@ const siteLd = {
       align-items: center;
       justify-content: center;
       gap: 14px;
-      margin-bottom: 36px;
-      flex-wrap: wrap;
+      margin-bottom: 28px;
     }
 
     .hero-geo-callout {
@@ -407,18 +435,19 @@ const siteLd = {
       background: #F0F7FF;
       border: 1px solid #BAE6FD;
       border-radius: var(--radius-pill);
-      padding: 8px 18px;
+      padding: 9px 20px;
+      margin: 0 auto;
     }
 
     .geo-pin {
-      font-size: 1rem;
+      font-size: 1.1rem;
       flex-shrink: 0;
     }
 
     .geo-text {
-      font-size: 0.86rem;
+      font-size: 0.88rem;
       color: #0369A1;
-      line-height: 1.4;
+      line-height: 1.45;
     }
 
     .geo-text strong {
@@ -426,15 +455,255 @@ const siteLd = {
       font-weight: 700;
     }
 
+    /* HERO RIGHT: ARCHITECTURE DIAGRAM */
+    .hero-right {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .diagram-hub-wrapper {
+      position: relative;
+      width: 740px;
+      height: 560px;
+    }
+
+    .hub-connector-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Central Hub Card (OLLASTACK) */
+    .center-hub-card {
+      position: absolute;
+      top: 190px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 4;
+      width: 190px;
+      height: 180px;
+      background: #FFFFFF;
+      border: 2px solid #FCA5A5;
+      border-radius: 18px;
+      padding: 20px 14px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 32px rgba(220, 38, 38, 0.08), 0 2px 6px rgba(0, 0, 0, 0.03);
+      transition: var(--transition-fast);
+    }
+
+    .center-hub-card:hover {
+      transform: translateX(-50%) translateY(-2px);
+      border-color: #DC2626;
+      box-shadow: 0 14px 40px rgba(220, 38, 38, 0.16);
+    }
+
+    .hub-icon-wrap {
+      width: 42px;
+      height: 42px;
+      background: var(--brand-red);
+      border-radius: 10px;
+      margin: 0 auto 10px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+    }
+
+    .hub-brand-name {
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .hub-stack-points {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      font-size: 0.64rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #64748B;
+    }
+
+    /* Satellite Cards */
+    .sat-card {
+      position: absolute;
+      z-index: 3;
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+      transition: var(--transition-fast);
+    }
+
+    .sat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+      border-color: #cbd5e1;
+    }
+
+    .sat-icon-box {
+      width: 36px;
+      height: 36px;
+      background: #FEF2F2;
+      border: 1px solid #FEE2E2;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .sat-info {
+      flex: 1;
+    }
+
+    .sat-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .sat-title {
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      color: var(--text-main);
+    }
+
+    .sat-num {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: #F1F5F9;
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+
+    .sat-desc {
+      font-size: 0.68rem;
+      color: var(--text-sub);
+      line-height: 1.35;
+    }
+
+    /* Satellite Positions */
+    .sat-top {
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 250px;
+    }
+    .sat-top:hover {
+      transform: translateX(-50%) translateY(-2px);
+    }
+
+    .sat-left {
+      top: 360px;
+      left: 0;
+      width: 215px;
+    }
+
+    .sat-right {
+      top: 360px;
+      right: 0;
+      width: 215px;
+    }
+
+    /* 3 SUBFEATURES (CIRCULAR LOGO PINNED EXACTLY ON DOTTED ORBIT LINE) */
+    .subfeat-item {
+      position: absolute;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      text-align: center;
+      gap: 6px;
+      pointer-events: none;
+    }
+
+    .subfeat-circle {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #FEF2F2;
+      border: 1.5px solid #FCA5A5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(220, 38, 38, 0.12);
+      color: var(--brand-red);
+      pointer-events: auto;
+      transition: all 0.2s ease;
+    }
+
+    .subfeat-text {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      line-height: 1.25;
+      color: var(--brand-red);
+      text-transform: uppercase;
+      white-space: nowrap;
+      pointer-events: auto;
+    }
+
+    .subfeat-item:hover .subfeat-circle {
+      transform: scale(1.08);
+      border-color: var(--brand-red);
+      background: #FEE2E2;
+      box-shadow: 0 6px 18px rgba(220, 38, 38, 0.24);
+    }
+
+    .badge-bot-defenses {
+      left: 139px;
+      top: 159px;
+      transform: translate(-50%, -19px);
+    }
+
+    .badge-openapi {
+      left: 601px;
+      top: 159px;
+      transform: translate(-50%, -19px);
+    }
+
+    .badge-token-auth {
+      left: 370px;
+      top: 440px;
+      transform: translate(-50%, -19px);
+    }
+
     /* LIVE DEMO SECTION */
     .live-demo-section {
-      padding: 80px 0;
+      padding: 24px 0 60px 0;
       background: #FFFFFF;
       border-top: 1px solid var(--border-light);
     }
 
-    .section-tag-row {
-      margin-bottom: 36px;
+    .live-demo-section .section-tag-row {
+      text-align: center;
+      max-width: 920px;
+      margin: 0 auto 24px auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .red-eyebrow {
@@ -460,44 +729,54 @@ const siteLd = {
       color: var(--text-sub);
     }
 
+    /* Interactive Demo Layout: 2 Big Centered Columns */
     .demo-interactive-grid {
       display: grid;
-      grid-template-columns: 280px 50px 320px 1fr;
-      gap: 20px;
+      grid-template-columns: 1fr 50px 1fr;
+      gap: 28px;
       align-items: center;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
       background: #FAFAFC;
       border: 1px solid var(--border-color);
-      border-radius: 20px;
-      padding: 36px 32px;
+      border-radius: 24px;
+      padding: 28px 28px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
     }
 
+    /* 1. Input Form Card */
     .demo-input-card {
       background: #FFFFFF;
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-card);
-      padding: 20px;
-      box-shadow: var(--shadow-card);
+      border-radius: 18px;
+      padding: 36px 32px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+      min-height: 420px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
     .input-field-group {
-      margin-bottom: 14px;
+      margin-bottom: 18px;
     }
 
     .input-label {
       display: block;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--text-sub);
-      margin-bottom: 4px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #1E293B;
+      margin-bottom: 8px;
     }
 
     .input-control {
       width: 100%;
-      padding: 9px 12px;
-      font-size: 0.88rem;
+      padding: 13px 16px;
+      font-size: 1rem;
       font-family: inherit;
       border: 1px solid var(--border-color);
-      border-radius: 8px;
+      border-radius: 12px;
       color: var(--text-main);
       background: #FFFFFF;
       transition: border-color 0.15s ease, box-shadow 0.15s ease;
@@ -510,11 +789,13 @@ const siteLd = {
     }
 
     .demo-submit-btn {
-      margin-top: 6px;
-      padding: 10px 18px;
-      font-size: 0.88rem;
+      margin-top: 14px;
+      padding: 14px 28px;
+      font-size: 1.02rem;
+      font-weight: 700;
     }
 
+    /* 2. Flow Indicator Arrow */
     .demo-flow-indicator {
       display: flex;
       align-items: center;
@@ -523,38 +804,43 @@ const siteLd = {
     }
 
     .dotted-arrow-line {
-      width: 38px;
+      width: 44px;
       height: 2px;
       border-top: 2px dashed #EF4444;
     }
 
     .arrowhead-red {
       color: #EF4444;
-      font-size: 0.75rem;
+      font-size: 0.85rem;
       margin-left: -3px;
       transform: scaleY(0.85);
     }
 
+    /* 3. Output Card */
     .demo-output-card {
       background: #FFFFFF;
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-card);
-      padding: 20px;
-      box-shadow: var(--shadow-card);
+      border-radius: 18px;
+      padding: 36px 32px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+      min-height: 420px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       transition: var(--transition-fast);
     }
 
     .capture-badge-wrap {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       background: var(--green-badge-bg);
       color: var(--green-badge-text);
-      padding: 6px 12px;
+      padding: 9px 18px;
       border-radius: var(--radius-pill);
-      font-size: 0.82rem;
+      font-size: 0.95rem;
       font-weight: 700;
-      margin-bottom: 16px;
+      margin-bottom: 24px;
     }
 
     .check-icon {
@@ -564,17 +850,17 @@ const siteLd = {
     .capture-meta-table {
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      margin-bottom: 18px;
+      gap: 16px;
+      margin-bottom: 24px;
     }
 
     .meta-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 0.84rem;
+      font-size: 0.98rem;
       border-bottom: 1px solid var(--border-light);
-      padding-bottom: 8px;
+      padding-bottom: 12px;
     }
 
     .meta-row:last-child {
@@ -585,13 +871,13 @@ const siteLd = {
     .meta-col-label {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       color: var(--text-sub);
       font-weight: 500;
     }
 
     .meta-icon {
-      font-size: 0.95rem;
+      font-size: 1.1rem;
     }
 
     .meta-col-value {
@@ -601,42 +887,44 @@ const siteLd = {
 
     .location-pill {
       background: #F1F5F9;
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-size: 0.8rem;
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
     }
 
     .status-received {
       color: #059669;
       background: #ECFDF5;
-      padding: 2px 8px;
-      border-radius: 6px;
-      font-size: 0.78rem;
+      padding: 4px 12px;
+      border-radius: 8px;
+      font-size: 0.88rem;
       font-weight: 700;
     }
 
     .font-code {
       font-family: var(--font-mono);
-      font-size: 0.75rem;
+      font-size: 0.88rem;
       background: #F8FAFC;
-      padding: 2px 6px;
-      border-radius: 4px;
+      padding: 4px 10px;
+      border-radius: 6px;
       color: #334155;
+      letter-spacing: 0.02em;
     }
 
     .submission-footer-link {
       border-top: 1px solid var(--border-light);
-      padding-top: 12px;
+      padding-top: 16px;
       text-align: center;
     }
 
     .btn-submission-view {
-      font-size: 0.82rem;
+      font-size: 0.94rem;
       font-weight: 700;
       color: var(--text-main);
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
       transition: color 0.15s ease;
     }
 
@@ -760,7 +1048,7 @@ const siteLd = {
     }
 
     .tag-blue { background: #EFF6FF; color: #2563EB; }
-    .tag-red  { background: #FFF1F2; color: #E11D48; }
+    .tag-red  { background: #FEF2F2; color: #DC2626; border: 1px solid #FCA5A5; }
     .tag-green { background: #ECFDF5; color: #059669; }
 
     .card-h3 {
@@ -820,7 +1108,7 @@ const siteLd = {
 
     .c-method { color: #2563EB; font-weight: 700; }
     .c-header { color: #64748B; }
-    .c-key { color: #E11D48; }
+    .c-key { color: #DC2626; }
     .c-val { color: #059669; }
 
     .mockup-mail {
@@ -1061,7 +1349,7 @@ const siteLd = {
     .c-prompt { color: #64748B; }
     .c-cmd { color: #38BDF8; font-weight: 600; }
     .c-str { color: #A7F3D0; }
-    .c-hl { color: #F43F5E; font-weight: 600; }
+    .c-hl { color: #DC2626; font-weight: 600; }
     .c-muted { color: #64748B; font-style: italic; }
     .c-ok { color: #4ADE80; }
 
@@ -1212,8 +1500,9 @@ const siteLd = {
     }
 
     .step-card-featured .step-badge-num {
-      background: #FFF1F2;
+      background: #FEF2F2;
       color: var(--brand-red);
+      border: 1.5px solid #FCA5A5;
     }
 
     .step-eyebrow {
@@ -1304,7 +1593,7 @@ const siteLd = {
 
     .featured-plan {
       border: 2px solid var(--brand-red);
-      box-shadow: 0 12px 36px rgba(225, 29, 72, 0.12);
+      box-shadow: 0 12px 36px rgba(220, 38, 38, 0.12);
     }
 
     .popular-ribbon {
@@ -1542,15 +1831,8 @@ const siteLd = {
   <!-- ============ NAVBAR ============ -->
   <header class="navbar" id="navbar">
     <div class="container nav-inner">
-      <a href="/" class="logo-lockup" aria-label="Ollastack Home">
-        <div class="logo-box">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M4 7C7 5 11 5 14 7C17 9 20 8 20 8" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
-            <path d="M4 12C7 10 11 10 14 12C17 14 20 13 20 13" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
-            <path d="M4 17C7 15 11 15 14 17C17 19 20 18 20 18" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <span class="wordmark">ollastack</span>
+      <a href="/" class="logo-lockup" aria-label="Ollastack — Built for AI Agents">
+        <img src="/logo.svg" alt="Ollastack — Built for AI Agents" class="nav-brand-logo" height="48" />
       </a>
 
       <nav class="nav-pill" aria-label="Primary">
@@ -1598,38 +1880,37 @@ const siteLd = {
   <main>
     <!-- ============ HERO SECTION ============ -->
     <section class="hero-section">
-      <div class="container hero-simple-container">
-        <div class="hero-tag-badge">
-          <span class="badge-blue-dot"></span>
-          <span>API-FIRST</span>
-          <span class="dot-sep">·</span>
-          <span>AGENT FORMS</span>
-          <span class="dot-sep">·</span>
-          <span>MAILBOXES</span>
-        </div>
+      <div class="container hero-layout">
+        <div class="hero-content">
+          <div class="hero-tag-badge">
+            <span class="badge-feature-item"><span class="badge-blue-dot"></span> API-FIRST</span>
+            <span class="badge-feature-item"><span class="badge-blue-dot"></span> AGENT FORMS</span>
+            <span class="badge-feature-item"><span class="badge-blue-dot"></span> MAILBOXES</span>
+          </div>
 
-        <h1 class="hero-main-title">
-          <span class="hero-line-nowrap">Forms, mailboxes &amp; email testing,</span><br>
-          Built for your<br>
-          <span class="text-brand-red">AI agents.</span>
-        </h1>
+          <h1 class="hero-main-title">
+            <span class="nowrap-headline">Forms, mailboxes &amp; email testing,</span><br>
+            Built for your<br>
+            <span class="text-brand-red">AI agents.</span>
+          </h1>
 
-        <p class="hero-description">
-          Three things your agents need, one backend: form endpoints they POST to and sail past the bot defenses, real mailboxes they send, receive, reply, and read OTP codes from, and disposable inboxes for testing email in CI. One token system, one OpenAPI spec they read themselves.
-        </p>
+          <p class="hero-description">
+            Three things your agents need, one backend: form endpoints they POST to and sail past the bot defenses, real mailboxes they send, receive, reply, and read OTP codes from, and disposable inboxes for testing email in CI. One token system, one OpenAPI spec they read themselves.
+          </p>
 
-        <div class="hero-cta-buttons">
-          <a href={`${APP}/register`} class="btn btn-dark-pill btn-hero">
-            Start free <span class="arrow">→</span>
-          </a>
-          <a href="/docs" class="btn btn-white-pill btn-hero">
-            Read the docs
-          </a>
-        </div>
+          <div class="hero-cta-buttons">
+            <a href={`${APP}/register`} class="btn btn-dark-pill btn-hero">
+              Start free <span class="arrow">→</span>
+            </a>
+            <a href="/docs" class="btn btn-white-pill btn-hero">
+              Read the docs
+            </a>
+          </div>
 
-        <div class="hero-geo-callout">
-          <span class="geo-pin" aria-hidden="true">📍</span>
-          <p class="geo-text"><strong>GEO-smart leads</strong> — every form submission auto-stamped with country, city, region, and timezone.</p>
+          <div class="hero-geo-callout">
+            <span class="geo-pin" aria-hidden="true">📍</span>
+            <p class="geo-text"><strong>GEO-smart leads</strong> — every form submission auto-stamped with country, city, region, and timezone.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -1726,41 +2007,6 @@ const siteLd = {
               </a>
             </div>
           </div>
-
-          <!-- 4. Subtle Globe Orbit Visual -->
-          <div class="demo-globe-card">
-            <div class="globe-container">
-              <svg class="globe-vector" viewBox="0 0 280 280" fill="none">
-                <!-- Lat/Long rings -->
-                <circle cx="140" cy="140" r="115" stroke="#E2E8F0" stroke-width="1.5" stroke-dasharray="3 3"/>
-                <ellipse cx="140" cy="140" rx="115" ry="45" stroke="#CBD5E1" stroke-width="1.2" stroke-dasharray="4 4"/>
-                <ellipse cx="140" cy="140" rx="45" ry="115" stroke="#CBD5E1" stroke-width="1.2" stroke-dasharray="4 4"/>
-                <ellipse cx="140" cy="140" rx="90" ry="90" stroke="#F1F5F9" stroke-width="1.2"/>
-
-                <!-- Orbital trajectory loops -->
-                <path d="M35 185 C 70 55, 210 55, 245 185" stroke="#FCA5A5" stroke-width="1.5" stroke-dasharray="4 4" class="orbit-path-anim"/>
-                <path d="M45 95 C 135 220, 225 220, 255 95" stroke="#93C5FD" stroke-width="1.5" stroke-dasharray="4 4" class="orbit-path-reverse"/>
-
-                <!-- Orbital ping points -->
-                <circle cx="75" cy="80" r="3.5" fill="#EF4444" class="pulse-node"/>
-                <circle cx="210" cy="90" r="3.5" fill="#EF4444" class="pulse-node"/>
-                <circle cx="195" cy="195" r="3.5" fill="#3B82F6" class="pulse-node"/>
-                <circle cx="55" cy="170" r="3" fill="#EF4444" class="pulse-node"/>
-              </svg>
-
-              <!-- Central glowing Ollastack node -->
-              <div class="globe-hub-center">
-                <div class="pulse-glow-effect"></div>
-                <div class="globe-logo-icon">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path d="M4 7C7 5 11 5 14 7C17 9 20 8 20 8" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
-                    <path d="M4 12C7 10 11 10 14 12C17 14 20 13 20 13" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
-                    <path d="M4 17C7 15 11 15 14 17C17 19 20 18 20 18" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </section>
@@ -1797,14 +2043,14 @@ const siteLd = {
                 <div class="m-btn"></div>
               </div>
               <div class="mini-code-preview">
-                <div class="code-line"><span class="c-method">POST</span> /v1/forms/&#123;id&#125;/submit</div>
-                <div class="code-line"><span class="c-header">Authorization:</span> Bearer &#123;token&#125;</div>
+                <div class="code-line"><span class="c-method">POST</span> /v1/forms/{id}/submit</div>
+                <div class="code-line"><span class="c-header">Authorization:</span> Bearer {token}</div>
                 <div class="code-line"><span class="c-header">Content-Type:</span> application/json</div>
                 <div class="code-json">
-                  <div>&#123;</div>
+                  <div>{</div>
                   <div>&nbsp;&nbsp;<span class="c-key">"name"</span>: <span class="c-val">"Ada"</span>,</div>
                   <div>&nbsp;&nbsp;<span class="c-key">"email"</span>: <span class="c-val">"ada@example.com"</span></div>
-                  <div>&#125;</div>
+                  <div>}</div>
                 </div>
               </div>
             </div>
@@ -1962,7 +2208,7 @@ const siteLd = {
           <div class="c-tab-panel active" data-tab="forms">
             <pre class="terminal-code"><span class="c-prompt">$</span> <span class="c-cmd">curl</span> -X POST https://login.ollastack.com/api/submit/<span class="c-hl">contact</span> \
     -H <span class="c-str">"Content-Type: application/json"</span> \
-    -d <span class="c-str">'&#123;"name":"Ada","email":"ada@example.com","message":"Tell me more"&#125;'</span></pre>
+    -d <span class="c-str">'{"name":"Ada","email":"ada@example.com","message":"Tell me more"}'</span></pre>
             <div class="terminal-bar">
               <button class="btn btn-accent-red btn-sm" id="run-forms-btn">▶ Run it live</button>
               <button class="btn btn-ghost-dark btn-sm" id="copy-forms-btn">Copy</button>
@@ -1976,16 +2222,16 @@ const siteLd = {
             <pre class="terminal-code"><span class="c-muted"># claim your agent's identity, then send as it</span>
 <span class="c-prompt">$</span> <span class="c-cmd">curl</span> -X POST https://login.ollastack.com/api/mailboxes \
     -H <span class="c-str">"Authorization: Bearer fmd_&lt;token&gt;"</span> \
-    -d <span class="c-str">'&#123;"name":"Support","mode":"agent","handle":"support"&#125;'</span>
+    -d <span class="c-str">'{"name":"Support","mode":"agent","handle":"support"}'</span>
 <span class="c-prompt">$</span> <span class="c-cmd">curl</span> -X POST https://login.ollastack.com/api/mailboxes/$ID/<span class="c-hl">send</span> \
-    -d <span class="c-str">'&#123;"to":"user@example.com","subject":"Re: your demo","text":"…"&#125;'</span></pre>
+    -d <span class="c-str">'{"to":"user@example.com","subject":"Re: your demo","text":"…"}'</span></pre>
             <div class="terminal-bar">
               <button class="btn btn-ghost-dark btn-sm">Copy</button>
               <span class="terminal-note">needs a mail token · runs in your terminal</span>
             </div>
-            <pre class="terminal-response"><span class="c-ok">&#123;"success": true, "data": &#123;
+            <pre class="terminal-response"><span class="c-ok">{"success": true, "data": {
   "address": "support@agent.ollastack.com",
-  "direction": "outbound", "deliveryStatus": "sent"&#125;&#125;</span></pre>
+  "direction": "outbound", "deliveryStatus": "sent"}}</span></pre>
           </div>
 
           <!-- Tab 3: Test -->
@@ -1993,7 +2239,7 @@ const siteLd = {
             <pre class="terminal-code"><span class="c-muted"># disposable inbox → wait for the email → read the OTP</span>
 <span class="c-prompt">$</span> <span class="c-cmd">curl</span> -X POST https://login.ollastack.com/api/mailboxes \
     -H <span class="c-str">"Authorization: Bearer fmd_&lt;token&gt;"</span> \
-    -d <span class="c-str">'&#123;"name":"signup-ci","mode":"test"&#125;'</span>
+    -d <span class="c-str">'{"name":"signup-ci","mode":"test"}'</span>
 <span class="c-prompt">$</span> <span class="c-cmd">curl</span> <span class="c-str">"https://login.ollastack.com/api/mailboxes/$ID/<span class="c-hl">wait</span>?timeout=55"</span> \
     -H <span class="c-str">"Authorization: Bearer fmd_&lt;token&gt;"</span></pre>
             <div class="terminal-bar">
@@ -2028,25 +2274,25 @@ const siteLd = {
             <pre class="code-snippet"><span class="c-prompt">$</span> <span class="c-cmd">curl</span> -X POST https://login.ollastack.com/api/submit/<span class="c-hl">contact</span> \
     -H <span class="c-str">"Authorization: Bearer fmd_&lt;your-agent-token&gt;"</span> \
     -H <span class="c-str">"Content-Type: application/json"</span> \
-    -d <span class="c-str">'&#123;"name":"Ada","message":"hi"&#125;'</span>
+    -d <span class="c-str">'{"name":"Ada","message":"hi"}'</span>
 
-<span class="c-ok">&#123;"success": true, "id": "sub_8f2…", "country": "IN", "city": "Bengaluru"&#125;</span>
+<span class="c-ok">{"success": true, "id": "sub_8f2…", "country": "IN", "city": "Bengaluru"}</span>
 <span class="c-muted"># tagged in the inbox with the agent's label
 # every call recorded in the audit log</span></pre>
           </div>
           <div class="code-tab-content" data-lang="curl">
             <pre class="code-snippet"><span class="c-prompt">$</span> <span class="c-cmd">curl</span> -X POST https://login.ollastack.com/api/submit/<span class="c-hl">contact</span> \
     -H <span class="c-str">"Content-Type: application/json"</span> \
-    -d <span class="c-str">'&#123;"name":"Ada","message":"hi"&#125;'</span>
+    -d <span class="c-str">'{"name":"Ada","message":"hi"}'</span>
 
-<span class="c-ok">&#123;"success": true, "id": "sub_8f2…"&#125;</span></pre>
+<span class="c-ok">{"success": true, "id": "sub_8f2…"}</span></pre>
           </div>
           <div class="code-tab-content" data-lang="js">
-            <pre class="code-snippet"><span class="c-key">await</span> fetch(<span class="c-str">"https://login.ollastack.com/api/submit/contact"</span>, &#123;
+            <pre class="code-snippet"><span class="c-key">await</span> fetch(<span class="c-str">"https://login.ollastack.com/api/submit/contact"</span>, {
   method: <span class="c-str">"POST"</span>,
-  headers: &#123; <span class="c-str">"Content-Type"</span>: <span class="c-str">"application/json"</span> &#125;,
-  body: JSON.stringify(&#123; name, email, message &#125;),
-&#125;);</pre>
+  headers: { <span class="c-str">"Content-Type"</span>: <span class="c-str">"application/json"</span> },
+  body: JSON.stringify({ name, email, message }),
+});</pre>
           </div>
           <div class="code-tab-content" data-lang="html">
             <pre class="code-snippet"><span class="c-tag">&lt;form</span> action=<span class="c-str">"https://login.ollastack.com/api/submit/contact"</span> method=<span class="c-str">"POST"</span><span class="c-tag">&gt;</span>
@@ -2056,15 +2302,15 @@ const siteLd = {
 <span class="c-tag">&lt;/form&gt;</span></pre>
           </div>
           <div class="code-tab-content" data-lang="react">
-            <pre class="code-snippet"><span class="c-key">import</span> &#123; useForm &#125; <span class="c-key">from</span> <span class="c-str">"@ollastack/react"</span>;
+            <pre class="code-snippet"><span class="c-key">import</span> { useForm } <span class="c-key">from</span> <span class="c-str">"@ollastack/react"</span>;
 
-<span class="c-key">export function</span> <span class="c-fn">Contact</span>() &#123;
+<span class="c-key">export function</span> <span class="c-fn">Contact</span>() {
   <span class="c-key">const</span> [state, handleSubmit] = <span class="c-fn">useForm</span>(<span class="c-str">"contact"</span>);
   <span class="c-key">if</span> (state.succeeded) <span class="c-key">return</span> <span class="c-tag">&lt;p&gt;</span>Thanks!<span class="c-tag">&lt;/p&gt;</span>;
   <span class="c-key">return</span> (
-    <span class="c-tag">&lt;form onSubmit=&#123;handleSubmit&#125;&gt;</span>...<span class="c-tag">&lt;/form&gt;</span>
+    <span class="c-tag">&lt;form onSubmit={handleSubmit}&gt;</span>...<span class="c-tag">&lt;/form&gt;</span>
   );
-&#125;</pre>
+}</pre>
           </div>
         </div>
       </div>
