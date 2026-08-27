@@ -150,12 +150,26 @@ button {
 }
 .btn:active { transform: translateY(1px); }
 
-.btn-primary {
-  background: var(--ink);
-  color: #ffffff;
-  border-color: var(--ink);
+.btn-primary,
+.btn-cta,
+.btn-dark-pill,
+.btn-red-pill {
+  background: var(--brand-red, #DC2626) !important;
+  color: #ffffff !important;
+  border-color: var(--brand-red, #DC2626) !important;
+  font-weight: 700 !important;
+  border-radius: 9999px !important;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.25);
 }
-.btn-primary:hover { background: #000; }
+.btn-primary:hover,
+.btn-cta:hover,
+.btn-dark-pill:hover,
+.btn-red-pill:hover {
+  background: var(--brand-red-2, #B91C1C) !important;
+  border-color: var(--brand-red-2, #B91C1C) !important;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+  transform: translateY(-1px);
+}
 
 .btn-accent {
   background: var(--accent);

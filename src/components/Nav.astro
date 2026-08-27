@@ -3,69 +3,72 @@ import Logo from "./Logo.astro";
 interface Props { current?: string }
 const { current } = Astro.props;
 const APP = "https://login.ollastack.com";
-const links = [
-  { href: "/", label: "Product", id: "home", hasDropdown: true },
-  { href: "/use-cases", label: "Use cases", id: "use-cases" },
-  { href: "/email-api", label: "Email API", id: "email-api" },
-  { href: "/docs", label: "Docs", id: "docs" },
-  { href: "/resources", label: "Resources", id: "resources", hasDropdown: true },
-  { href: "/blog", label: "Blog", id: "blog" },
-  { href: "/pricing", label: "Pricing", id: "pricing" },
-];
 ---
 
-<header class="nav">
-  <div class="nav-inner">
-    <div class="nav-left">
-      <Logo size={24} />
-      <nav class="nav-links" aria-label="Primary">
-        {links.map((link) => (
-          <a
-            href={link.href}
-            class:list={["nav-link", current === link.id && "active"]}
-          >
-            {link.label}
-            {link.hasDropdown && (
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            )}
-          </a>
-        ))}
-      </nav>
+<header class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <div class="nav-brand-wrap">
+      <Logo size={46} />
     </div>
+
+    <!-- Centered Frosted Capsule Nav -->
+    <nav class="nav-pill" aria-label="Primary">
+      <div class="nav-dropdown-wrap">
+        <a href="/" class:list={["nav-link", (current === "home" || current === "product") && "active"]}>
+          Product <span class="chevron">▾</span>
+        </a>
+        <div class="nav-dropdown-menu">
+          <a href="/#features" class="nav-dropdown-item">Features & Capabilities</a>
+          <a href="/email-api" class="nav-dropdown-item">Agent Mail & API</a>
+          <a href="/#live-demo" class="nav-dropdown-item">Interactive Live Demo</a>
+          <a href="/#api-console" class="nav-dropdown-item">API Console Sandbox</a>
+        </div>
+      </div>
+      <a href="/use-cases" class:list={["nav-link", current === "use-cases" && "active"]}>Use cases</a>
+      <a href="/email-api" class:list={["nav-link", current === "email-api" && "active"]}>Email API</a>
+      <a href="/docs" class:list={["nav-link", current === "docs" && "active"]}>Docs</a>
+      <div class="nav-dropdown-wrap">
+        <a href="/resources" class:list={["nav-link", current === "resources" && "active"]}>
+          Resources <span class="chevron">▾</span>
+        </a>
+        <div class="nav-dropdown-menu">
+          <a href="/resources" class="nav-dropdown-item">All Resources</a>
+          <a href="/resources/developer-hub" class="nav-dropdown-item">Developer Hub</a>
+          <a href="/resources/deliverability-hub" class="nav-dropdown-item">Deliverability Hub</a>
+          <a href="/resources/migration-hub" class="nav-dropdown-item">Migration Hub</a>
+        </div>
+      </div>
+      <a href="/blog" class:list={["nav-link", current === "blog" && "active"]}>Blog</a>
+      <a href="/pricing" class:list={["nav-link", current === "pricing" && "active"]}>Pricing</a>
+    </nav>
+
     <div class="nav-right">
-      <a class="nav-signin" href={`${APP}/login`}>Sign in</a>
-      <a class="btn btn-primary btn-sm nav-cta" href={`${APP}/register`}>
-        Start free
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
-          <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+      <a href={`${APP}/login`} class="nav-signin">Sign in</a>
+      <a href={`${APP}/register`} class="btn btn-dark-pill">
+        Start free <span class="arrow">→</span>
       </a>
-      <button
-        type="button"
-        class="nav-burger"
-        id="nav-burger"
-        aria-label="Open menu"
-        aria-expanded="false"
-        aria-controls="nav-mobile"
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/>
-        </svg>
-      </button>
     </div>
+
+    <button class="nav-burger" id="nav-burger" aria-label="Open menu" aria-expanded="false">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/>
+      </svg>
+    </button>
   </div>
 
+  <!-- Mobile Navigation Drawer -->
   <nav class="nav-mobile" id="nav-mobile" aria-label="Mobile">
-    {links.map((link) => (
-      <a
-        href={link.href}
-        class:list={["nav-mobile-link", current === link.id && "active"]}
-      >{link.label}</a>
-    ))}
-    <a class="nav-mobile-link" href={`${APP}/login`}>Sign in</a>
-    <a class="nav-mobile-cta btn btn-primary" href={`${APP}/register`}>Start free</a>
+    <a href="/" class:list={["nav-mobile-link", (current === "home" || current === "product") && "active"]}>Product</a>
+    <a href="/use-cases" class:list={["nav-mobile-link", current === "use-cases" && "active"]}>Use cases</a>
+    <a href="/email-api" class:list={["nav-mobile-link", current === "email-api" && "active"]}>Email API</a>
+    <a href="/docs" class:list={["nav-mobile-link", current === "docs" && "active"]}>Docs</a>
+    <a href="/resources" class:list={["nav-mobile-link", current === "resources" && "active"]}>Resources</a>
+    <a href="/blog" class:list={["nav-mobile-link", current === "blog" && "active"]}>Blog</a>
+    <a href="/pricing" class:list={["nav-mobile-link", current === "pricing" && "active"]}>Pricing</a>
+    <div class="nav-mobile-actions">
+      <a href={`${APP}/login`} class="nav-mobile-link">Sign in</a>
+      <a href={`${APP}/register`} class="btn btn-dark-pill nav-mobile-cta">Start free →</a>
+    </div>
   </nav>
 </header>
 
@@ -96,47 +99,176 @@ const links = [
 </script>
 
 <style>
-  .nav {
+  .navbar {
     position: sticky;
     top: 0;
-    z-index: 50;
-    background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: saturate(160%) blur(12px);
-    -webkit-backdrop-filter: saturate(160%) blur(12px);
-    border-bottom: 1px solid var(--line);
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line, #E2E8F0);
   }
+
   .nav-inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 60px;
-    max-width: var(--container-wide);
+    height: 72px;
+    max-width: 1280px;
     margin: 0 auto;
-    padding: 0 32px;
+    padding: 0 24px;
   }
-  .nav-left { display: flex; align-items: center; gap: 32px; }
-  .nav-links { display: flex; align-items: center; gap: 2px; }
-  .nav-link {
-    display: inline-flex;
+
+  .nav-brand-wrap {
+    display: flex;
+    align-items: center;
+  }
+
+  /* Centered Frosted Navigation Capsule */
+  .nav-pill {
+    display: flex;
     align-items: center;
     gap: 4px;
-    font-size: 14px;
-    color: var(--muted);
-    padding: 6px 10px;
-    border-radius: var(--r-2);
-    transition: color 0.12s ease;
+    background: rgba(248, 250, 252, 0.95);
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    padding: 4px 6px;
+    border-radius: 9999px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+    backdrop-filter: blur(8px);
   }
-  .nav-link:hover, .nav-link.active { color: var(--ink); }
-  .nav-right { display: flex; align-items: center; gap: 10px; }
+
+  .nav-link {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #475569;
+    padding: 7px 15px;
+    border-radius: 9999px;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    text-decoration: none;
+  }
+
+  .nav-link:hover,
+  .nav-link.active {
+    color: #09090B;
+    background: #FFFFFF;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+
+  .chevron {
+    font-size: 0.72rem;
+    opacity: 0.65;
+    transition: transform 0.2s ease, color 0.2s ease;
+    display: inline-block;
+  }
+
+  .nav-dropdown-wrap {
+    position: relative;
+  }
+
+  .nav-dropdown-wrap:hover .chevron {
+    transform: rotate(180deg);
+    color: #DC2626;
+  }
+
+  .nav-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%) translateY(6px);
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.1), 0 4px 12px -2px rgba(0, 0, 0, 0.05);
+    padding: 8px;
+    min-width: 210px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .nav-dropdown-wrap:hover .nav-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .nav-dropdown-item {
+    display: block;
+    padding: 8px 14px;
+    font-size: 0.86rem;
+    font-weight: 500;
+    color: #09090B;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background 0.15s ease, color 0.15s ease;
+    white-space: nowrap;
+    text-align: left;
+  }
+
+  .nav-dropdown-item:hover {
+    background: #FAFAFB;
+    color: #DC2626;
+  }
+
+  /* Right Nav Buttons */
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
   .nav-signin {
-    font-size: 14px;
-    color: var(--muted);
-    padding: 6px 10px;
-    border-radius: var(--r-2);
-    transition: color 0.12s ease;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #09090B;
+    transition: color 0.15s ease;
+    text-decoration: none;
   }
-  .nav-signin:hover { color: var(--ink); }
-  .nav-cta { border-radius: 20px; }
+
+  .nav-signin:hover {
+    color: #DC2626;
+  }
+
+  /* Bold Red CTA Button */
+  .btn-dark-pill {
+    background: #DC2626 !important;
+    color: #FFFFFF !important;
+    padding: 9px 20px !important;
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+    border: 1px solid #DC2626 !important;
+    border-radius: 9999px !important;
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.25) !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .btn-dark-pill:hover {
+    background: #B91C1C !important;
+    border-color: #B91C1C !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35) !important;
+  }
+
+  .arrow {
+    transition: transform 0.15s ease;
+  }
+
+  .btn-dark-pill:hover .arrow {
+    transform: translateX(2px);
+  }
 
   .nav-burger {
     display: none;
@@ -145,45 +277,64 @@ const links = [
     width: 38px;
     height: 38px;
     padding: 0;
-    color: var(--ink);
+    color: #09090B;
     background: transparent;
-    border: 1px solid var(--line);
-    border-radius: var(--r-2);
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
     cursor: pointer;
   }
-  .nav-burger:hover { background: var(--bg-sunken); }
 
   .nav-mobile {
     display: none;
     flex-direction: column;
-    gap: 2px;
-    padding: 10px 16px 16px;
-    background: var(--bg);
-    border-bottom: 1px solid var(--line);
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #FFFFFF;
+    border-bottom: 1px solid #E2E8F0;
+    padding: 20px;
+    gap: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   }
-  .nav-mobile.open { display: flex; }
+
+  .nav-mobile.open {
+    display: flex;
+  }
+
   .nav-mobile-link {
-    font-size: 15px;
-    color: var(--muted);
-    padding: 10px 12px;
-    border-radius: var(--r-2);
+    font-size: 1rem;
+    font-weight: 500;
+    color: #64748B;
+    padding: 8px 0;
+    text-decoration: none;
   }
-  .nav-mobile-link:hover,
-  .nav-mobile-link.active {
-    color: var(--ink);
-    background: var(--bg-sunken);
+
+  .nav-mobile-link.active,
+  .nav-mobile-link:hover {
+    color: #09090B;
+    font-weight: 600;
   }
-  .nav-mobile-cta { margin-top: 8px; justify-content: center; }
+
+  .nav-mobile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid #F1F5F9;
+  }
+
+  .nav-mobile-cta {
+    justify-content: center;
+  }
 
   @media (max-width: 860px) {
-    .nav-links { display: none; }
-    .nav-burger { display: inline-flex; }
-  }
-  @media (min-width: 861px) {
-    .nav-mobile { display: none !important; }
-    .nav-burger { display: none !important; }
-  }
-  @media (max-width: 460px) {
-    .nav-signin { display: none; }
+    .nav-pill, .nav-signin {
+      display: none;
+    }
+    .nav-burger {
+      display: inline-flex;
+    }
   }
 </style>

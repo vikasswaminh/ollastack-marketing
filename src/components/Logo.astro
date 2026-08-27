@@ -1,11 +1,11 @@
 ---
-// New Ollastack brand logo: 3D Stack + AI Neural Node Cluster + Dual Wordmark + Built for AI Agents
+// Ollastack brand logo: 3D Stack Emblem + Wordmark + AI Agents
 interface Props {
   size?: number;
   variant?: "light" | "dark";
   withWordmark?: boolean;
 }
-const { size = 36, variant = "light" } = Astro.props;
+const { size = 46, variant = "light" } = Astro.props;
 const logoSrc = variant === "dark" ? "/logo-white.svg" : "/logo.svg";
 ---
 
@@ -14,7 +14,7 @@ const logoSrc = variant === "dark" ? "/logo-white.svg" : "/logo.svg";
     src={logoSrc}
     alt="Ollastack — Built for AI Agents"
     class="brand-logo-img"
-    style={`height: ${size}px; width: auto;`}
+    style={`height: ${size}px; max-height: 52px; width: auto;`}
   />
 </a>
 
@@ -26,7 +26,8 @@ const logoSrc = variant === "dark" ? "/logo-white.svg" : "/logo.svg";
   }
   .brand-logo-img {
     display: block;
-    height: 36px;
+    height: 46px;
+    max-height: 52px;
     width: auto;
     transition: transform 0.2s ease;
   }
