@@ -11,6 +11,17 @@ export interface PostMeta {
 
 export const posts: PostMeta[] = [
   {
+    slug: "form-backend-vs-form-builder",
+    title: "Form Backend vs Form Builder: What Developers Should Choose in 2026",
+    description:
+      "Compare form backends and form builders in 2026. Learn how APIs, customization, security, webhooks, scalability, AI agents, and developer control affect which option you should choose.",
+    date: "2026-08-27",
+    readingTime: "18 min read",
+    category: "Comparisons & Migrations",
+    categorySlug: "comparisons",
+    featured: true,
+  },
+  {
     slug: "how-to-automate-otp-email-testing-in-ci-cd-pipelines",
     title: "How to Automate OTP Email Testing in CI/CD Pipelines",
     description:
