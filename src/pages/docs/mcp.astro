@@ -1,0 +1,213 @@
+---
+import Base from "../../layouts/Base.astro";
+const APP = "https://login.ollastack.com";
+
+const sections = [
+  { id: "overview", title: "Overview" },
+  { id: "spec", title: "The foundation: OpenAPI" },
+  { id: "today", title: "Wire it up today" },
+  { id: "tools", title: "The tool surface" },
+  { id: "scopes", title: "Token scopes" },
+  { id: "flows", title: "Example agent flows" },
+  { id: "official", title: "Official server (soon)" },
+  { id: "notes", title: "Good to know" },
+];
+
+// Code as plain strings — keeps literal { } out of Astro's JSX parser.
+const cSpec = `# The whole API is one public, CORS-open OpenAPI 3.1 document.
+curl https://login.ollastack.com/api/openapi.json
+# No auth needed to READ it. Its servers[] block names the canonical host,
+# so an MCP tool or agent framework can self-configure straight from it.`;
+
+const cFastmcp = `# Turn the live spec into MCP tools today with FastMCP (https://gofastmcp.com).
+# Illustrative — check the FastMCP docs for the current API.
+import httpx
+from fastmcp import FastMCP
+
+client = httpx.AsyncClient(
+    base_url="https://login.ollastack.com",
+    headers={"Authorization": "Bearer fmd_your_token"},   # a dashboard API token
+)
+mcp = FastMCP.from_openapi(
+    openapi_spec=httpx.get("https://login.ollastack.com/api/openapi.json").json(),
+    client=client,
+)
+mcp.run()   # your agent now has Ollastack as native tools`;
+
+const cConfig = `// claude_desktop_config.json   (or  .cursor/mcp.json)
+{
+  "mcpServers": {
+    "ollastack": {
+      "command": "uvx",
+      "args": ["ollastack-mcp"],
+      "env": { "OLLASTACK_API_TOKEN": "fmd_xxxxxxxx" }
+    }
+  }
+}`;
+---
+
+<Base
+  current="docs"
+  title="Docs — MCP — Ollastack"
+  description="Give an AI agent (Claude Desktop, Cursor, any MCP client) direct access to Ollastack forms, mailboxes, and email testing as native tools — built on the public OpenAPI spec."
+  docsName="MCP"
+  docsSlug="mcp"
+>
+  <div class="docs-shell container-wide">
+    <aside class="sidebar">
+      <div class="side-eyebrow mono">/ docs / mcp</div>
+      <nav>
+        <ul>
+          {sections.map((s) => (
+            <li><a href={`#${s.id}`}>{s.title}</a></li>
+          ))}
+        </ul>
+      </nav>
+      <div class="side-back">
+        <a href="/docs">← All docs</a>
+        <a href="/docs/agent-mail">→ Agent Mail</a>
+        <a href="/docs/agents">→ Agents submit forms</a>
+      </div>
+    </aside>
+
+    <article class="content">
+      <span class="chip mono"><span class="dot"></span>mcp</span>
+      <h1 class="display">Ollastack as native agent tools.</h1>
+      <p class="lede">
+        Give an agent — Claude Desktop, Cursor, or any
+        <a href="https://modelcontextprotocol.io">MCP</a> client — direct access
+        to the three pillars as tools it can call: <strong>submit &amp; read
+        forms</strong>, <strong>send / receive / reply from a mailbox</strong>,
+        and <strong>spin up disposable inboxes</strong> to read OTP codes in CI.
+      </p>
+
+      <h2 id="overview">Overview</h2>
+      <p>
+        MCP (the Model Context Protocol) is how an agent discovers and calls
+        external tools. Ollastack doesn't need a bespoke integration for it: the
+        entire API is published as a <strong>public OpenAPI spec</strong>, and
+        any OpenAPI-aware MCP tooling can turn that into tools automatically. So
+        you can wire it up <strong>today</strong> with off-the-shelf tools, and a
+        curated official server is on the way.
+      </p>
+
+      <h2 id="spec">The foundation: a public OpenAPI spec</h2>
+      <p>
+        Everything an agent can do is described at
+        <a href={`${APP}/api/openapi.json`}>{APP.replace('https://','')}/api/openapi.json</a>
+        — OpenAPI 3.1, public and CORS-open, with each endpoint's auth scheme and
+        required scopes declared. That document <em>is</em> the tool surface.
+      </p>
+      <pre class="code">{cSpec}</pre>
+
+      <h2 id="today">Wire it up today</h2>
+      <p>
+        Point any OpenAPI&rarr;MCP bridge at the spec with a Bearer token from
+        your dashboard. For example, with
+        <a href="https://gofastmcp.com">FastMCP</a>:
+      </p>
+      <pre class="code">{cFastmcp}</pre>
+      <p class="muted-note">
+        Get a token in <a href={`${APP}/dashboard/settings`}>Dashboard → Settings
+        → API tokens</a> and grant only the scopes the agent needs (below). The
+        spec is fetched at startup, so new endpoints show up as tools
+        automatically once they ship.
+      </p>
+
+      <h2 id="tools">The tool surface</h2>
+      <p>The three pillars map to a small set of verbs an agent actually uses:</p>
+      <table>
+        <thead><tr><th>Pillar</th><th>Tools</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Agent forms</strong></td><td><code>listForms</code>, <code>submitForm</code>, <code>listFormSubmissions</code></td></tr>
+          <tr><td><strong>Agent mailboxes</strong></td><td><code>createMailbox</code>, <code>sendMail</code>, <code>replyMail</code>, <code>waitForMailMessage</code>, <code>getMailMessage</code> (with extracted <code>codes</code> / <code>links</code>)</td></tr>
+          <tr><td><strong>Email / SMS testing</strong></td><td><code>createMailbox</code> (test mode) &amp; <code>waitForMailMessage</code>; <code>createSmsInbox</code>, <code>waitForSms</code>, <code>listSmsMessages</code></td></tr>
+        </tbody>
+      </table>
+      <p class="muted-note">
+        The full API is larger; a good agent surface is a <em>curated</em> subset
+        (admin, auth, and token-minting endpoints are left out). SMS tools are
+        exposed but the SMS module is dormant until an SMS provider is configured
+        server-side — they return <code>503</code> until then.
+      </p>
+
+      <h2 id="scopes">Token scopes</h2>
+      <p>Grant the least the agent needs — scopes are per token:</p>
+      <table>
+        <thead><tr><th>To let the agent…</th><th>Scope(s)</th></tr></thead>
+        <tbody>
+          <tr><td>Submit forms</td><td><code>submissions:write</code></td></tr>
+          <tr><td>Read submissions / manage forms</td><td><code>submissions:read</code>, <code>forms:read</code>/<code>forms:write</code></td></tr>
+          <tr><td>Use disposable test inboxes</td><td><code>mail.test:read</code> / <code>:write</code> / <code>:send</code></td></tr>
+          <tr><td>Use a persistent agent identity</td><td><code>mail.agent:read</code> / <code>:write</code> / <code>:send</code></td></tr>
+        </tbody>
+      </table>
+      <p class="muted-note">
+        A token hitting an endpoint outside its scope gets
+        <code>403 … missing required scope</code>. See
+        <a href="/docs/agent-mail#scopes">Agent Mail → Scopes</a> for the mail split.
+      </p>
+
+      <h2 id="flows">Example agent flows</h2>
+      <ul>
+        <li><em>"Submit this lead to my contact form"</em> &rarr; <code>submitForm</code></li>
+        <li><em>"Give yourself an inbox and email the customer a confirmation"</em> &rarr; <code>createMailbox</code> &rarr; <code>sendMail</code></li>
+        <li><em>"Sign up for the service and read the verification code from the email"</em> &rarr; <code>createMailbox</code> (test) &rarr; <code>waitForMailMessage</code> &rarr; read <code>codes[0]</code></li>
+      </ul>
+
+      <h2 id="official">Official server (coming soon)</h2>
+      <p>
+        A curated <code>ollastack-mcp</code> server (Python / FastMCP) is on the
+        way — a ready-to-run package that exposes the pillars as a tight set of
+        tools with no setup. Once published it drops straight into a client's MCP
+        config:
+      </p>
+      <pre class="code">{cConfig}</pre>
+      <p class="muted-note">
+        Not on a package registry yet — until it lands, use the
+        <a href="#today">OpenAPI approach above</a>, which works today with the
+        same token.
+      </p>
+
+      <h2 id="notes">Good to know</h2>
+      <ul>
+        <li>Self-hosting? Point the client's <code>OLLASTACK_BASE_URL</code> (or the FastMCP base URL) at your own instance; everything else is the same.</li>
+        <li>Extracted <code>codes[]</code> and <code>links[]</code> are sensitive (an OTP or reset link is a credential) — have the agent treat them as secrets and never auto-open links.</li>
+        <li>Every response is <code>{`{ success, data }`}</code>; errors are <code>{`{ success:false, error:{ code, message } }`}</code> with the HTTP status.</li>
+      </ul>
+
+      <div class="cta-row">
+        <a class="btn btn-primary btn-lg" href={`${APP}/register`}>Get a token</a>
+        <a class="btn btn-ghost btn-lg" href={`${APP}/api/openapi.json`}>View the OpenAPI spec</a>
+      </div>
+    </article>
+  </div>
+</Base>
+
+<style>
+  .docs-shell { display: grid; grid-template-columns: 220px 1fr; gap: 56px; padding: 64px 28px 96px; }
+  .sidebar { position: sticky; top: 80px; align-self: start; }
+  .side-eyebrow { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
+  .sidebar nav ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
+  .sidebar nav a { display: block; padding: 6px 10px; border-radius: 6px; color: var(--muted); font-size: 14px; }
+  .sidebar nav a:hover { background: var(--bg-sunken); color: var(--ink); }
+  .side-back { margin-top: 24px; font-size: 13px; display: flex; flex-direction: column; gap: 6px; }
+  .side-back a { color: var(--muted); }
+  .side-back a:hover { color: var(--ink); }
+  .content { max-width: 760px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border: 1px solid var(--line); border-radius: 999px; font-size: 11px; color: var(--muted); margin-bottom: 16px; }
+  .chip .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+  .content h1 { font-size: 44px; margin: 0 0 14px; letter-spacing: -0.02em; line-height: 1.05; }
+  .content h2 { font-size: 22px; margin: 48px 0 12px; letter-spacing: -0.01em; scroll-margin-top: 80px; }
+  .content .lede { font-size: 18px; color: var(--muted); line-height: 1.6; max-width: 640px; }
+  .content p { line-height: 1.7; margin: 0 0 14px; }
+  .content ul { line-height: 1.8; padding-left: 22px; margin: 0 0 14px; }
+  .content code { background: var(--bg-sunken); border: 1px solid var(--line); padding: 0 5px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.9em; }
+  .content table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+  .content th, .content td { border-bottom: 1px solid var(--line); padding: 10px 12px; text-align: left; vertical-align: top; }
+  .content th { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; }
+  .muted-note { color: var(--muted); font-size: 14px; }
+  .code { background: var(--code-bg); color: var(--code-fg); border-radius: 12px; padding: 18px 22px; font-family: var(--font-mono); font-size: 13px; line-height: 1.65; overflow-x: auto; white-space: pre; margin: 8px 0 14px; }
+  .cta-row { display: flex; gap: 12px; margin-top: 40px; flex-wrap: wrap; }
+  @media (max-width: 900px) { .docs-shell { grid-template-columns: 1fr; } .sidebar { position: static; } }
+</style>

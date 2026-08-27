@@ -1,0 +1,211 @@
+---
+import Base from "../../layouts/Base.astro";
+const APP = "https://login.ollastack.com";
+
+const sections = [
+  { id: "overview", title: "Overview" },
+  { id: "create", title: "Create a form" },
+  { id: "submit", title: "The submit endpoint" },
+  { id: "fields", title: "Fields & validation" },
+  { id: "spam", title: "Spam protection" },
+  { id: "notifications", title: "Notifications" },
+  { id: "more", title: "Webhooks, exports & more" },
+  { id: "agents", title: "Agent submissions" },
+  { id: "openapi", title: "API spec" },
+];
+
+// Code as plain strings — keeps literal { } out of Astro's JSX parser.
+const cCreate = `# Create a form via the API — or just click "Create form" in the dashboard.
+curl -X POST https://login.ollastack.com/api/forms \\
+  -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \\
+  -d '{"name":"Contact"}'
+# → data: { "id":"frm_…", "slug":"contact",
+#           "endpoint":"https://login.ollastack.com/api/submit/contact", ... }`;
+
+const cHtml = `<!-- Point any HTML form at the endpoint — no JavaScript required. -->
+<form action="https://login.ollastack.com/api/submit/contact" method="POST">
+  <input name="email" type="email" required>
+  <textarea name="message" required></textarea>
+  <input type="text" name="_gotcha" style="display:none">  <!-- honeypot: leave empty -->
+  <button>Send</button>
+</form>`;
+
+const cCurl = `# JSON and application/x-www-form-urlencoded are both accepted.
+curl -X POST https://login.ollastack.com/api/submit/contact \\
+  -H "Content-Type: application/json" \\
+  -d '{"email":"ada@example.com","message":"hi"}'
+# → 201 Created  { "success": true, "id": "sub_…", "next": null }`;
+
+const cErr = `# Missing/invalid fields → 400, with a message per field.
+{ "error": { "code": "VALIDATION_ERROR",
+             "message": "Invalid input",
+             "fieldErrors": { "email": ["Invalid email"] } } }`;
+---
+
+<Base
+  current="docs"
+  title="Docs — Forms — Ollastack"
+  description="Turn any HTML form into a backend: create an endpoint, submit from HTML/JSON/curl, validate fields, block spam, and fan out to email, webhooks, and integrations."
+  docsName="Forms"
+  docsSlug="forms"
+>
+  <div class="docs-shell container-wide">
+    <aside class="sidebar">
+      <div class="side-eyebrow mono">/ docs / forms</div>
+      <nav>
+        <ul>
+          {sections.map((s) => (
+            <li><a href={`#${s.id}`}>{s.title}</a></li>
+          ))}
+        </ul>
+      </nav>
+      <div class="side-back">
+        <a href="/docs">← All docs</a>
+        <a href="/docs/agents">→ Agents submit forms</a>
+        <a href="/docs/agent-mail">→ Agent Mail</a>
+      </div>
+    </aside>
+
+    <article class="content">
+      <span class="chip mono"><span class="dot"></span>forms</span>
+      <h1 class="display">Turn any form into a backend.</h1>
+      <p class="lede">
+        Create an endpoint, point an HTML <code>action=</code> at it, and every
+        submission is validated, spam-filtered, stored, and fanned out to email,
+        webhooks, and integrations — no server to run. This is the short version;
+        the <a href="/docs">API quickstart</a> has every language and the full
+        reference lives at <a href="/docs/api">/docs/api</a>.
+      </p>
+
+      <h2 id="overview">Overview</h2>
+      <p>
+        A <strong>form</strong> is an endpoint plus a schema. You define fields
+        (in the dashboard builder or via the API), you get a URL, and anything
+        that <code>POST</code>s to it becomes a stored submission. Each submission
+        runs the same pipeline: <strong>validate → rate-limit → spam-filter →
+        store → notify</strong>. A real lead is never silently dropped — blocked
+        submissions are recorded so you can see them.
+      </p>
+
+      <h2 id="create">1. Create a form</h2>
+      <p>
+        Click <strong>Create form</strong> in the
+        <a href={`${APP}/dashboard`}>dashboard</a>, name it, and copy the endpoint
+        URL — or create one over the API (tokens live in
+        <a href={`${APP}/dashboard/settings`}>Settings → API tokens</a>):
+      </p>
+      <pre class="code">{cCreate}</pre>
+
+      <h2 id="submit">2. The submit endpoint</h2>
+      <p>
+        <code>POST /api/submit/&lt;slug&gt;</code> is the only endpoint your form
+        needs, and it takes <strong>no key</strong> — a plain HTML form works:
+      </p>
+      <pre class="code">{cHtml}</pre>
+      <p>Submitting with <code>fetch</code> / <code>curl</code> is identical:</p>
+      <pre class="code">{cCurl}</pre>
+      <p class="muted-note">
+        <code>_gotcha</code> is a honeypot — bots fill it, humans don't. Prefer a
+        hosted UI? Every form gets a server-rendered page at
+        <code>{APP.replace('https://','')}/f/&lt;slug&gt;</code>, and successful
+        submits route to <code>/thanks/&lt;slug&gt;</code> or a redirect you set.
+      </p>
+
+      <h2 id="fields">3. Fields &amp; validation</h2>
+      <p>
+        Each field in the builder has a type and a required/optional flag. The
+        endpoint validates the payload before saving; a bad payload comes back as
+        <code>400 VALIDATION_ERROR</code> with <code>fieldErrors</code> mapping
+        each field id to its messages. Hidden fields (<code>showIf</code>
+        conditional logic on Starter+) are neither validated nor stored.
+      </p>
+      <pre class="code">{cErr}</pre>
+
+      <h2 id="spam">4. Spam protection (built in)</h2>
+      <p>
+        Every submission runs a layered filter — honeypot, IP blocklist,
+        keyword/regex, link heuristics, Akismet, and a local ML classifier.
+        Optional <strong>CAPTCHA</strong> (per-form <code>captchaRequired</code>)
+        adds a challenge for browser submits. The rule that matters:
+        <strong>a real lead is never lost</strong> — a "maybe spam" ML hit is
+        <em>quarantined</em> (still delivered, just flagged), and the filter
+        <strong>fails open</strong>. Blocked attempts are logged for the owner to
+        review.
+      </p>
+
+      <h2 id="notifications">5. Notifications</h2>
+      <p>
+        Each form emails its submissions to a primary <code>notifyEmail</code>
+        plus optional CC/BCC. One guardrail: every recipient must be an address
+        <strong>verified on the account that owns the form</strong> — so a form
+        can't be pointed at a stranger's inbox. Add an <strong>autoresponder</strong>
+        to reply to the submitter automatically. To send from your own domain,
+        configure <a href="/docs/smtp">custom SMTP</a>.
+      </p>
+
+      <h2 id="more">Webhooks, exports &amp; more</h2>
+      <p>These are covered in depth on the API quickstart — the short list:</p>
+      <ul>
+        <li><strong>Webhooks</strong> — every non-spam submission POSTs a signed
+          payload (<code>X-Ollastack-Signature</code>, HMAC-SHA256), auto-retried
+          up to 5 times. <a href="/docs#webhooks">Details →</a></li>
+        <li><strong>Integrations</strong> — Slack, Discord, Telegram, Mailchimp
+          per form; anything else via Zapier/Make/n8n on your webhook.
+          <a href="/docs/integrations">Details →</a></li>
+        <li><strong>Exports</strong> — <code>GET /api/forms/&lt;id&gt;/export?format=csv</code>
+          (or <code>json</code>/<code>excel</code>). <a href="/docs#exports">Details →</a></li>
+        <li><strong>Analytics</strong> — daily counts, spam ratio, and geography
+          per form. <a href="/docs#analytics">Details →</a></li>
+      </ul>
+
+      <h2 id="agents">Agent submissions</h2>
+      <p>
+        AI agents are first-class: authorize one with a Bearer token and its
+        submissions are tagged with the agent's label and skip the per-IP limit
+        (bots stay blocked). Full walkthrough at
+        <a href="/docs/agents">/docs/agents</a>.
+      </p>
+
+      <h2 id="openapi">Public API spec</h2>
+      <p>
+        Every forms endpoint is published as OpenAPI 3.1 (public, CORS-open) so
+        agents and MCP tools can discover it directly:
+        <a href={`${APP}/api/openapi.json`}>{APP.replace('https://','')}/api/openapi.json</a>.
+        See <a href="/docs/mcp">/docs/mcp</a> to expose it as agent tools.
+      </p>
+
+      <div class="cta-row">
+        <a class="btn btn-primary btn-lg" href={`${APP}/register`}>Create a form</a>
+        <a class="btn btn-ghost btn-lg" href="/docs">API quickstart</a>
+      </div>
+    </article>
+  </div>
+</Base>
+
+<style>
+  .docs-shell { display: grid; grid-template-columns: 220px 1fr; gap: 56px; padding: 64px 28px 96px; }
+  .sidebar { position: sticky; top: 80px; align-self: start; }
+  .side-eyebrow { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
+  .sidebar nav ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
+  .sidebar nav a { display: block; padding: 6px 10px; border-radius: 6px; color: var(--muted); font-size: 14px; }
+  .sidebar nav a:hover { background: var(--bg-sunken); color: var(--ink); }
+  .side-back { margin-top: 24px; font-size: 13px; display: flex; flex-direction: column; gap: 6px; }
+  .side-back a { color: var(--muted); }
+  .side-back a:hover { color: var(--ink); }
+  .content { max-width: 760px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border: 1px solid var(--line); border-radius: 999px; font-size: 11px; color: var(--muted); margin-bottom: 16px; }
+  .chip .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+  .content h1 { font-size: 44px; margin: 0 0 14px; letter-spacing: -0.02em; line-height: 1.05; }
+  .content h2 { font-size: 22px; margin: 48px 0 12px; letter-spacing: -0.01em; scroll-margin-top: 80px; }
+  .content .lede { font-size: 18px; color: var(--muted); line-height: 1.6; max-width: 640px; }
+  .content p { line-height: 1.7; margin: 0 0 14px; }
+  .content ul { line-height: 1.8; padding-left: 22px; margin: 0 0 14px; }
+  .content code { background: var(--bg-sunken); border: 1px solid var(--line); padding: 0 5px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.9em; }
+  .content table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+  .content th, .content td { border-bottom: 1px solid var(--line); padding: 10px 12px; text-align: left; vertical-align: top; }
+  .content th { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; }
+  .muted-note { color: var(--muted); font-size: 14px; }
+  .code { background: var(--code-bg); color: var(--code-fg); border-radius: 12px; padding: 18px 22px; font-family: var(--font-mono); font-size: 13px; line-height: 1.65; overflow-x: auto; white-space: pre; margin: 8px 0 14px; }
+  .cta-row { display: flex; gap: 12px; margin-top: 40px; flex-wrap: wrap; }
+  @media (max-width: 900px) { .docs-shell { grid-template-columns: 1fr; } .sidebar { position: static; } }
+</style>
