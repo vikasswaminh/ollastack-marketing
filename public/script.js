@@ -2,8 +2,127 @@
    OLLASTACK REDESIGN — Interactive Logic
    ============================================================ */
 
-(function () {
-  'use strict';
+  // 0. Interactive Connected Nodes Background Canvas Motion
+  function initNodeNetwork() {
+    const canvas = document.getElementById('hero-nodes-canvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    let width = 0, height = 0;
+    let particles = [];
+    let mouse = { x: null, y: null, radius: 140 };
+
+    function resize() {
+      const hero = canvas.closest('.hero-section') || canvas.parentElement;
+      if (!hero) return;
+      width = canvas.width = hero.offsetWidth;
+      height = canvas.height = hero.offsetHeight;
+      createParticles();
+    }
+
+    function createParticles() {
+      particles = [];
+      const count = Math.max(Math.floor((width * height) / 18000), 35);
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.75,
+          vy: (Math.random() - 0.5) * 0.75,
+          radius: Math.random() * 2 + 1.8,
+          color: Math.random() > 0.5 ? '#DC2626' : '#2563EB'
+        });
+      }
+    }
+
+    window.addEventListener('resize', resize);
+    window.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      if (
+        e.clientX >= rect.left &&
+        e.clientX <= rect.right &&
+        e.clientY >= rect.top &&
+        e.clientY <= rect.bottom
+      ) {
+        mouse.x = e.clientX - rect.left;
+        mouse.y = e.clientY - rect.top;
+      } else {
+        mouse.x = null;
+        mouse.y = null;
+      }
+    });
+
+    resize();
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+
+      // Draw connecting lines between particles
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < 130) {
+            const alpha = (1 - dist / 130) * 0.28;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(148, 163, 184, ${alpha})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw interactive connections to mouse cursor
+      if (mouse.x !== null && mouse.y !== null) {
+        for (let i = 0; i < particles.length; i++) {
+          const dx = particles[i].x - mouse.x;
+          const dy = particles[i].y - mouse.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < mouse.radius) {
+            const alpha = (1 - dist / mouse.radius) * 0.4;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.strokeStyle = `rgba(37, 99, 235, ${alpha})`;
+            ctx.lineWidth = 1.2;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw and update particle positions
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0 || p.x > width) p.vx *= -1;
+        if (p.y < 0 || p.y > height) p.vy *= -1;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = 0.55;
+        ctx.fill();
+        ctx.globalAlpha = 1.0;
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initNodeNetwork);
+  } else {
+    initNodeNetwork();
+  }
 
   // 1. Mobile Navigation Toggle
   const burger = document.getElementById('nav-burger');

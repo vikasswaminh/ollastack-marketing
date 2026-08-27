@@ -16,16 +16,48 @@ const HOME_DESC =
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 </head>
 <body>
 
 
-  <!-- ============ TOP ANNOUNCEMENT BAR ============ -->
-  <aside class="announce-bar">
-    <div class="container announce-inner">
-      <span class="announce-dot" aria-hidden="true">🔴</span>
-      <span class="announce-text"><strong>GEO-smart leads</strong> — every form submission auto-stamped with country, city, region, and timezone.</span>
+  <!-- ============ TOP ANNOUNCEMENT BAR (MOVING TICKER NOTIFICATION) ============ -->
+  <aside class="announce-bar" aria-label="Announcement">
+    <div class="announce-track">
+      <div class="announce-inner">
+        <span class="announce-item">
+          <span class="announce-dot" aria-hidden="true"></span>
+          <span class="announce-tag">LIVE</span>
+          <span class="announce-text"><strong>GEO-smart leads</strong> — every form submission auto-stamped with country, city, region, and timezone.</span>
+        </span>
+        <span class="announce-item">
+          <span class="announce-dot" aria-hidden="true"></span>
+          <span class="announce-tag">AI AGENTS</span>
+          <span class="announce-text"><strong>Agent Mailboxes</strong> — programmatic OTP reading &amp; automated email verification in CI.</span>
+        </span>
+        <span class="announce-item">
+          <span class="announce-dot" aria-hidden="true"></span>
+          <span class="announce-tag">ZERO CONFIG</span>
+          <span class="announce-text"><strong>Multi-Tenant SMTP</strong> — send from your custom domain with automatic DKIM &amp; SPF.</span>
+        </span>
+      </div>
+      <div class="announce-inner" aria-hidden="true">
+        <span class="announce-item">
+          <span class="announce-dot" aria-hidden="true"></span>
+          <span class="announce-tag">LIVE</span>
+          <span class="announce-text"><strong>GEO-smart leads</strong> — every form submission auto-stamped with country, city, region, and timezone.</span>
+        </span>
+        <span class="announce-item">
+          <span class="announce-dot" aria-hidden="true"></span>
+          <span class="announce-tag">AI AGENTS</span>
+          <span class="announce-text"><strong>Agent Mailboxes</strong> — programmatic OTP reading &amp; automated email verification in CI.</span>
+        </span>
+        <span class="announce-item">
+          <span class="announce-dot" aria-hidden="true"></span>
+          <span class="announce-tag">ZERO CONFIG</span>
+          <span class="announce-text"><strong>Multi-Tenant SMTP</strong> — send from your custom domain with automatic DKIM &amp; SPF.</span>
+        </span>
+      </div>
     </div>
   </aside>
 
@@ -94,35 +126,36 @@ const HOME_DESC =
   <main>
     <!-- ============ HERO SECTION ============ -->
     <section class="hero-section">
-      <div class="container hero-layout">
+      <div class="hero-glow-blob" aria-hidden="true"></div>
+      <canvas id="hero-nodes-canvas" class="hero-nodes-canvas" aria-hidden="true"></canvas>
+      <div class="container hero-layout" style="position: relative; z-index: 2;">
         <div class="hero-content">
           <div class="hero-tag-badge">
-            <span class="badge-feature-item"><span class="badge-blue-dot"></span> API-FIRST</span>
-            <span class="badge-feature-item"><span class="badge-blue-dot"></span> AGENT FORMS</span>
-            <span class="badge-feature-item"><span class="badge-blue-dot"></span> MAILBOXES</span>
+            <span class="badge-feature-item"><span class="badge-star">★</span> API-FIRST</span>
+            <span class="badge-feature-item"><span class="badge-star">★</span> AGENT FORMS</span>
+            <span class="badge-feature-item"><span class="badge-star">★</span> MAILBOXES</span>
           </div>
 
           <h1 class="hero-main-title">
-            <span class="nowrap-headline">Forms, mailboxes &amp; email testing,</span><br>
-            Built for your<br>
-            <span class="text-brand-red">AI agents.</span>
+            <span class="hero-title-dark">Forms, Mailboxes &amp; Email Testing</span>
+            <span class="hero-title-dark">Built for your <span class="hero-title-red" style="display: inline;">AI agents.</span></span>
           </h1>
 
           <p class="hero-description">
-            Three things your agents need, one backend: form endpoints they POST to and sail past the bot defenses, real mailboxes they send, receive, reply, and read OTP codes from, and disposable inboxes for testing email in CI. One token system, one OpenAPI spec they read themselves.
+            Three critical capabilities in one unified backend: form endpoints they POST to and sail past bot defenses, real mailboxes they send, receive, reply, and read OTP codes from, and disposable inboxes for CI.
           </p>
 
           <div class="hero-cta-buttons">
-            <a href="https://login.ollastack.com/register" class="btn btn-dark-pill btn-hero">
+            <a href="https://login.ollastack.com/register" class="btn-hero-primary">
               Start free <span class="arrow">→</span>
             </a>
-            <a href="#docs" class="btn btn-white-pill btn-hero">
+            <a href="/docs" class="btn-hero-secondary">
               Read the docs
             </a>
           </div>
 
           <div class="hero-geo-callout">
-            <span class="geo-pin" aria-hidden="true">📍</span>
+            <span class="geo-pin" aria-hidden="true">⚡</span>
             <p class="geo-text"><strong>GEO-smart leads</strong> — every form submission auto-stamped with country, city, region, and timezone.</p>
           </div>
         </div>
@@ -226,7 +259,7 @@ const HOME_DESC =
     </section>
 
     <!-- ============ ONE PLATFORM SECTION ============ -->
-    <section class="one-platform-section" id="product">
+    <section class="one-platform-section" id="features">
       <div class="container">
         <div class="platform-header-flex">
           <div class="platform-title-block">
@@ -235,7 +268,7 @@ const HOME_DESC =
             <p class="main-section-sub">Forms in, mail out — one backend, one token system, one console. Each surface is in the OpenAPI spec your agent reads itself.</p>
           </div>
           <div class="platform-header-action">
-            <a href="#docs" class="btn btn-white-pill">
+            <a href="/docs" class="btn btn-white-pill">
               Explore all docs <span class="arrow">→</span>
             </a>
           </div>
@@ -243,103 +276,169 @@ const HOME_DESC =
 
         <div class="platform-cards-row">
           <!-- Card 1: Headless forms -->
-          <div class="platform-feature-card card-forms">
-            <div class="card-tag-pill tag-blue">01 FORMS</div>
-            <h3 class="card-h3">Headless forms</h3>
-            <p class="card-p">One endpoint. Every submission GEO-stamped, spam-filtered, and agent-aware.</p>
-            
-            <div class="card-mini-mockup mockup-forms">
-              <div class="mini-form-preview">
-                <div class="m-bar"></div>
-                <div class="m-input"></div>
-                <div class="m-input"></div>
-                <div class="m-textarea"></div>
-                <div class="m-btn"></div>
+          <div class="platform-feature-card flip-card card-forms">
+            <div class="flip-card-inner">
+              <!-- FRONT FACE -->
+              <div class="flip-card-front">
+                <div class="card-tag-pill tag-blue">01 FORMS</div>
+                <h3 class="card-h3">Headless forms</h3>
+                <p class="card-p">One endpoint. Every submission GEO-stamped, spam-filtered, and agent-aware.</p>
+                
+                <div class="card-mini-mockup mockup-forms">
+                  <div class="mini-form-preview">
+                    <div class="m-bar"></div>
+                    <div class="m-input"></div>
+                    <div class="m-input"></div>
+                    <div class="m-textarea"></div>
+                    <div class="m-btn"></div>
+                  </div>
+                  <div class="mini-code-preview">
+                    <div class="code-line"><span class="c-method">POST</span> /v1/forms/&#123;id&#125;/submit</div>
+                    <div class="code-line"><span class="c-header">Authorization:</span> Bearer &#123;token&#125;</div>
+                    <div class="code-line"><span class="c-header">Content-Type:</span> application/json</div>
+                    <div class="code-json">
+                      <div>&#123;</div>
+                      <div>&nbsp;&nbsp;<span class="c-key">"name"</span>: <span class="c-val">"Ada"</span>,</div>
+                      <div>&nbsp;&nbsp;<span class="c-key">"email"</span>: <span class="c-val">"ada@example.com"</span></div>
+                      <div>&#125;</div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="card-action-row">
+                  <span class="card-action-link link-blue">Hover to inspect details ↻</span>
+                </div>
               </div>
-              <div class="mini-code-preview">
-                <div class="code-line"><span class="c-method">POST</span> /v1/forms/&#123;id&#125;/submit</div>
-                <div class="code-line"><span class="c-header">Authorization:</span> Bearer &#123;token&#125;</div>
-                <div class="code-line"><span class="c-header">Content-Type:</span> application/json</div>
-                <div class="code-json">
-                  <div>&#123;</div>
-                  <div>&nbsp;&nbsp;<span class="c-key">"name"</span>: <span class="c-val">"Ada"</span>,</div>
-                  <div>&nbsp;&nbsp;<span class="c-key">"email"</span>: <span class="c-val">"ada@example.com"</span></div>
-                  <div>&#125;</div>
+
+              <!-- BACK FACE -->
+              <div class="flip-card-back back-forms">
+                <div class="card-tag-pill tag-blue">FORMS · SPECS</div>
+                <h4 class="back-h4">Enterprise Agent Forms</h4>
+                <ul class="back-feature-list">
+                  <li><span class="back-icon">✓</span> <strong>Zero-Config Geo Stamping:</strong> IP, City, Country, Lat/Lng & Timezone.</li>
+                  <li><span class="back-icon">✓</span> <strong>ML Spam & Bot Defense:</strong> Honeypots, Captcha, rate limits.</li>
+                  <li><span class="back-icon">✓</span> <strong>Instant Webhooks:</strong> Auto-retries, replay & custom headers.</li>
+                  <li><span class="back-icon">✓</span> <strong>Native Integrations:</strong> Slack, Sheets, Discord, Webhooks.</li>
+                </ul>
+                <div class="back-cta-wrap">
+                  <a href="#live-demo" class="btn-flip-cta btn-flip-blue">Try Live Demo →</a>
                 </div>
               </div>
             </div>
-            
-            <a href="#live-demo" class="card-action-link link-blue">→ Call it live</a>
           </div>
 
           <!-- Card 2: Agent Mail -->
-          <div class="platform-feature-card card-mail">
-            <div class="card-tag-pill tag-red">02 AGENT MAIL</div>
-            <h3 class="card-h3">Agent Mail</h3>
-            <p class="card-p">Real email inboxes your agents own.</p>
-            
-            <div class="card-mini-mockup mockup-mail">
-              <div class="mail-inbox-header">
-                <span class="mail-inbox-icon">✉</span>
-                <span class="mail-inbox-address">support@agent.ollastack.com</span>
-                <span class="mail-inbox-count">3</span>
+          <div class="platform-feature-card flip-card card-mail">
+            <div class="flip-card-inner">
+              <!-- FRONT FACE -->
+              <div class="flip-card-front">
+                <div class="card-tag-pill tag-red">02 AGENT MAIL</div>
+                <h3 class="card-h3">Agent Mail</h3>
+                <p class="card-p">Real email inboxes your agents own.</p>
+                
+                <div class="card-mini-mockup mockup-mail">
+                  <div class="mail-inbox-header">
+                    <span class="mail-inbox-icon">✉</span>
+                    <span class="mail-inbox-address">support@agent.ollastack.com</span>
+                    <span class="mail-inbox-count">3</span>
+                  </div>
+                  <div class="mail-inbox-items">
+                    <div class="mail-item">
+                      <div class="mail-item-left">
+                        <span class="mail-item-icon">✉</span>
+                        <span class="mail-item-title">New message from user</span>
+                      </div>
+                      <span class="mail-item-time">2m ago</span>
+                    </div>
+                    <div class="mail-item">
+                      <div class="mail-item-left">
+                        <span class="mail-item-icon">✉</span>
+                        <span class="mail-item-title">OTP is 364921</span>
+                      </div>
+                      <span class="mail-item-time">5m ago</span>
+                    </div>
+                    <div class="mail-item">
+                      <div class="mail-item-left">
+                        <span class="mail-item-icon">✉</span>
+                        <span class="mail-item-title">Welcome to Ollastack</span>
+                      </div>
+                      <span class="mail-item-time">12m ago</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="card-action-row">
+                  <span class="card-action-link link-red">Hover to inspect details ↻</span>
+                </div>
               </div>
-              <div class="mail-inbox-items">
-                <div class="mail-item">
-                  <div class="mail-item-left">
-                    <span class="mail-item-icon">✉</span>
-                    <span class="mail-item-title">New message from user</span>
-                  </div>
-                  <span class="mail-item-time">2m ago</span>
-                </div>
-                <div class="mail-item">
-                  <div class="mail-item-left">
-                    <span class="mail-item-icon">✉</span>
-                    <span class="mail-item-title">OTP is 364921</span>
-                  </div>
-                  <span class="mail-item-time">5m ago</span>
-                </div>
-                <div class="mail-item">
-                  <div class="mail-item-left">
-                    <span class="mail-item-icon">✉</span>
-                    <span class="mail-item-title">Welcome to Ollastack</span>
-                  </div>
-                  <span class="mail-item-time">12m ago</span>
+
+              <!-- BACK FACE -->
+              <div class="flip-card-back back-mail">
+                <div class="card-tag-pill tag-red">MAIL · SPECS</div>
+                <h4 class="back-h4">Full Bidirectional Email</h4>
+                <ul class="back-feature-list">
+                  <li><span class="back-icon">✓</span> <strong>Real Agent Identities:</strong> Send & receive from custom domain.</li>
+                  <li><span class="back-icon">✓</span> <strong>Multi-Tenant SMTP:</strong> Auto DKIM, SPF & DMARC signing.</li>
+                  <li><span class="back-icon">✓</span> <strong>Automated Inbound Routing:</strong> Webhooks on email received.</li>
+                  <li><span class="back-icon">✓</span> <strong>AI Mailbox Automation:</strong> Smart auto-reply & triage rules.</li>
+                </ul>
+                <div class="back-cta-wrap">
+                  <a href="/email-api" class="btn-flip-cta btn-flip-red">Explore Email API →</a>
                 </div>
               </div>
             </div>
-            
-            <a href="#agent-mail-docs" class="card-action-link link-red">→ View docs</a>
           </div>
 
           <!-- Card 3: Test Inboxes -->
-          <div class="platform-feature-card card-test">
-            <div class="card-tag-pill tag-green">03 TEST INBOXES</div>
-            <h3 class="card-h3">Mail testing for CI</h3>
-            <p class="card-p">Disposable inboxes on @test.ollastack.com: read OTPs, assert, and test every email.</p>
-            
-            <div class="card-mini-mockup mockup-test">
-              <div class="test-inbox-header">
-                <span>Inbox: <strong>test_01HXY2</strong></span>
-                <button class="test-copy-btn" id="btn-copy-test-inbox">Copy</button>
+          <div class="platform-feature-card flip-card card-test">
+            <div class="flip-card-inner">
+              <!-- FRONT FACE -->
+              <div class="flip-card-front">
+                <div class="card-tag-pill tag-green">03 TEST INBOXES</div>
+                <h3 class="card-h3">Mail testing for CI</h3>
+                <p class="card-p">Disposable inboxes on @test.ollastack.com: read OTPs, assert, and test every email.</p>
+                
+                <div class="card-mini-mockup mockup-test">
+                  <div class="test-inbox-header">
+                    <span>Inbox: <strong>test_01HXY2</strong></span>
+                    <button class="test-copy-btn" id="btn-copy-test-inbox">Copy</button>
+                  </div>
+                  <div class="test-inbox-items">
+                    <div class="test-item">
+                      <span>OTP detected: <strong>364921</strong></span>
+                      <span class="badge-status-success">Success</span>
+                    </div>
+                    <div class="test-item">
+                      <span>Code extracted</span>
+                      <span class="badge-status-success">Success</span>
+                    </div>
+                    <div class="test-item">
+                      <span>Assertion passed</span>
+                      <span class="badge-status-success">Success</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="card-action-row">
+                  <span class="card-action-link link-green">Hover to inspect details ↻</span>
+                </div>
               </div>
-              <div class="test-inbox-items">
-                <div class="test-item">
-                  <span>OTP detected: <strong>364921</strong></span>
-                  <span class="badge-status-success">Success</span>
-                </div>
-                <div class="test-item">
-                  <span>Code extracted</span>
-                  <span class="badge-status-success">Success</span>
-                </div>
-                <div class="test-item">
-                  <span>Assertion passed</span>
-                  <span class="badge-status-success">Success</span>
+
+              <!-- BACK FACE -->
+              <div class="flip-card-back back-test">
+                <div class="card-tag-pill tag-green">CI/CD · SPECS</div>
+                <h4 class="back-h4">Automated OTP & E2E Testing</h4>
+                <ul class="back-feature-list">
+                  <li><span class="back-icon">✓</span> <strong>One-Call Polling:</strong> <code>/wait</code> API extracts OTPs under 200ms.</li>
+                  <li><span class="back-icon">✓</span> <strong>Playwright & Cypress Ready:</strong> Assert links & HTML emails in CI.</li>
+                  <li><span class="back-icon">✓</span> <strong>Zero Infrastructure:</strong> Auto-expiring disposable mailboxes.</li>
+                  <li><span class="back-icon">✓</span> <strong>Docker & CI Support:</strong> Deterministic email assertions.</li>
+                </ul>
+                <div class="back-cta-wrap">
+                  <a href="/docs" class="btn-flip-cta btn-flip-green">View Docs & CI Setup →</a>
                 </div>
               </div>
             </div>
-            
-            <a href="#test-inboxes-docs" class="card-action-link link-green">→ View docs</a>
           </div>
         </div>
       </div>

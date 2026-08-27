@@ -1,41 +1,130 @@
 ---
-// Announcement bar — blueprint: centered gray strip with red dot + geo-smart leads text
+// Announcement bar — smooth moving ticker notification marquee
 ---
 
-<div class="announce">
-  <div class="announce-inner">
-    <span class="announce-dot" aria-hidden="true"></span>
-    <span class="announce-text">
-      <strong>GEO-smart leads</strong> — every form submission auto-stamped with country, city, region, and timezone.
-    </span>
+<aside class="announce-bar" aria-label="Announcement">
+  <div class="announce-track">
+    <div class="announce-inner">
+      <span class="announce-item">
+        <span class="announce-dot" aria-hidden="true"></span>
+        <span class="announce-tag">LIVE</span>
+        <span class="announce-text"><strong>GEO-smart leads</strong> — every form submission auto-stamped with country, city, region, and timezone.</span>
+      </span>
+      <span class="announce-item">
+        <span class="announce-dot" aria-hidden="true"></span>
+        <span class="announce-tag">AI AGENTS</span>
+        <span class="announce-text"><strong>Agent Mailboxes</strong> — programmatic OTP reading &amp; automated email verification in CI.</span>
+      </span>
+      <span class="announce-item">
+        <span class="announce-dot" aria-hidden="true"></span>
+        <span class="announce-tag">ZERO CONFIG</span>
+        <span class="announce-text"><strong>Multi-Tenant SMTP</strong> — send from your custom domain with automatic DKIM &amp; SPF.</span>
+      </span>
+    </div>
+    <div class="announce-inner" aria-hidden="true">
+      <span class="announce-item">
+        <span class="announce-dot" aria-hidden="true"></span>
+        <span class="announce-tag">LIVE</span>
+        <span class="announce-text"><strong>GEO-smart leads</strong> — every form submission auto-stamped with country, city, region, and timezone.</span>
+      </span>
+      <span class="announce-item">
+        <span class="announce-dot" aria-hidden="true"></span>
+        <span class="announce-tag">AI AGENTS</span>
+        <span class="announce-text"><strong>Agent Mailboxes</strong> — programmatic OTP reading &amp; automated email verification in CI.</span>
+      </span>
+      <span class="announce-item">
+        <span class="announce-dot" aria-hidden="true"></span>
+        <span class="announce-tag">ZERO CONFIG</span>
+        <span class="announce-text"><strong>Multi-Tenant SMTP</strong> — send from your custom domain with automatic DKIM &amp; SPF.</span>
+      </span>
+    </div>
   </div>
-</div>
+</aside>
 
 <style>
-  .announce {
-    background: #f9f9f9;
-    border-bottom: 1px solid #e5e5e7;
+  .announce-bar {
+    background: #F8FAFC;
+    border-bottom: 1px solid #E2E8F0;
+    padding: 8px 0;
+    font-size: 0.84rem;
+    color: #475569;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
   }
+
+  .announce-track {
+    display: flex;
+    width: max-content;
+    animation: announceMarquee 26s linear infinite;
+  }
+
+  .announce-track:hover {
+    animation-play-state: paused;
+  }
+
+  @keyframes announceMarquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
   .announce-inner {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    height: 36px;
-    font-size: 13px;
-    color: #52525b;
-    padding: 0 28px;
+    gap: 40px;
+    padding: 0 20px;
+    white-space: nowrap;
   }
+
+  .announce-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 450;
+  }
+
   .announce-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #e11d48;
+    background: #EF4444;
+    position: relative;
+    display: inline-block;
     flex-shrink: 0;
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+    animation: pulseDot 2s infinite;
   }
-  .announce-text strong { color: #0a0a0a; }
 
-  @media (max-width: 640px) {
-    .announce-inner { font-size: 12px; }
+  @keyframes pulseDot {
+    0% {
+      box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+    }
+    70% {
+      box-shadow: 0 0 0 7px rgba(239, 68, 68, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+    }
+  }
+
+  .announce-text strong {
+    color: #0F172A;
+    font-weight: 700;
+  }
+
+  .announce-tag {
+    background: #FEF2F2;
+    border: 1px solid #FECACA;
+    color: #DC2626;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 999px;
+    letter-spacing: 0.04em;
   }
 </style>
