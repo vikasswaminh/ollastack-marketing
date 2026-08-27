@@ -18,36 +18,59 @@ const MIME_TYPES = {
   '.svg': 'image/svg+xml',
   '.ico': 'image/x-icon',
   '.woff': 'font/woff',
-  '.woff2': 'font/woff2'
+  '.woff2': 'font/woff2',
+  '.webp': 'image/webp'
 };
 
 const server = http.createServer((req, res) => {
-  let safePath = path.normalize(req.url.split('?')[0]).replace(/^(\.\.[\/\\])+/, '');
-  let filePath = path.join(__dirname, safePath === '/' || safePath === '\\' ? 'index.html' : safePath);
+  let urlPath = req.url.split('?')[0];
+  let safePath = path.normalize(urlPath).replace(/^(\.\.[\/\\])+/, '');
+  if (safePath.startsWith('/') || safePath.startsWith('\\')) {
+    safePath = safePath.slice(1);
+  }
+
+  // Candidate paths to check in order
+  const candidates = [];
   
-  if (!fs.existsSync(filePath)) {
-    const publicPath = path.join(__dirname, 'public', safePath);
-    if (fs.existsSync(publicPath)) {
-      filePath = publicPath;
+  if (!safePath || safePath === '.') {
+    candidates.push(path.join(__dirname, 'dist', 'index.html'));
+    candidates.push(path.join(__dirname, 'index.html'));
+  } else {
+    // 1. Direct dist file
+    candidates.push(path.join(__dirname, 'dist', safePath));
+    // 2. dist directory index.html
+    candidates.push(path.join(__dirname, 'dist', safePath, 'index.html'));
+    // 3. dist html file
+    candidates.push(path.join(__dirname, 'dist', safePath + '.html'));
+    // 4. public file
+    candidates.push(path.join(__dirname, 'public', safePath));
+    // 5. root directory file
+    candidates.push(path.join(__dirname, safePath));
+    // 6. root directory index.html
+    candidates.push(path.join(__dirname, safePath, 'index.html'));
+  }
+
+  let finalPath = null;
+  for (const cand of candidates) {
+    if (fs.existsSync(cand) && fs.statSync(cand).isFile()) {
+      finalPath = cand;
+      break;
     }
   }
 
-  if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
-    filePath = path.join(filePath, 'index.html');
+  if (!finalPath) {
+    res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end('<h1>404 Not Found</h1><p>Route ' + req.url + ' not found.</p><a href="/">Return Home</a>');
+    return;
   }
 
-  const extname = String(path.extname(filePath)).toLowerCase();
+  const extname = String(path.extname(finalPath)).toLowerCase();
   const contentType = MIME_TYPES[extname] || 'application/octet-stream';
 
-  fs.readFile(filePath, (error, content) => {
+  fs.readFile(finalPath, (error, content) => {
     if (error) {
-      if (error.code === 'ENOENT') {
-        res.writeHead(404, { 'Content-Type': 'text/plain' });
-        res.end('404 Not Found: ' + req.url);
-      } else {
-        res.writeHead(500);
-        res.end('Server Error: ' + error.code);
-      }
+      res.writeHead(500, { 'Content-Type': 'text/plain' });
+      res.end('Server Error: ' + error.code);
     } else {
       res.writeHead(200, { 'Content-Type': contentType });
       res.end(content);
