@@ -714,19 +714,63 @@ const categories = [
   .hero-featured-card {
     background: #ffffff;
     border: 2px solid #f59e0b;
-    border-radius: 16px;
+    border-radius: 18px;
     overflow: hidden;
-    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.08);
-    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.09);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     display: block;
     text-decoration: none;
     color: inherit;
+    position: relative;
+    isolation: isolate;
+    cursor: pointer;
+  }
+
+  .hero-featured-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle 280px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(245, 158, 11, 0.14) 0%, transparent 80%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .hero-featured-card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -120%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
+    transform: skewX(-20deg);
+    pointer-events: none;
+    z-index: 3;
+    transition: none;
   }
 
   .hero-featured-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(245, 158, 11, 0.18);
+    transform: translateY(-4px) scale(1.005);
+    box-shadow: 0 16px 36px -4px rgba(245, 158, 11, 0.22), 0 0 0 1.5px rgba(245, 158, 11, 0.65);
     border-color: #d97706;
+  }
+
+  .hero-featured-card:hover::before {
+    opacity: 1;
+  }
+
+  .hero-featured-card:hover::after {
+    animation: cardLightSweep 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .hero-featured-card:active {
+    transform: scale(0.98) translateY(1px);
+    box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3), 0 0 0 4px rgba(234, 88, 12, 0.45) !important;
+    border-color: #ea580c !important;
+    transition: all 0.08s ease;
   }
 
   .hero-card-grid {
@@ -745,11 +789,12 @@ const categories = [
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.35s ease;
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s ease;
   }
 
   .hero-featured-card:hover .hero-thumb-img {
-    transform: scale(1.03);
+    transform: scale(1.06);
+    filter: brightness(1.05) contrast(1.05);
   }
 
   .hero-content-pane {
@@ -757,6 +802,8 @@ const categories = [
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    position: relative;
+    z-index: 1;
   }
 
   .hero-tags-row {
@@ -771,6 +818,11 @@ const categories = [
     font-weight: 700;
     padding: 3px 10px;
     border-radius: 6px;
+    transition: transform 0.2s ease;
+  }
+
+  .hero-featured-card:hover .tag-badge {
+    transform: translateY(-1px);
   }
 
   .tag-forms { background: #ea580c; color: #ffffff; }
@@ -783,7 +835,7 @@ const categories = [
     letter-spacing: -0.025em;
     color: #0f172a;
     margin: 0 0 10px;
-    transition: color 0.15s ease;
+    transition: color 0.18s ease;
   }
 
   .hero-featured-card:hover .hero-title {
@@ -812,6 +864,12 @@ const categories = [
     display: inline-flex;
     align-items: center;
     gap: 4px;
+    transition: gap 0.2s ease, transform 0.2s ease;
+  }
+
+  .hero-featured-card:hover .hero-meta-row .read-more {
+    gap: 8px;
+    transform: translateX(2px);
   }
 
   /* 2. THREE-CARDS ROW (GOLDEN AMBER BORDERS) */
@@ -824,27 +882,73 @@ const categories = [
   .card-amber-outline {
     background: #ffffff;
     border: 2px solid #f59e0b;
-    border-radius: 16px;
-    padding: 22px 20px;
+    border-radius: 18px;
+    padding: 24px 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.06);
-    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.08);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     text-decoration: none;
     color: inherit;
     min-height: 240px;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .card-amber-outline::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle 220px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(245, 158, 11, 0.14) 0%, transparent 80%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .card-amber-outline::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -120%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.45) 50%, transparent 100%);
+    transform: skewX(-20deg);
+    pointer-events: none;
+    z-index: 3;
   }
 
   .card-amber-outline:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 22px rgba(245, 158, 11, 0.16);
+    transform: translateY(-5px) scale(1.008);
+    box-shadow: 0 16px 32px -4px rgba(245, 158, 11, 0.22), 0 0 0 1.5px rgba(245, 158, 11, 0.65);
     border-color: #d97706;
+  }
+
+  .card-amber-outline:hover::before {
+    opacity: 1;
+  }
+
+  .card-amber-outline:hover::after {
+    animation: cardLightSweep 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .card-amber-outline:active {
+    transform: scale(0.975) translateY(1px);
+    box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3), 0 0 0 4px rgba(234, 88, 12, 0.45) !important;
+    border-color: #ea580c !important;
+    transition: all 0.08s ease;
   }
 
   .card-top-content {
     display: flex;
     flex-direction: column;
+    position: relative;
+    z-index: 1;
   }
 
   .card-category-badge {
@@ -857,6 +961,12 @@ const categories = [
     background: #ea580c;
     color: #ffffff;
     margin-bottom: 12px;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+
+  .card-amber-outline:hover .card-category-badge {
+    transform: translateY(-1px);
+    background: #c2410c;
   }
 
   .card-title-3row {
@@ -866,7 +976,7 @@ const categories = [
     letter-spacing: -0.015em;
     color: #0f172a;
     margin: 0 0 10px;
-    transition: color 0.15s ease;
+    transition: color 0.18s ease;
   }
 
   .card-amber-outline:hover .card-title-3row {
@@ -889,6 +999,35 @@ const categories = [
     font-weight: 600;
     color: #94a3b8;
     margin-top: auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Keyframe Animations */
+  @keyframes cardLightSweep {
+    0% { left: -120%; }
+    100% { left: 160%; }
+  }
+
+  @keyframes rippleShockwave {
+    0% {
+      transform: scale(0);
+      opacity: 0.7;
+    }
+    100% {
+      transform: scale(3.5);
+      opacity: 0;
+    }
+  }
+
+  :global(.card-click-ripple) {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.45) 0%, rgba(234, 88, 12, 0.25) 50%, transparent 80%);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    animation: rippleShockwave 0.55s ease-out forwards;
+    z-index: 10;
   }
 
   /* 3. ALL PUBLICATIONS HIGHLIGHTED CONTAINER */
@@ -1457,6 +1596,43 @@ const categories = [
         updateFeed();
       });
     }
+
+    // Interactive dynamic mouse spotlight & click shockwave ripple for blog cards
+    const interactiveCards = document.querySelectorAll<HTMLElement>(
+      ".hero-featured-card, .card-amber-outline, .pub-card"
+    );
+
+    interactiveCards.forEach((card) => {
+      // Dynamic mouse follow glare
+      card.addEventListener("mousemove", (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty("--mouse-x", `${x}px`);
+        card.style.setProperty("--mouse-y", `${y}px`);
+      });
+
+      // Click shockwave particle ripple
+      card.addEventListener("pointerdown", (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const ripple = document.createElement("span");
+        ripple.className = "card-click-ripple";
+        const size = Math.max(rect.width, rect.height) * 1.5;
+        ripple.style.width = `${size}px`;
+        ripple.style.height = `${size}px`;
+        ripple.style.left = `${x}px`;
+        ripple.style.top = `${y}px`;
+
+        card.appendChild(ripple);
+
+        setTimeout(() => {
+          ripple.remove();
+        }, 600);
+      });
+    });
 
     // Initial run
     updateFeed();
