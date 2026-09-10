@@ -451,6 +451,10 @@ const categories = [
             </li>
           ))}
         </ul>
+
+        <div class="sidebar-footer-link">
+          <a href="#all-articles-section" class="view-all-link view-all-purple">View All →</a>
+        </div>
       </aside>
 
     </div>
@@ -529,24 +533,24 @@ const categories = [
   .col-sidebar {
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 20px 16px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    border-radius: 20px;
+    padding: 24px 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
     position: sticky;
     top: 90px;
   }
 
   .sidebar-badge-wrap {
-    margin-bottom: 16px;
+    margin-bottom: 20px;
   }
 
   .pill-badge {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 14px;
+    padding: 7px 16px;
     border-radius: 9999px;
-    font-size: 11px;
+    font-size: 11.5px;
     font-weight: 800;
     letter-spacing: 0.05em;
     text-transform: uppercase;
@@ -568,20 +572,30 @@ const categories = [
   .sidebar-link-list {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 18px;
     list-style: none;
     padding: 0;
     margin: 0;
   }
 
   .side-link {
-    font-size: 13.5px;
+    font-size: 14.5px;
     font-weight: 600;
     line-height: 1.45;
     color: #334155;
     display: block;
     text-decoration: none;
     transition: all 0.15s ease;
+  }
+
+  .sidebar-left .sidebar-link-item:first-child .side-link {
+    color: #c2410c;
+    font-weight: 700;
+  }
+
+  .sidebar-right .sidebar-link-item:first-child .side-link {
+    color: #7c3aed;
+    font-weight: 700;
   }
 
   .side-link:hover {
@@ -594,7 +608,7 @@ const categories = [
   }
 
   .sidebar-footer-link {
-    margin-top: 18px;
+    margin-top: 20px;
     padding-top: 14px;
     border-top: 1px dashed #e2e8f0;
   }
@@ -607,6 +621,15 @@ const categories = [
     align-items: center;
     gap: 4px;
     text-decoration: none;
+    transition: gap 0.15s ease;
+  }
+
+  .view-all-link:hover {
+    gap: 7px;
+  }
+
+  .view-all-purple {
+    color: #7c3aed;
   }
 
   /* Center Column */

@@ -168,21 +168,21 @@ const articleLd = {
     </article>
 
     <aside class="right-rail" aria-label="Agent Workflows">
-      <div class="workflows-card">
+      <div class="col-sidebar sidebar-right">
         <div class="sidebar-badge-wrap">
           <div class="pill-badge pill-purple">
             <span>🤖 AGENT WORKFLOWS</span>
           </div>
         </div>
         <ul class="sidebar-link-list">
-          {agentWorkflows.map((guide) => (
+          {agentWorkflows.map((guide, idx) => (
             <li class="sidebar-link-item">
-              <a href={`/blog/${guide.slug}`} class="side-link">{guide.title}</a>
+              <a href={`/blog/${guide.slug}`} class={`side-link ${idx === 0 ? 'highlight-first' : ''} ${slug === guide.slug ? 'active-guide' : ''}`}>{guide.title}</a>
             </li>
           ))}
         </ul>
         <div class="sidebar-footer-link">
-          <a href="/blog#all-articles-section" class="view-all-link">View All Guides →</a>
+          <a href="/blog#all-articles-section" class="view-all-link">View All →</a>
         </div>
       </div>
     </aside>
@@ -245,11 +245,11 @@ const articleLd = {
 <style>
   .blog-shell {
     display: grid;
-    grid-template-columns: 260px minmax(0, 1fr) 260px;
-    gap: 36px;
+    grid-template-columns: 280px minmax(0, 1fr) 280px;
+    gap: 32px;
     max-width: 1560px;
     margin: 0 auto;
-    padding: 40px 20px 96px;
+    padding: 36px 20px 96px;
     align-items: start;
     width: 100%;
     box-sizing: border-box;
@@ -657,30 +657,24 @@ const articleLd = {
     align-self: start;
     display: flex;
     flex-direction: column;
-    max-height: calc(100vh - 100px);
   }
-  .workflows-card {
+  .right-rail .col-sidebar {
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 18px 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-    max-height: calc(100vh - 100px);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+    border-radius: 20px;
+    padding: 24px 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
   }
   .sidebar-badge-wrap {
-    margin-bottom: 14px;
-    flex-shrink: 0;
+    margin-bottom: 20px;
   }
   .pill-badge {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 5px 12px;
+    padding: 7px 16px;
     border-radius: 9999px;
-    font-size: 11px;
+    font-size: 11.5px;
     font-weight: 800;
     letter-spacing: 0.05em;
     text-transform: uppercase;
@@ -694,30 +688,19 @@ const articleLd = {
   .sidebar-link-list {
     display: flex;
     flex-direction: column;
-    gap: 13px;
+    gap: 18px;
     list-style: none;
-    padding: 0 4px 0 0;
+    padding: 0;
     margin: 0;
-    overflow-y: auto;
-  }
-  .sidebar-link-list::-webkit-scrollbar {
-    width: 4px;
-  }
-  .sidebar-link-list::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  .sidebar-link-list::-webkit-scrollbar-thumb {
-    background: #e2e8f0;
-    border-radius: 4px;
   }
   .sidebar-link-item {
     margin: 0;
     padding: 0;
   }
   .side-link {
-    font-size: 13px;
+    font-size: 14.5px;
     font-weight: 600;
-    line-height: 1.4;
+    line-height: 1.45;
     color: #334155 !important;
     display: block;
     text-decoration: none !important;
@@ -728,20 +711,27 @@ const articleLd = {
     color: #7c3aed !important;
     transform: translateX(2px);
   }
+  .side-link.highlight-first {
+    color: #7c3aed !important;
+    font-weight: 700;
+  }
+  .side-link.active-guide {
+    color: #7c3aed !important;
+    font-weight: 800;
+  }
   .sidebar-footer-link {
-    margin-top: 14px;
-    padding-top: 10px;
+    margin-top: 20px;
+    padding-top: 14px;
     border-top: 1px dashed #e2e8f0;
-    flex-shrink: 0;
   }
   .view-all-link {
-    font-size: 12px;
+    font-size: 12.5px;
     font-weight: 700;
     color: #7c3aed !important;
-    text-decoration: none !important;
     display: inline-flex;
     align-items: center;
     gap: 4px;
+    text-decoration: none !important;
     transition: gap 0.15s ease;
   }
   .view-all-link:hover {
