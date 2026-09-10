@@ -664,6 +664,21 @@ const articleLd = {
     border-radius: 20px;
     padding: 24px 20px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    max-height: calc(100vh - 110px);
+    overflow-y: auto;
+  }
+  .right-rail .col-sidebar::-webkit-scrollbar {
+    width: 4px;
+  }
+  .right-rail .col-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .right-rail .col-sidebar::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 4px;
+  }
+  .right-rail .col-sidebar:hover::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
   }
   .sidebar-badge-wrap {
     margin-bottom: 20px;
