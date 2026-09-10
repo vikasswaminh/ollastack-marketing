@@ -22,13 +22,15 @@ function getPostCategory(slug: string, title = ""): { category: string; category
     s === "agent-email-identity" ||
     s === "form-backend-for-ai-agents" ||
     s === "can-ai-agents-submit-forms-safely" ||
+    s === "how-to-build-ai-ready-forms-for-autonomous-agents" ||
+    s === "what-is-an-agent-email-api" ||
     s.includes("ai-agent") ||
     s.includes("agent")
   ) {
     return { category: "AI Agents", categorySlug: "ai-agents", icon: "🤖" };
   }
 
-  // 4. Email Testing
+  // 2. Email Testing
   if (
     s === "how-to-automate-otp-email-testing-in-ci-cd-pipelines" ||
     s === "test-inbox-docker" ||
@@ -42,7 +44,7 @@ function getPostCategory(slug: string, title = ""): { category: string; category
     return { category: "Email Testing", categorySlug: "email-testing", icon: "✉️" };
   }
 
-  // 8. Comparisons
+  // 3. Comparisons
   if (
     s === "agentmail-alternative" ||
     s === "mailosaur-alternative" ||
@@ -52,13 +54,15 @@ function getPostCategory(slug: string, title = ""): { category: string; category
     s === "formspree-vs-netlify-forms" ||
     s === "basin-vs-web3forms" ||
     s === "forminit-alternatives" ||
+    s === "mailosaur-vs-mailinator-vs-disposable-inboxes" ||
+    s === "self-host-vs-hosted-form-backend" ||
     s.includes("-vs-") ||
     (s.includes("alternative") && !s.includes("migrate"))
   ) {
     return { category: "Comparisons", categorySlug: "comparisons", icon: "⚖️" };
   }
 
-  // 9. Migrations
+  // 4. Migrations
   if (
     s === "migrate-from-getform" ||
     s === "migrate-from-basin" ||
@@ -73,7 +77,7 @@ function getPostCategory(slug: string, title = ""): { category: string; category
     return { category: "Migrations", categorySlug: "migrations", icon: "🚀" };
   }
 
-  // 10. Integrations
+  // 5. Integrations
   if (
     s === "form-webhooks-guide" ||
     s === "remix-form-quickstart" ||
@@ -82,6 +86,8 @@ function getPostCategory(slug: string, title = ""): { category: string; category
     s === "sveltekit-form-quickstart" ||
     s === "astro-form-quickstart" ||
     s === "nextjs-quickstart-hosted-form" ||
+    s === "how-to-connect-a-contact-form-to-email-without-backend-code" ||
+    s === "how-to-build-a-form-backend-for-a-static-site-without-writing-a-server" ||
     s.includes("quickstart") ||
     s.includes("hook-form") ||
     s.includes("webhooks") ||
@@ -100,9 +106,9 @@ function getPostCategory(slug: string, title = ""): { category: string; category
     s.includes("smtp") ||
     s.includes("dkim") ||
     s.includes("bounce") ||
-    s.includes("sender-domain")
+    s.includes("custom-sender")
   ) {
-    return { category: "Deliverability", categorySlug: "deliverability", icon: "🛡️" };
+    return { category: "Deliverability", categorySlug: "deliverability", icon: "📬" };
   }
 
   // 7. Security
@@ -111,1031 +117,1200 @@ function getPostCategory(slug: string, title = ""): { category: string; category
     s === "ml-quarantine-explained" ||
     s.includes("security") ||
     s.includes("quarantine") ||
-    s.includes("ddos") ||
-    s.includes("privacy")
+    s.includes("honeypot") ||
+    s.includes("captcha")
   ) {
-    return { category: "Security", categorySlug: "security", icon: "🔒" };
+    return { category: "Security", categorySlug: "security", icon: "🛡️" };
   }
 
-  // 5. Developers
-  if (
-    s === "nodejs-email-api" ||
-    s === "python-email-api" ||
-    s.startsWith("send-email-") ||
-    s.includes("send-email") ||
-    s.includes("python-send") ||
-    s.includes("curl")
-  ) {
-    return { category: "Developers", categorySlug: "developers", icon: "💻" };
-  }
-
-  // 2. Email API
-  if (
-    s === "best-email-api" ||
-    s === "inbound-email-api" ||
-    s === "email-inbox-api" ||
-    s.includes("free-email-api") ||
-    s.includes("email-api") ||
-    s.includes("free-otp-email") ||
-    s.includes("email-scaling")
-  ) {
-    return { category: "Email API", categorySlug: "email-api", icon: "⚡" };
-  }
-
-  // 3. Forms
-  return { category: "Forms", categorySlug: "forms", icon: "📋" };
+  // 8. Forms / General
+  return { category: "Forms", categorySlug: "forms", icon: "⚡" };
 }
 
-// Markdown collection posts
-const rawCollection = await getCollection("blog", ({ data }) => data.draft !== true);
-const collectionPosts = rawCollection
-  .filter(
-    (p) =>
-      p.slug !== "how-to-build-a-form-backend-for-a-static-site-without-writing-a-server" &&
-      p.slug !== "how-to-build-a-form-backend-for-a-static-site"
-  )
-  .map((p) => {
-    const cat = getPostCategory(p.slug, p.data.title || "");
-    return {
-      slug: p.slug,
-      title: p.data.title,
-      description: p.data.description,
-      date: p.data.date.toISOString().slice(0, 10),
-      readingTime: `${p.data.readingTime} min read`,
-      category: cat.category,
-      categorySlug: cat.categorySlug,
-      icon: cat.icon,
-      tags: p.data.tags || [],
-    };
-  });
+// 1. Fetch content collection posts
+const rawContentPosts = await getCollection("blog");
 
-const postMap = new Map();
-collectionPosts.forEach((p) => postMap.set(p.slug, p));
-legacyPosts.forEach((p) => {
-  const cat = getPostCategory(p.slug, p.title || "");
-  postMap.set(p.slug, {
-    ...p,
-    category: cat.category,
-    categorySlug: cat.categorySlug,
-    icon: cat.icon,
-  });
+const contentPosts = rawContentPosts.map((entry) => {
+  const meta = getPostCategory(entry.slug, entry.data.title);
+  return {
+    slug: entry.slug,
+    title: entry.data.title,
+    description: entry.data.description,
+    date: entry.data.pubDate ? entry.data.pubDate.toISOString().slice(0, 10) : "2026-08-01",
+    readingTime: entry.data.readingTime || "8 min read",
+    category: meta.category,
+    categorySlug: meta.categorySlug,
+    icon: meta.icon,
+  };
 });
 
-const posts = Array.from(postMap.values()).sort((a, b) =>
-  b.date.localeCompare(a.date)
+// 2. Fetch legacy posts
+const mappedLegacyPosts = (legacyPosts || []).map((p: any) => {
+  const meta = getPostCategory(p.slug, p.title);
+  return {
+    slug: p.slug,
+    title: p.title,
+    description: p.description,
+    date: p.date,
+    readingTime: p.readingTime || "7 min read",
+    category: meta.category,
+    categorySlug: meta.categorySlug,
+    icon: meta.icon,
+  };
+});
+
+// Merge and deduplicate by slug
+const allPostsMap = new Map<string, any>();
+for (const p of [...contentPosts, ...mappedLegacyPosts]) {
+  if (!allPostsMap.has(p.slug)) {
+    allPostsMap.set(p.slug, p);
+  }
+}
+
+const posts = Array.from(allPostsMap.values()).sort(
+  (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
 );
 
-const CATEGORY_LIST = [
-  { slug: "all", name: "All Articles", icon: "⚡" },
-  { slug: "ai-agents", name: "AI Agents", icon: "🤖" },
-  { slug: "email-api", name: "Email API", icon: "⚡" },
-  { slug: "forms", name: "Forms", icon: "📋" },
-  { slug: "email-testing", name: "Email Testing", icon: "✉️" },
-  { slug: "developers", name: "Developers", icon: "💻" },
-  { slug: "deliverability", name: "Deliverability", icon: "🛡️" },
-  { slug: "security", name: "Security", icon: "🔒" },
-  { slug: "comparisons", name: "Comparisons", icon: "⚖️" },
-  { slug: "migrations", name: "Migrations", icon: "🚀" },
-  { slug: "integrations", name: "Integrations", icon: "🔌" },
+// Curated lists for sidebars matching the reference picture
+const essentialGuides = [
+  { title: "What Is a Headless Form? A Simple Guide to Modern Developers", slug: "what-is-a-headless-form-a-simple-guide-to-modern-developers" },
+  { title: "How to Build AI-Ready Forms for Autonomous Agents", slug: "how-to-build-ai-ready-forms-for-autonomous-agents" },
+  { title: "Mailosaur vs Mailinator vs Disposable Inboxes: Which Is Best for QA Testing in 2026", slug: "mailosaur-vs-mailinator-vs-disposable-inboxes" },
+  { title: "Self-Host vs Hosted Form Backend: Complete 2026 Decision Framework", slug: "self-host-vs-hosted-form-backend" },
+  { title: "How to Connect a Contact Form to Email Without Backend Code (2026 Guide)", slug: "how-to-connect-a-contact-form-to-email-without-backend-code" },
+  { title: "What Is an Agent Email API and Why Does It Matter for AI Workflows?", slug: "what-is-an-agent-email-api" },
+  { title: "How to Automate OTP Email Testing in CI/CD Pipelines", slug: "how-to-automate-otp-email-testing-in-ci-cd-pipelines" },
+  { title: "Welcome to the OllaStack blog", slug: "welcome-to-the-blog" },
+  { title: "Getting started with OllaStack", slug: "getting-started" },
+  { title: "How to Build a Form Backend for a Static Site Without Writing a Server", slug: "how-to-build-a-form-backend-for-a-static-site-without-writing-a-server" },
+  { title: "Form design for higher conversions (and less spam)", slug: "form-design-conversion" },
+  { title: "Test email in Docker and CI with a disposable inbox", slug: "test-inbox-docker" },
+  { title: "Assert on email in Playwright and Cypress", slug: "assert-on-email-in-playwright-cypress" },
+  { title: "Email testing API: assert on real emails in CI", slug: "email-testing-api-for-ci" },
+  { title: "Per-tenant SMTP: send from each customer's own server", slug: "per-tenant-smtp-guide" },
 ];
 
-const categoriesWithCounts = CATEGORY_LIST.map((c) => ({
-  ...c,
-  count: c.slug === "all" ? posts.length : posts.filter((p) => p.categorySlug === c.slug).length,
-}));
+const agentWorkflows = [
+  { title: "How to Build AI-Ready Forms for Autonomous Agents", slug: "how-to-build-ai-ready-forms-for-autonomous-agents" },
+  { title: "Mailosaur vs Mailinator vs Disposable Inboxes: Which Is Best for QA Testing in 2026", slug: "mailosaur-vs-mailinator-vs-disposable-inboxes" },
+  { title: "How to Connect a Contact Form to Email Without Backend Code (2026 Guide)", slug: "how-to-connect-a-contact-form-to-email-without-backend-code" },
+  { title: "What Is an Agent Email API and Why Does It Matter for AI Workflows?", slug: "what-is-an-agent-email-api" },
+  { title: "Form Backend vs Form Builder: What Developers Should Choose in 2026", slug: "form-backend-vs-form-builder" },
+  { title: "How to Automate OTP Email Testing in CI/CD Pipelines", slug: "how-to-automate-otp-email-testing-in-ci-cd-pipelines" },
+  { title: "Test email in Docker and CI with a disposable inbox", slug: "test-inbox-docker" },
+  { title: "Can AI Agents Submit Forms Safely? Here's What Developers Need to Know", slug: "can-ai-agents-submit-forms-safely" },
+  { title: "Assert on email in Playwright and Cypress", slug: "assert-on-email-in-playwright-cypress" },
+  { title: "Email testing API: assert on real emails in CI", slug: "email-testing-api-for-ci" },
+  { title: "How to read an OTP / verification code in an AI agent", slug: "read-otp-verification-code-in-ai-agent" },
+  { title: "Build an AI agent that sends and receives email (with MCP)", slug: "build-ai-agent-that-sends-and-receives-email" },
+  { title: "Email for AI agents: give an agent its own inbox", slug: "email-for-ai-agents" },
+  { title: "ML spam quarantine, and why a form backend should fail open", slug: "ml-quarantine-explained" },
+  { title: "AgentMail alternative: agent email + forms + testing", slug: "agentmail-alternative" },
+];
 
-const popularTopics = [
-  "Playwright", "Cypress", "OTP", "AI Agents", "Security", "Static Sites", "Webhooks", "FastAPI", "React", "Next.js"
+const categories = [
+  { name: "All", slug: "all" },
+  { name: "Forms", slug: "forms" },
+  { name: "AI Agents", slug: "ai-agents" },
+  { name: "Email Testing", slug: "email-testing" },
+  { name: "Integrations", slug: "integrations" },
+  { name: "Comparisons", slug: "comparisons" },
+  { name: "Deliverability", slug: "deliverability" },
 ];
 ---
 
 <Base
-  title="Engineering Blog & Guides — Ollastack"
-  description="Deep-dives, architecture guides, and production playbooks for AI agents, email verification, and form backends."
+  title="Engineering Blog & Developer Playbooks — Ollastack"
+  description="Technical deep-dives, architectural guides, and developer playbooks on AI agent forms, disposable test inboxes, programmatic email APIs, and webhook reliability."
   current="blog"
 >
-  <div class="blog-page-container">
-    
-    <!-- Hero Atmospheric Header -->
-    <header class="blog-header-banner">
-      <div class="banner-ambient-glow" aria-hidden="true"></div>
-      <div class="container-wide header-content-wrapper">
-        <div class="header-inner">
-          <div class="blog-pill-badge mono">
-            <span class="pulse-dot"></span>
-            <span>ENGINEERING BLOG &amp; PLAYBOOKS</span>
-          </div>
-          <h1 class="page-title">Notes from building the message layer for AI agents.</h1>
-          <p class="page-description">
-            Practical pieces on shipping forms, automated email verification in CI, and handling traffic an AI agent actually wants to talk to.
-          </p>
-        </div>
-      </div>
-    </header>
+  <!-- TOP RED SOCIAL PROOF BANNER -->
+  <div class="red-social-bar">
+    <div class="red-bar-inner">
+      <div class="social-item"><span>👤 Developer-First Infrastructure</span></div>
+      <span class="social-dot">•</span>
+      <div class="social-item"><span class="star-gold">4.9★</span> <span>Developer Rating (1,173)</span></div>
+      <span class="social-dot">•</span>
+      <div class="social-item"><span class="star-gold">99.99%</span> <span>Global SLA Uptime</span></div>
+      <span class="social-dot">•</span>
+      <div class="social-item"><span>🤖 MCP Agent Compatible</span></div>
+      <span class="social-dot">•</span>
+      <div class="social-item"><span>10M+ Form Submissions</span></div>
+      <span class="social-dot">•</span>
+      <div class="social-item"><span>SOC2 Type II Certified</span></div>
+      <span class="social-dot">•</span>
+      <div class="social-item"><span>Playwright &amp; Cypress CI</span></div>
+    </div>
+  </div>
 
-    <!-- Two-Column Layout Container -->
-    <div class="container-wide blog-main-layout">
+  <!-- MAIN 3-COLUMN MAGAZINE SECTION (EXACT REFERENCE LAYOUT) -->
+  <main class="blog-main-wrapper">
+    <div class="magazine-grid">
       
-      <!-- ============ LEFT SIDEBAR: 10 CATEGORIES & SEARCH ============ -->
-      <aside class="blog-sidebar-left">
-        <div class="sidebar-sticky-inner">
-          
-          <!-- Search Card -->
-          <div class="sidebar-search-card">
-            <div class="search-input-wrapper">
-              <svg class="search-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              </svg>
-              <input
-                type="text"
-                id="blog-search"
-                placeholder="Search articles by keyword..."
-                aria-label="Search articles"
-                class="sidebar-search-input"
-              />
-              <button type="button" id="sidebar-clear-search" class="clear-search-x" aria-label="Clear search" style="display: none;">✕</button>
-            </div>
+      <!-- ================= LEFT COLUMN: ESSENTIAL GUIDES ================= -->
+      <aside class="col-sidebar sidebar-left" aria-label="Essential Guides">
+        <div class="sidebar-badge-wrap">
+          <div class="pill-badge pill-orange">
+            <span>⚡ ESSENTIAL GUIDES</span>
           </div>
+        </div>
 
-          <!-- Category Navigation Card -->
-          <div class="sidebar-card">
-            <div class="sidebar-card-header">
-              <span class="sidebar-eyebrow mono">EXPLORE TRACKS</span>
-              <span class="sidebar-tracks-count mono">{categoriesWithCounts.length - 1} tracks</span>
-            </div>
+        <ul class="sidebar-link-list">
+          {essentialGuides.map((guide) => (
+            <li class="sidebar-link-item">
+              <a href={`/blog/${guide.slug}`} class="side-link">{guide.title}</a>
+            </li>
+          ))}
+        </ul>
 
-            <nav class="sidebar-cat-nav" role="tablist" aria-label="Blog categories">
-              {categoriesWithCounts.map((cat, idx) => (
-                <button
-                  type="button"
-                  role="tab"
-                  class={`sidebar-cat-btn ${idx === 0 ? "active" : ""}`}
-                  data-category={cat.slug}
-                  data-name={cat.name}
-                  aria-selected={idx === 0 ? "true" : "false"}
-                >
-                  <div class="cat-left">
-                    <span class={`cat-icon-box box-${cat.slug}`}>{cat.icon}</span>
-                    <span class="cat-title-text">{cat.name}</span>
-                  </div>
-                  <span class="cat-badge-count mono">{cat.count}</span>
-                </button>
-              ))}
-            </nav>
-          </div>
-
-          <!-- Popular Topics / Tags Card -->
-          <div class="sidebar-card">
-            <div class="sidebar-card-header">
-              <span class="sidebar-eyebrow mono">POPULAR TOPICS</span>
-            </div>
-            <div class="topics-tags-cloud">
-              {popularTopics.map((topic) => (
-                <button type="button" class="topic-tag-btn mono" data-topic={topic.toLowerCase()}>
-                  #{topic}
-                </button>
-              ))}
-            </div>
-          </div>
-
+        <div class="sidebar-footer-link">
+          <a href="#all-articles-section" class="view-all-link">View All →</a>
         </div>
       </aside>
 
-      <!-- ============ RIGHT CONTENT: BLOG POSTS LIST ============ -->
-      <main class="blog-content-right">
+      <!-- ================= CENTER COLUMN: MAIN FEED ================= -->
+      <section class="col-center-main" aria-label="Main Feed">
         
-        <!-- Section Title & Meta Header -->
-        <div class="feed-header-bar">
-          <div class="feed-title-wrap">
-            <div class="feed-title-with-pill">
-              <h2 class="feed-current-title" id="current-category-name">All Articles</h2>
-              <span class="feed-count-tag mono" id="feed-articles-count">{posts.length} articles</span>
+        <!-- Main Heading -->
+        <div class="center-heading-box">
+          <h1 class="center-main-title">Notes from building the message layer for AI agents .</h1>
+          <p class="center-sub-title">
+            Practical pieces on shipping forms, automated email verification in CI, and handling traffic an AI agent actually wants to talk to.
+          </p>
+        </div>
+
+        <!-- Newest Articles Pill Bar -->
+        <div class="newest-tab-bar">
+          <span class="pill-newest-badge">
+            <span>🔥</span>
+            <span>NEWEST ARTICLES</span>
+          </span>
+          <span class="newest-subtext">Latest from our engineering team</span>
+        </div>
+
+        <!-- 1. HERO FEATURED ARTICLE (GOLDEN / AMBER BORDER) -->
+        <a href="/blog/what-is-a-headless-form-a-simple-guide-to-modern-developers" class="hero-featured-card" aria-label="Read What Is a Headless Form?">
+          <div class="hero-card-grid">
+            <div class="hero-image-pane">
+              <img
+                src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=700&q=80"
+                alt="Code editor and terminal workflow"
+                class="hero-thumb-img"
+                loading="eager"
+              />
+            </div>
+            <div class="hero-content-pane">
+              <div>
+                <div class="hero-tags-row">
+                  <span class="tag-badge tag-forms">Forms</span>
+                  <span class="tag-badge tag-new">✨ NEW</span>
+                </div>
+                <h2 class="hero-title">What Is a Headless Form? A Simple Guide to Modern Developers</h2>
+                <p class="hero-excerpt">
+                  A plain English breakdown of headless forms, what they are, how they work, why developers are switching to them, and how they compare to traditional forms and form builders in 2026.
+                </p>
+              </div>
+              <div class="hero-meta-row">
+                <span>23 min read</span>
+                <span>•</span>
+                <span class="read-more">Read article →</span>
+              </div>
             </div>
           </div>
+        </a>
+
+        <!-- 2. THREE-CARDS ROW (GOLDEN / AMBER BORDERS) -->
+        <div class="three-cards-row">
           
-          <div class="feed-active-filter" id="active-filter-indicator" style="display: none;">
-            <span class="filter-msg mono">Filtered: <strong id="filter-term-display"></strong></span>
-            <button type="button" id="clear-all-filter-btn" class="clear-filter-link mono">Reset ✕</button>
+          <!-- Card 1: AI Agents -->
+          <a href="/blog/how-to-build-ai-ready-forms-for-autonomous-agents" class="card-amber-outline">
+            <div class="card-top-content">
+              <span class="card-category-badge">AI Agents</span>
+              <h3 class="card-title-3row">How to Build AI-Ready Forms for Autonomous Agents</h3>
+              <p class="card-excerpt-3row">
+                A practical, developer-focused guide on designing forms that AI agents can fill, validate, and submit reliably, covering schema design, authentication, error handling, and testing.
+              </p>
+            </div>
+            <div class="card-bottom-meta">
+              <span>22 min read</span>
+            </div>
+          </a>
+
+          <!-- Card 2: Comparisons -->
+          <a href="/blog/mailosaur-vs-mailinator-vs-disposable-inboxes" class="card-amber-outline">
+            <div class="card-top-content">
+              <span class="card-category-badge">Comparisons</span>
+              <h3 class="card-title-3row">Mailosaur vs Mailinator vs Disposable Inboxes: Which Is Best for QA Testing in 2026</h3>
+              <p class="card-excerpt-3row">
+                A real-world comparison of Mailosaur, Mailinator and disposable inbox tools for QA testing. Learn which one fits OTP testing, CI pipelines, Playwright, Cypress and automated email verification.
+              </p>
+            </div>
+            <div class="card-bottom-meta">
+              <span>22 min read</span>
+            </div>
+          </a>
+
+          <!-- Card 3: Comparisons -->
+          <a href="/blog/self-host-vs-hosted-form-backend" class="card-amber-outline">
+            <div class="card-top-content">
+              <span class="card-category-badge">Comparisons</span>
+              <h3 class="card-title-3row">Self-Host vs Hosted Form Backend: Complete 2026 Decision Framework</h3>
+              <p class="card-excerpt-3row">
+                Should you build and self-host your own form backend or choose a hosted service? A complete 2026 engineering decision framework covering TCO, deliverability, spam quarantining, AI agent access, compliance, and zero-lock-in architectures.
+              </p>
+            </div>
+            <div class="card-bottom-meta">
+              <span>22 min read</span>
+            </div>
+          </a>
+
+        </div>
+
+        <!-- 3. ALL PUBLICATIONS SECTION WITH PAGE-WISE PAGINATION -->
+        <div class="feed-header-wrap" id="all-articles-section">
+          <h2 class="feed-title">
+            <span>All Publications</span>
+            <span>(</span><span id="feed-count-badge">{posts.length}</span><span>)</span>
+          </h2>
+
+          <div class="search-input-wrap">
+            <svg class="search-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="blog-search-input" class="search-input" placeholder="Search all 51 guides & playbooks..." aria-label="Search articles" />
           </div>
         </div>
 
-        <!-- Blog Cards 2-Column Grid -->
-        <div class="blog-cards-grid" id="blog-posts-list">
-          {posts.map((post, idx) => {
-            const isLatest = idx === 0;
-            return (
-              <article
-                class="blog-card-item"
-                data-category={post.categorySlug}
-                data-title={post.title.toLowerCase()}
-                data-desc={post.description.toLowerCase()}
-              >
-                <a href={`/blog/${post.slug}`} class={`blog-article-card ${isLatest ? "latest-card" : ""}`}>
-                  
-                  <div class="card-inner-top">
-                    <div class="card-head-row">
-                      <span class={`cat-pill pill-${post.categorySlug}`}>
-                        <span class="cat-pill-icon">{post.icon}</span>
-                        <span>{post.category}</span>
-                      </span>
-                      <span class="reading-time mono">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="clock-icon" aria-hidden="true">
-                          <circle cx="12" cy="12" r="10"></circle>
-                          <polyline points="12 6 12 12 16 14"></polyline>
-                        </svg>
-                        {post.readingTime}
-                      </span>
-                    </div>
-
-                    <h3 class="card-article-title">{post.title}</h3>
-                    <p class="card-article-description">{post.description}</p>
-                  </div>
-
-                  <div class="card-footer-row">
-                    <span class="post-date-text mono">
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="date-cal-icon" aria-hidden="true">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                      </svg>
-                      {fmtDate(post.date)}
-                    </span>
-
-                    <span class="read-btn mono">
-                      <span>READ GUIDE</span>
-                      <span class="arrow-glyph">→</span>
-                    </span>
-                  </div>
-
-                </a>
-              </article>
-            );
-          })}
+        <!-- Category Filter Tabs -->
+        <div class="category-filter-bar">
+          {categories.map((cat, idx) => (
+            <button
+              type="button"
+              class={`cat-filter-btn ${idx === 0 ? "active" : ""}`}
+              data-category={cat.name}
+            >
+              {cat.name}
+            </button>
+          ))}
         </div>
 
-        <!-- No Matching Results Message -->
-        <div id="no-posts-found" class="no-posts-box" style="display: none;">
-          <div class="no-posts-icon">🔍</div>
-          <h3>No articles found</h3>
-          <p>No articles matched your search or category filter. Try clearing the search keyword or selecting a different category.</p>
-          <button type="button" id="reset-feed-btn" class="btn btn-primary btn-sm">Show all articles</button>
+        <!-- Publications Grid (Populated dynamically & page-wise) -->
+        <div class="publications-grid" id="publications-grid">
+          {posts.map((post) => (
+            <article
+              class="pub-card post-item-card"
+              data-category={post.category}
+              data-title={post.title.toLowerCase()}
+              data-desc={post.description.toLowerCase()}
+            >
+              <a href={`/blog/${post.slug}`} class="pub-card-link">
+                <div class="pub-card-meta">
+                  <span class="pub-pill">{post.category}</span>
+                  <span class="pub-time">{post.readingTime}</span>
+                </div>
+                <h4 class="pub-title">{post.title}</h4>
+                <p class="pub-desc">{post.description}</p>
+              </a>
+            </article>
+          ))}
         </div>
 
-      </main>
+        <!-- Page Wise Pagination Controls -->
+        <div class="pagination-wrapper" id="pagination-wrapper">
+          <div class="pagination-controls" id="pagination-controls">
+            <!-- Dynamic JS injected page buttons -->
+          </div>
+          <span class="pagination-info" id="pagination-info">
+            Showing 1–6 of {posts.length} articles
+          </span>
+        </div>
+
+      </section>
+
+      <!-- ================= RIGHT COLUMN: AGENT WORKFLOWS ================= -->
+      <aside class="col-sidebar sidebar-right" aria-label="Agent Workflows">
+        <div class="sidebar-badge-wrap">
+          <div class="pill-badge pill-purple">
+            <span>🤖 AGENT WORKFLOWS</span>
+          </div>
+        </div>
+
+        <ul class="sidebar-link-list">
+          {agentWorkflows.map((guide) => (
+            <li class="sidebar-link-item">
+              <a href={`/blog/${guide.slug}`} class="side-link">{guide.title}</a>
+            </li>
+          ))}
+        </ul>
+      </aside>
 
     </div>
-  </div>
+  </main>
+
+  <!-- FLOATING RED CTA BUTTON -->
+  <a href="https://login.ollastack.com/register" target="_blank" class="floating-cta-btn" id="floating-cta-button">
+    <span>✦</span>
+    <span>Start Building Free</span>
+  </a>
 </Base>
 
 <style>
   /* ==========================================================================
-     Ultra-Attractive Two-Column Blog Layout (Categories Left, Posts Right)
+     EXACT 3-COLUMN MAGAZINE LAYOUT & GOLDEN AMBER BORDER CARDS
      ========================================================================== */
-  .blog-page-container {
-    background: #f8fafc;
-    min-height: 100vh;
-    padding-bottom: 120px;
-  }
-
-  /* Header Banner with Ambient Mesh Glow */
-  .blog-header-banner {
-    position: relative;
-    background: #ffffff;
-    border-bottom: 1px solid #e2e8f0;
-    padding: 68px 0 54px;
-    overflow: hidden;
-  }
-
-  .banner-ambient-glow {
-    position: absolute;
-    top: -160px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 780px;
-    height: 360px;
-    background: radial-gradient(circle, rgba(218, 41, 28, 0.08) 0%, rgba(218, 41, 28, 0) 70%);
-    filter: blur(50px);
-    pointer-events: none;
-  }
-
-  .header-content-wrapper {
-    position: relative;
-    z-index: 2;
-  }
-
-  .header-inner {
-    max-width: 860px;
-  }
-
-  .blog-pill-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 11.5px;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    color: #DA291C;
-    background: #fff1f0;
-    border: 1.5px solid #ffccc7;
-    padding: 6px 15px;
-    border-radius: 9999px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(218, 41, 28, 0.06);
-  }
-
-  .pulse-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #DA291C;
-    box-shadow: 0 0 0 3px rgba(218, 41, 28, 0.25);
-  }
-
-  .page-title {
-    font-size: clamp(32px, 4.4vw, 48px);
-    font-weight: 800;
-    line-height: 1.1;
-    letter-spacing: -0.035em;
-    color: #0f172a;
-    margin: 0 0 16px;
-  }
-
-  .page-description {
-    font-size: 18px;
-    line-height: 1.62;
-    color: #475569;
-    margin: 0;
-    max-width: 720px;
-  }
-
-  /* Main Layout Grid */
-  .blog-main-layout {
-    display: grid;
-    grid-template-columns: 290px minmax(0, 1fr);
-    gap: 44px;
-    margin-top: 40px;
-    align-items: start;
-  }
-
-  /* ==========================================================================
-     Left Sidebar: Polished Cards & Navigation
-     ========================================================================== */
-  .blog-sidebar-left {
-    position: sticky;
-    top: 84px;
-  }
-
-  .sidebar-sticky-inner {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .sidebar-search-card {
-    background: #ffffff;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 6px;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.02);
-  }
-
-  /* Search Input */
-  .search-input-wrapper {
-    position: relative;
-    width: 100%;
-  }
-
-  .search-svg {
-    position: absolute;
-    left: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #94a3b8;
-    pointer-events: none;
-  }
-
-  .sidebar-search-input {
-    width: 100%;
-    padding: 10px 34px 10px 38px;
-    font-size: 13.5px;
-    border-radius: 12px;
-    border: 1px solid transparent;
-    background: #f8fafc;
-    color: #0f172a;
-    transition: all 0.2s ease;
-    font-family: inherit;
-  }
-
-  .sidebar-search-input:focus {
-    outline: none;
-    background: #ffffff;
-    border-color: #DA291C;
-    box-shadow: 0 0 0 3px rgba(218, 41, 28, 0.1);
-  }
-
-  .clear-search-x {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: #e2e8f0;
-    border: none;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    font-size: 11px;
-    color: #475569;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.15s ease;
-  }
-
-  .clear-search-x:hover {
-    background: #cbd5e1;
-    color: #0f172a;
-  }
-
-  /* Sidebar Card Container */
-  .sidebar-card {
-    background: #ffffff;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 18px;
-    padding: 18px 16px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
-  }
-
-  .sidebar-card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-    padding: 0 4px;
-  }
-
-  .sidebar-eyebrow {
-    font-size: 10.5px;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    color: #94a3b8;
-    text-transform: uppercase;
-  }
-
-  .sidebar-tracks-count {
-    font-size: 11px;
-    color: #94a3b8;
-  }
-
-  /* Category Navigation Buttons */
-  .sidebar-cat-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .sidebar-cat-btn {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 10px;
-    border-radius: 11px;
-    background: transparent;
-    border: 1px solid transparent;
-    font-size: 13.5px;
-    font-weight: 600;
-    color: #334155;
-    cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    font-family: inherit;
-    text-align: left;
-    width: 100%;
-  }
-
-  .sidebar-cat-btn:hover {
-    background: #f1f5f9;
-    color: #0f172a;
-    transform: translateX(3px);
-  }
-
-  .sidebar-cat-btn.active {
-    background: #DA291C;
-    border-color: #DA291C;
+  
+  /* Top Red Social Proof Banner */
+  .red-social-bar {
+    background: #da291c;
     color: #ffffff;
-    box-shadow: 0 4px 14px rgba(218, 41, 28, 0.28);
-    transform: translateX(3px);
-  }
-
-  .cat-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
-  }
-
-  .cat-icon-box {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 26px;
-    height: 26px;
-    border-radius: 7px;
-    font-size: 13px;
-    background: #f1f5f9;
-    flex-shrink: 0;
-    transition: background 0.15s ease;
-  }
-
-  .sidebar-cat-btn:hover .cat-icon-box {
-    background: #e2e8f0;
-  }
-
-  .sidebar-cat-btn.active .cat-icon-box {
-    background: rgba(255, 255, 255, 0.2);
-  }
-
-  .cat-title-text {
-    white-space: nowrap;
+    padding: 8px 0;
     overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .cat-badge-count {
-    font-size: 11px;
-    font-weight: 700;
-    padding: 1px 7px;
-    border-radius: 9999px;
-    background: #f1f5f9;
-    color: #64748b;
-    flex-shrink: 0;
-  }
-
-  .sidebar-cat-btn:hover .cat-badge-count {
-    background: #e2e8f0;
-    color: #0f172a;
-  }
-
-  .sidebar-cat-btn.active .cat-badge-count {
-    background: rgba(255, 255, 255, 0.25);
-    color: #ffffff;
-  }
-
-  /* Topics Cloud */
-  .topics-tags-cloud {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-
-  .topic-tag-btn {
-    font-size: 11.5px;
-    font-weight: 600;
-    padding: 5px 10px;
-    border-radius: 8px;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    color: #64748b;
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-
-  .topic-tag-btn:hover {
-    border-color: #DA291C;
-    color: #DA291C;
-    background: #fff1f0;
-    transform: translateY(-1px);
-  }
-
-  /* ==========================================================================
-     Right Content: Articles Feed & Modern Cards
-     ========================================================================== */
-  .blog-content-right {
-    min-width: 0;
-  }
-
-  .feed-header-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid #e2e8f0;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .feed-title-with-pill {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .feed-current-title {
-    font-size: 24px;
-    font-weight: 800;
-    color: #0f172a;
-    letter-spacing: -0.025em;
-    margin: 0;
-  }
-
-  .feed-count-tag {
     font-size: 12px;
-    font-weight: 700;
-    color: #64748b;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    padding: 3px 10px;
-    border-radius: 9999px;
-  }
-
-  .feed-active-filter {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 12.5px;
-    color: #64748b;
-    background: #ffffff;
-    padding: 4px 10px;
-    border-radius: 8px;
-    border: 1px solid #e2e8f0;
-  }
-
-  .clear-filter-link {
-    background: #fff1f0;
-    border: 1px solid #ffccc7;
-    color: #DA291C;
-    font-weight: 700;
-    cursor: pointer;
-    border-radius: 4px;
-    padding: 2px 6px;
-    font-size: 11px;
-    transition: all 0.15s ease;
-  }
-
-  .clear-filter-link:hover {
-    background: #DA291C;
-    color: #ffffff;
-  }
-
-  /* Cards Grid */
-  .blog-cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 24px;
-  }
-
-  .blog-card-item {
-    display: flex;
-    transition: opacity 0.25s ease, transform 0.25s ease;
-  }
-
-  .blog-article-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 100%;
-    padding: 28px 26px;
-    background: #ffffff;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 20px;
-    text-decoration: none !important;
-    color: inherit;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
-    position: relative;
-    overflow: hidden;
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .blog-article-card::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: #DA291C;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-  }
-
-  .latest-card {
-    border-color: #ffccc7;
-    background: linear-gradient(180deg, #ffffff 0%, #fffcfc 100%);
-    box-shadow: 0 6px 20px rgba(218, 41, 28, 0.05);
-  }
-
-  .latest-card::before {
-    opacity: 1;
-  }
-
-  .blog-article-card:hover {
-    transform: translateY(-4px);
-    border-color: #DA291C;
-    box-shadow: 0 18px 40px rgba(218, 41, 28, 0.1);
-  }
-
-  .blog-article-card:hover::before {
-    opacity: 1;
-  }
-
-  .card-head-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-  }
-
-  .cat-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 4px 10px;
-    border-radius: 8px;
-    font-size: 11.5px;
     font-weight: 700;
     letter-spacing: 0.02em;
   }
 
-  /* 10 Category Pill Color Codes */
-  .pill-ai-agents { background: #fff1f0; color: #DA291C; border: 1px solid #ffccc7; }
-  .pill-email-api { background: #fff7ed; color: #ea580c; border: 1px solid #ffedd5; }
-  .pill-forms { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
-  .pill-email-testing { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
-  .pill-developers { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
-  .pill-deliverability { background: #fefce8; color: #ca8a04; border: 1px solid #fef08a; }
-  .pill-security { background: #fff1f2; color: #e11d48; border: 1px solid #fecdd3; }
-  .pill-comparisons { background: #f5f3ff; color: #7c3aed; border: 1px solid #ddd6fe; }
-  .pill-migrations { background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe; }
-  .pill-integrations { background: #fdf2f8; color: #db2777; border: 1px solid #fbcfe8; }
+  .red-bar-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
 
-  .reading-time {
+  .social-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  .social-dot {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 8px;
+  }
+
+  .star-gold {
+    color: #fbbf24;
+  }
+
+  /* Main Wrapper */
+  .blog-main-wrapper {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 36px 24px 80px;
+    width: 100%;
+    background: #ffffff;
+  }
+
+  .magazine-grid {
+    display: grid;
+    grid-template-columns: 240px 1fr 240px;
+    gap: 28px;
+    align-items: start;
+  }
+
+  /* Sidebars (Left & Right) */
+  .col-sidebar {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 20px 16px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    position: sticky;
+    top: 90px;
+  }
+
+  .sidebar-badge-wrap {
+    margin-bottom: 16px;
+  }
+
+  .pill-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    user-select: none;
+  }
+
+  .pill-orange {
+    background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(234, 88, 12, 0.25);
+  }
+
+  .pill-purple {
+    background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(124, 58, 237, 0.25);
+  }
+
+  .sidebar-link-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .side-link {
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 1.45;
+    color: #334155;
+    display: block;
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+
+  .side-link:hover {
+    color: #ea580c;
+    transform: translateX(2px);
+  }
+
+  .sidebar-right .side-link:hover {
+    color: #7c3aed;
+  }
+
+  .sidebar-footer-link {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px dashed #e2e8f0;
+  }
+
+  .view-all-link {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #ea580c;
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    font-size: 12px;
-    color: #94a3b8;
+    text-decoration: none;
   }
 
-  .clock-icon {
-    color: #cbd5e1;
+  /* Center Column */
+  .col-center-main {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
   }
 
-  .card-article-title {
-    font-size: 19.5px;
-    font-weight: 750;
-    line-height: 1.34;
-    color: #0f172a;
-    letter-spacing: -0.018em;
+  .center-heading-box {
+    margin-bottom: 4px;
+  }
+
+  .center-main-title {
+    font-size: 38px;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.18;
+    color: #09090b;
     margin: 0 0 12px;
+  }
+
+  .center-sub-title {
+    font-size: 15.5px;
+    line-height: 1.6;
+    color: #475569;
+    margin: 0;
+  }
+
+  /* Newest Articles Pill Bar */
+  .newest-tab-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
+
+  .pill-newest-badge {
+    background: #ea580c;
+    color: #ffffff;
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 6px rgba(234, 88, 12, 0.25);
+  }
+
+  .newest-subtext {
+    font-size: 14px;
+    font-weight: 500;
+    color: #64748b;
+  }
+
+  /* 1. HERO FEATURED CARD (GOLDEN AMBER BORDER) */
+  .hero-featured-card {
+    background: #ffffff;
+    border: 2px solid #f59e0b;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.08);
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .hero-featured-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(245, 158, 11, 0.18);
+    border-color: #d97706;
+  }
+
+  .hero-card-grid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: 240px;
+  }
+
+  .hero-image-pane {
+    position: relative;
+    background: #0f172a;
+    overflow: hidden;
+  }
+
+  .hero-thumb-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+  }
+
+  .hero-featured-card:hover .hero-thumb-img {
+    transform: scale(1.03);
+  }
+
+  .hero-content-pane {
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .hero-tags-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .tag-badge {
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 6px;
+  }
+
+  .tag-forms { background: #ea580c; color: #ffffff; }
+  .tag-new { background: #ea580c; color: #ffffff; }
+
+  .hero-title {
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.3;
+    letter-spacing: -0.025em;
+    color: #0f172a;
+    margin: 0 0 10px;
     transition: color 0.15s ease;
   }
 
-  .blog-article-card:hover .card-article-title {
-    color: #DA291C;
+  .hero-featured-card:hover .hero-title {
+    color: #ea580c;
   }
 
-  .card-article-description {
+  .hero-excerpt {
     font-size: 14px;
-    line-height: 1.62;
+    line-height: 1.55;
+    color: #52525b;
+    margin: 0 0 16px;
+  }
+
+  .hero-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #71717a;
+  }
+
+  .hero-meta-row .read-more {
+    color: #ea580c;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* 2. THREE-CARDS ROW (GOLDEN AMBER BORDERS) */
+  .three-cards-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+
+  .card-amber-outline {
+    background: #ffffff;
+    border: 2px solid #f59e0b;
+    border-radius: 16px;
+    padding: 22px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.06);
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    text-decoration: none;
+    color: inherit;
+    min-height: 240px;
+  }
+
+  .card-amber-outline:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 22px rgba(245, 158, 11, 0.16);
+    border-color: #d97706;
+  }
+
+  .card-top-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-category-badge {
+    display: inline-block;
+    align-self: flex-start;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 6px;
+    background: #ea580c;
+    color: #ffffff;
+    margin-bottom: 12px;
+  }
+
+  .card-title-3row {
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+    color: #0f172a;
+    margin: 0 0 10px;
+    transition: color 0.15s ease;
+  }
+
+  .card-amber-outline:hover .card-title-3row {
+    color: #ea580c;
+  }
+
+  .card-excerpt-3row {
+    font-size: 13px;
+    line-height: 1.5;
+    color: #52525b;
+    margin: 0 0 16px;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-bottom-meta {
+    font-size: 12px;
+    font-weight: 600;
+    color: #94a3b8;
+    margin-top: auto;
+  }
+
+  /* 3. ALL PUBLICATIONS FEED */
+  .feed-header-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f1f5f9;
+  }
+
+  .feed-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #09090b;
+    margin: 0;
+  }
+
+  .search-input-wrap {
+    position: relative;
+    min-width: 260px;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 8px 14px 8px 34px;
+    font-size: 13.5px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9999px;
+    outline: none;
+    background: #ffffff;
+  }
+
+  .search-input:focus {
+    border-color: #ea580c;
+    box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.15);
+  }
+
+  .search-icon-svg {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    pointer-events: none;
+  }
+
+  .category-filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+    margin-bottom: 8px;
+  }
+
+  .cat-filter-btn {
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
     color: #475569;
-    margin: 0 0 24px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .cat-filter-btn:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+  }
+
+  .cat-filter-btn.active {
+    background: #0f172a;
+    color: #ffffff;
+    border-color: #0f172a;
+  }
+
+  .publications-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+
+  .pub-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.2s ease;
+  }
+
+  .pub-card:hover {
+    border-color: #cbd5e1;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+  }
+
+  .pub-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    height: 100%;
+  }
+
+  .pub-card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .pub-pill {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #f1f5f9;
+    color: #334155;
+  }
+
+  .pub-time {
+    font-size: 12px;
+    color: #94a3b8;
+    font-weight: 500;
+  }
+
+  .pub-title {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.38;
+    color: #0f172a;
+    margin: 0 0 8px;
+    transition: color 0.15s ease;
+  }
+
+  .pub-card:hover .pub-title {
+    color: #ea580c;
+  }
+
+  .pub-desc {
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: #64748b;
+    margin: 0;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
 
-  .card-footer-row {
+  /* Pagination */
+  .pagination-wrapper {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    padding-top: 16px;
+    gap: 12px;
+    margin-top: 36px;
+    padding-top: 24px;
     border-top: 1px solid #f1f5f9;
   }
 
-  .post-date-text {
+  .pagination-info {
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 600;
+  }
+
+  .pagination-controls {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
-    font-size: 12px;
-    color: #64748b;
+    flex-wrap: wrap;
   }
 
-  .date-cal-icon {
-    color: #94a3b8;
-  }
-
-  .read-btn {
+  :global(.btn-page-nav) {
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 8px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #334155;
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    font-size: 12px;
-    font-weight: 800;
-    color: #DA291C;
-    letter-spacing: 0.05em;
+    gap: 4px;
+    transition: all 0.15s ease;
+    cursor: pointer;
   }
 
-  .arrow-glyph {
-    transition: transform 0.2s ease;
+  :global(.btn-page-nav:hover:not(:disabled)) {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #09090b;
+    transform: translateY(-1px);
   }
 
-  .blog-article-card:hover .arrow-glyph {
-    transform: translateX(4px);
+  :global(.btn-page-nav.active) {
+    background: #da291c !important;
+    color: #ffffff !important;
+    border-color: #da291c !important;
+    box-shadow: 0 2px 6px rgba(218, 41, 28, 0.28);
   }
 
-  /* Empty State */
-  .no-posts-box {
-    text-align: center;
-    padding: 60px 24px;
-    background: #ffffff;
-    border: 1.5px dashed #cbd5e1;
-    border-radius: 20px;
-    margin-top: 20px;
+  :global(.btn-page-nav:disabled) {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
   }
 
-  .no-posts-icon {
-    font-size: 36px;
-    margin-bottom: 10px;
-  }
-
-  .no-posts-box h3 {
-    font-size: 19px;
+  :global(.page-dots) {
+    padding: 0 4px;
+    color: #94a3b8;
     font-weight: 700;
-    color: #0f172a;
-    margin: 0 0 8px;
   }
 
-  .no-posts-box p {
-    color: #64748b;
-    font-size: 14.5px;
-    max-width: 440px;
-    margin: 0 auto 18px;
+  /* Floating Red CTA Button */
+  .floating-cta-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 100;
+    background: linear-gradient(135deg, #da291c 0%, #ef4444 100%);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 12px 22px;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 8px 24px rgba(218, 41, 28, 0.35), 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .floating-cta-btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 12px 28px rgba(218, 41, 28, 0.45);
   }
 
   /* Responsive Breakpoints */
-  @media (max-width: 960px) {
-    .blog-main-layout {
-      grid-template-columns: 1fr;
-      gap: 32px;
+  @media (max-width: 1200px) {
+    .magazine-grid {
+      grid-template-columns: 210px 1fr 210px;
+      gap: 20px;
     }
-    .blog-sidebar-left {
-      position: static;
-    }
-    .sidebar-cat-nav {
-      flex-direction: row;
-      flex-wrap: wrap;
-    }
-    .sidebar-cat-btn {
-      flex: 1 1 auto;
+    .center-main-title {
+      font-size: 32px;
     }
   }
 
-  @media (max-width: 640px) {
-    .blog-cards-grid {
+  @media (max-width: 992px) {
+    .magazine-grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .col-sidebar {
+      position: static;
+    }
+    .hero-card-grid {
       grid-template-columns: 1fr;
     }
-    .blog-header-banner {
-      padding: 44px 0 36px;
+    .hero-image-pane {
+      height: 180px;
     }
-    .blog-article-card {
-      padding: 22px 20px;
+    .three-cards-row {
+      grid-template-columns: 1fr;
+    }
+    .publications-grid {
+      grid-template-columns: 1fr;
     }
   }
 </style>
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    const catButtons = document.querySelectorAll<HTMLButtonElement>(".sidebar-cat-btn");
-    const topicButtons = document.querySelectorAll<HTMLButtonElement>(".topic-tag-btn");
-    const cardItems = document.querySelectorAll<HTMLElement>(".blog-card-item");
-    const searchInput = document.getElementById("blog-search") as HTMLInputElement | null;
-    const clearSearchBtn = document.getElementById("sidebar-clear-search") as HTMLButtonElement | null;
-    const currentCatNameEl = document.getElementById("current-category-name");
-    const articlesCountEl = document.getElementById("feed-articles-count");
-    const filterIndicator = document.getElementById("active-filter-indicator");
-    const filterTermDisplay = document.getElementById("filter-term-display");
-    const clearAllFilterBtn = document.getElementById("clear-all-filter-btn");
-    const noPostsFoundBox = document.getElementById("no-posts-found");
-    const resetFeedBtn = document.getElementById("reset-feed-btn");
+    const postCards = Array.from(document.querySelectorAll<HTMLElement>(".post-item-card"));
+    const catButtons = document.querySelectorAll<HTMLButtonElement>(".cat-filter-btn");
+    const searchInput = document.getElementById("blog-search-input") as HTMLInputElement | null;
+    const paginationControls = document.getElementById("pagination-controls");
+    const paginationInfo = document.getElementById("pagination-info");
+    const feedCountBadge = document.getElementById("feed-count-badge");
 
-    let currentCategory = "all";
+    let currentCategory = "All";
     let searchQuery = "";
-    let currentCategoryLabel = "All Articles";
+    let currentPage = 1;
+    const postsPerPage = 6;
 
-    function updateView() {
-      let visibleCount = 0;
+    function getFilteredPosts() {
+      return postCards.filter((card) => {
+        const itemCat = card.getAttribute("data-category") || "";
+        const itemTitle = card.getAttribute("data-title") || "";
+        const itemDesc = card.getAttribute("data-desc") || "";
 
-      cardItems.forEach((item) => {
-        const itemCat = item.getAttribute("data-category") || "";
-        const itemTitle = item.getAttribute("data-title") || "";
-        const itemDesc = item.getAttribute("data-desc") || "";
-
-        const matchesCat = currentCategory === "all" || itemCat === currentCategory;
+        const matchesCat = currentCategory === "All" || itemCat.toLowerCase() === currentCategory.toLowerCase();
         const matchesSearch =
           !searchQuery ||
           itemTitle.includes(searchQuery) ||
           itemDesc.includes(searchQuery) ||
-          itemCat.includes(searchQuery);
+          itemCat.toLowerCase().includes(searchQuery);
 
-        if (matchesCat && matchesSearch) {
-          item.style.display = "flex";
-          visibleCount++;
-        } else {
-          item.style.display = "none";
-        }
+        return matchesCat && matchesSearch;
+      });
+    }
+
+    function updateFeed() {
+      const filtered = getFilteredPosts();
+      const totalPosts = filtered.length;
+      const totalPages = Math.ceil(totalPosts / postsPerPage) || 1;
+
+      if (currentPage > totalPages) currentPage = 1;
+
+      const startIndex = (currentPage - 1) * postsPerPage;
+      const endIndex = Math.min(startIndex + postsPerPage, totalPosts);
+
+      // Hide all first
+      postCards.forEach((card) => {
+        card.style.display = "none";
       });
 
-      // Update Category Title & Count
-      if (currentCatNameEl) currentCatNameEl.textContent = currentCategoryLabel;
-      if (articlesCountEl) articlesCountEl.textContent = `${visibleCount} articles`;
+      // Show current page items
+      filtered.slice(startIndex, endIndex).forEach((card) => {
+        card.style.display = "flex";
+      });
 
-      // Active filter banner
-      const isFiltered = currentCategory !== "all" || searchQuery.length > 0;
-      if (filterIndicator) {
-        filterIndicator.style.display = isFiltered ? "flex" : "none";
-        if (filterTermDisplay) {
-          filterTermDisplay.textContent = searchQuery ? `"${searchQuery}"` : currentCategoryLabel;
+      // Update count badge
+      if (feedCountBadge) {
+        feedCountBadge.textContent = `${totalPosts}`;
+      }
+
+      // Update pagination
+      renderPagination(totalPages, totalPosts === 0 ? 0 : startIndex + 1, endIndex, totalPosts);
+    }
+
+    function renderPagination(totalPages: number, startItem: number, endItem: number, totalItems: number) {
+      if (!paginationControls || !paginationInfo) return;
+
+      if (totalItems === 0) {
+        paginationControls.innerHTML = "";
+        paginationInfo.innerHTML = "No articles found matching your criteria.";
+        return;
+      }
+
+      if (totalPages <= 1) {
+        paginationControls.innerHTML = "";
+        paginationInfo.innerHTML = `Showing all <strong>${totalItems}</strong> articles`;
+        return;
+      }
+
+      let buttonsHtml = "";
+
+      // Prev Button
+      buttonsHtml += `
+        <button type="button" class="btn-page-nav" id="btn-prev-page" ${currentPage === 1 ? "disabled" : ""}>
+          ← Prev
+        </button>
+      `;
+
+      // Numbered buttons with dynamic window
+      const maxVisible = 5;
+      let startPage = Math.max(1, currentPage - 2);
+      let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+
+      if (endPage - startPage < maxVisible - 1) {
+        startPage = Math.max(1, endPage - maxVisible + 1);
+      }
+
+      if (startPage > 1) {
+        buttonsHtml += `<button type="button" class="btn-page-nav" data-page="1">1</button>`;
+        if (startPage > 2) {
+          buttonsHtml += `<span class="page-dots">…</span>`;
         }
       }
 
-      // Empty state
-      if (noPostsFoundBox) {
-        noPostsFoundBox.style.display = visibleCount === 0 ? "block" : "none";
+      for (let i = startPage; i <= endPage; i++) {
+        buttonsHtml += `
+          <button type="button" class="btn-page-nav ${i === currentPage ? "active" : ""}" data-page="${i}">
+            ${i}
+          </button>
+        `;
+      }
+
+      if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+          buttonsHtml += `<span class="page-dots">…</span>`;
+        }
+        buttonsHtml += `<button type="button" class="btn-page-nav" data-page="${totalPages}">${totalPages}</button>`;
+      }
+
+      // Next Button
+      buttonsHtml += `
+        <button type="button" class="btn-page-nav" id="btn-next-page" ${currentPage === totalPages ? "disabled" : ""}>
+          Next →
+        </button>
+      `;
+
+      paginationControls.innerHTML = buttonsHtml;
+      paginationInfo.innerHTML = `Showing <strong>${startItem}–${endItem}</strong> of <strong>${totalItems}</strong> articles (Page ${currentPage} of ${totalPages})`;
+
+      // Bind events
+      paginationControls.querySelectorAll("[data-page]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          currentPage = parseInt((btn as HTMLElement).dataset.page || "1", 10);
+          updateFeed();
+          scrollToSection();
+        });
+      });
+
+      const prevBtn = document.getElementById("btn-prev-page");
+      if (prevBtn) {
+        prevBtn.addEventListener("click", () => {
+          if (currentPage > 1) {
+            currentPage--;
+            updateFeed();
+            scrollToSection();
+          }
+        });
+      }
+
+      const nextBtn = document.getElementById("btn-next-page");
+      if (nextBtn) {
+        nextBtn.addEventListener("click", () => {
+          if (currentPage < totalPages) {
+            currentPage++;
+            updateFeed();
+            scrollToSection();
+          }
+        });
       }
     }
 
-    // Category click
+    function scrollToSection() {
+      const section = document.getElementById("all-articles-section");
+      if (section) {
+        const offset = 80;
+        const bodyRect = document.body.getBoundingClientRect().top;
+        const elementRect = section.getBoundingClientRect().top;
+        const elementPosition = elementRect - bodyRect;
+        window.scrollTo({
+          top: elementPosition - offset,
+          behavior: "smooth",
+        });
+      }
+    }
+
+    // Category click handler
     catButtons.forEach((btn) => {
       btn.addEventListener("click", () => {
-        catButtons.forEach((b) => {
-          b.classList.remove("active");
-          b.setAttribute("aria-selected", "false");
-        });
+        catButtons.forEach((b) => b.classList.remove("active"));
         btn.classList.add("active");
-        btn.setAttribute("aria-selected", "true");
-        currentCategory = btn.getAttribute("data-category") || "all";
-        currentCategoryLabel = btn.getAttribute("data-name") || "All Articles";
-        updateView();
+        currentCategory = btn.getAttribute("data-category") || "All";
+        currentPage = 1;
+        updateFeed();
       });
     });
 
-    // Topic Tags click
-    topicButtons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const topic = btn.getAttribute("data-topic") || "";
-        if (searchInput) {
-          searchInput.value = topic;
-          searchQuery = topic;
-          if (clearSearchBtn) clearSearchBtn.style.display = "flex";
-          updateView();
-        }
-      });
-    });
-
-    // Search input
+    // Search input handler
     if (searchInput) {
       searchInput.addEventListener("input", (e) => {
         searchQuery = (e.target as HTMLInputElement).value.trim().toLowerCase();
-        if (clearSearchBtn) {
-          clearSearchBtn.style.display = searchQuery.length > 0 ? "flex" : "none";
-        }
-        updateView();
+        currentPage = 1;
+        updateFeed();
       });
     }
 
-    // Clear search
-    if (clearSearchBtn && searchInput) {
-      clearSearchBtn.addEventListener("click", () => {
-        searchInput.value = "";
-        searchQuery = "";
-        clearSearchBtn.style.display = "none";
-        searchInput.focus();
-        updateView();
-      });
-    }
-
-    // Reset All
-    function resetAll() {
-      currentCategory = "all";
-      currentCategoryLabel = "All Articles";
-      searchQuery = "";
-      if (searchInput) searchInput.value = "";
-      if (clearSearchBtn) clearSearchBtn.style.display = "none";
-      catButtons.forEach((b, i) => {
-        if (i === 0) {
-          b.classList.add("active");
-          b.setAttribute("aria-selected", "true");
-        } else {
-          b.classList.remove("active");
-          b.setAttribute("aria-selected", "false");
-        }
-      });
-      updateView();
-    }
-
-    if (clearAllFilterBtn) clearAllFilterBtn.addEventListener("click", resetAll);
-    if (resetFeedBtn) resetFeedBtn.addEventListener("click", resetAll);
+    // Initial run
+    updateFeed();
   });
 </script>
