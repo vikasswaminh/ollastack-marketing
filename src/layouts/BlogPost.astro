@@ -49,6 +49,26 @@ const collectionPosts: PostMeta[] = (
 const STOP = new Set(["the","a","an","to","for","and","in","of","with","your","from","how","2026","without","vs","form","forms","email","api"]);
 const toks = (s: string) => new Set(s.split("-").filter((t) => t.length > 2 && !STOP.has(t)));
 const cur = toks(slug);
+
+// Agent Workflows Curated List for Right Sidebar
+const agentWorkflows = [
+  { title: "How to Build AI-Ready Forms for Autonomous Agents", slug: "how-to-build-ai-ready-forms-for-autonomous-agents" },
+  { title: "Mailosaur vs Mailinator vs Disposable Inboxes: Which Is Best for QA Testing in 2026", slug: "mailosaur-vs-mailinator-vs-disposable-inboxes" },
+  { title: "How to Connect a Contact Form to Email Without Backend Code (2026 Guide)", slug: "how-to-connect-a-contact-form-to-email-without-backend-code" },
+  { title: "What Is an Agent Email API and Why Does It Matter for AI Workflows?", slug: "what-is-an-agent-email-api" },
+  { title: "Form Backend vs Form Builder: What Developers Should Choose in 2026", slug: "form-backend-vs-form-builder" },
+  { title: "How to Automate OTP Email Testing in CI/CD Pipelines", slug: "how-to-automate-otp-email-testing-in-ci-cd-pipelines" },
+  { title: "Test email in Docker and CI with a disposable inbox", slug: "test-inbox-docker" },
+  { title: "Can AI Agents Submit Forms Safely? Here's What Developers Need to Know", slug: "can-ai-agents-submit-forms-safely" },
+  { title: "Assert on email in Playwright and Cypress", slug: "assert-on-email-in-playwright-cypress" },
+  { title: "Email testing API: assert on real emails in CI", slug: "email-testing-api-for-ci" },
+  { title: "How to read an OTP / verification code in an AI agent", slug: "read-otp-verification-code-in-ai-agent" },
+  { title: "Build an AI agent that sends and receives email (with MCP)", slug: "build-ai-agent-that-sends-and-receives-email" },
+  { title: "Email for AI agents: give an agent its own inbox", slug: "email-for-ai-agents" },
+  { title: "ML spam quarantine, and why a form backend should fail open", slug: "ml-quarantine-explained" },
+  { title: "AgentMail alternative: agent email + forms + testing", slug: "agentmail-alternative" }
+];
+
 const related: PostMeta[] = [...posts, ...collectionPosts]
   .filter((p) => p.slug !== slug)
   .map((p) => ({ p, score: [...toks(p.slug)].filter((t) => cur.has(t)).length }))
@@ -147,20 +167,23 @@ const articleLd = {
       )}
     </article>
 
-    <aside class="right-rail">
-      <div class="cta-card">
-        <div class="cta-eyebrow mono">Ollastack</div>
-        <p class="cta-line">
-          A form backend built for developers — and the agents
-          increasingly submitting on their behalf.
-        </p>
-        <a
-          href={`${APP}/register`}
-          class={`cta-button`}
-        >
-          Start free →
-        </a>
-        <p class="cta-fine mono">No credit card · 50 submissions/mo</p>
+    <aside class="right-rail" aria-label="Agent Workflows">
+      <div class="workflows-card">
+        <div class="sidebar-badge-wrap">
+          <div class="pill-badge pill-purple">
+            <span>🤖 AGENT WORKFLOWS</span>
+          </div>
+        </div>
+        <ul class="sidebar-link-list">
+          {agentWorkflows.map((guide) => (
+            <li class="sidebar-link-item">
+              <a href={`/blog/${guide.slug}`} class="side-link">{guide.title}</a>
+            </li>
+          ))}
+        </ul>
+        <div class="sidebar-footer-link">
+          <a href="/blog#all-articles-section" class="view-all-link">View All Guides →</a>
+        </div>
       </div>
     </aside>
   </div>
@@ -627,59 +650,102 @@ const articleLd = {
     line-height: 1.6;
   }
 
-  /* ---------- Right rail ---------- */
+  /* ---------- Right rail (Agent Workflows Sidebar) ---------- */
   .right-rail {
     position: sticky;
-    top: max(100px, calc(50vh - 140px));
+    top: 80px;
     align-self: start;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    max-height: calc(100vh - 100px);
   }
-  .cta-card {
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 22px 20px;
-    background: var(--bg);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+  .workflows-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 18px 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    max-height: calc(100vh - 100px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
-  .cta-eyebrow {
+  .sidebar-badge-wrap {
+    margin-bottom: 14px;
+    flex-shrink: 0;
+  }
+  .pill-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 9999px;
     font-size: 11px;
-    color: #dc2626;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 10px;
     font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    user-select: none;
   }
-  .cta-line {
-    font-size: 14px;
-    color: var(--ink);
-    line-height: 1.55;
-    margin: 0 0 16px;
+  .pill-purple {
+    background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(124, 58, 237, 0.25);
   }
-  .cta-button {
-    display: inline-block;
-    background: #dc2626;
-    color: #ffffff !important;
-    padding: 10px 16px;
-    border-radius: 8px;
+  .sidebar-link-list {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    list-style: none;
+    padding: 0 4px 0 0;
+    margin: 0;
+    overflow-y: auto;
+  }
+  .sidebar-link-list::-webkit-scrollbar {
+    width: 4px;
+  }
+  .sidebar-link-list::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .sidebar-link-list::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 4px;
+  }
+  .sidebar-link-item {
+    margin: 0;
+    padding: 0;
+  }
+  .side-link {
     font-size: 13px;
-    font-weight: 700;
-    transition: all 0.15s ease;
+    font-weight: 600;
+    line-height: 1.4;
+    color: #334155 !important;
+    display: block;
     text-decoration: none !important;
     border-bottom: none !important;
-    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.25);
+    transition: all 0.15s ease;
   }
-  .cta-button:hover {
-    background: #b91c1c;
-    color: #ffffff !important;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+  .side-link:hover {
+    color: #7c3aed !important;
+    transform: translateX(2px);
   }
-  .cta-fine {
-    margin: 12px 0 0;
-    font-size: 11.5px;
-    color: var(--muted-2);
+  .sidebar-footer-link {
+    margin-top: 14px;
+    padding-top: 10px;
+    border-top: 1px dashed #e2e8f0;
+    flex-shrink: 0;
+  }
+  .view-all-link {
+    font-size: 12px;
+    font-weight: 700;
+    color: #7c3aed !important;
+    text-decoration: none !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: gap 0.15s ease;
+  }
+  .view-all-link:hover {
+    gap: 7px;
   }
 
   /* Related reading cards in bottom section */
