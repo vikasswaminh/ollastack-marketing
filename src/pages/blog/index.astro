@@ -716,35 +716,10 @@ const categories = [
     cursor: pointer;
   }
 
-  .hero-featured-card::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -120%;
-    width: 60%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
-    transform: skewX(-20deg);
-    pointer-events: none;
-    z-index: 3;
-    transition: none;
-  }
-
   .hero-featured-card:hover {
-    transform: translateY(-4px) scale(1.005);
-    box-shadow: 0 16px 36px -4px rgba(245, 158, 11, 0.22), 0 0 0 1.5px rgba(245, 158, 11, 0.65);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px -4px rgba(245, 158, 11, 0.18);
     border-color: #d97706;
-  }
-
-  .hero-featured-card:hover::after {
-    animation: cardLightSweep 0.85s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .hero-featured-card:active {
-    transform: scale(0.98) translateY(1px);
-    box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3), 0 0 0 4px rgba(234, 88, 12, 0.45) !important;
-    border-color: #ea580c !important;
-    transition: all 0.08s ease;
   }
 
   .hero-card-grid {
@@ -872,34 +847,10 @@ const categories = [
     cursor: pointer;
   }
 
-  .card-amber-outline::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -120%;
-    width: 60%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.45) 50%, transparent 100%);
-    transform: skewX(-20deg);
-    pointer-events: none;
-    z-index: 3;
-  }
-
   .card-amber-outline:hover {
-    transform: translateY(-5px) scale(1.008);
-    box-shadow: 0 16px 32px -4px rgba(245, 158, 11, 0.22), 0 0 0 1.5px rgba(245, 158, 11, 0.65);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px -4px rgba(245, 158, 11, 0.18);
     border-color: #d97706;
-  }
-
-  .card-amber-outline:hover::after {
-    animation: cardLightSweep 0.85s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .card-amber-outline:active {
-    transform: scale(0.975) translateY(1px);
-    box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3), 0 0 0 4px rgba(234, 88, 12, 0.45) !important;
-    border-color: #ea580c !important;
-    transition: all 0.08s ease;
   }
 
   .card-top-content {
@@ -959,33 +910,6 @@ const categories = [
     margin-top: auto;
     position: relative;
     z-index: 1;
-  }
-
-  /* Keyframe Animations */
-  @keyframes cardLightSweep {
-    0% { left: -120%; }
-    100% { left: 160%; }
-  }
-
-  @keyframes rippleShockwave {
-    0% {
-      transform: scale(0);
-      opacity: 0.7;
-    }
-    100% {
-      transform: scale(3.5);
-      opacity: 0;
-    }
-  }
-
-  :global(.card-click-ripple) {
-    position: absolute;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(245, 158, 11, 0.45) 0%, rgba(234, 88, 12, 0.25) 50%, transparent 80%);
-    pointer-events: none;
-    transform: translate(-50%, -50%);
-    animation: rippleShockwave 0.55s ease-out forwards;
-    z-index: 10;
   }
 
   /* 3. ALL PUBLICATIONS HIGHLIGHTED CONTAINER */
@@ -1548,34 +1472,6 @@ const categories = [
         updateFeed();
       });
     }
-
-    // Interactive dynamic mouse spotlight & click shockwave ripple for blog cards
-    const interactiveCards = document.querySelectorAll<HTMLElement>(
-      ".hero-featured-card, .card-amber-outline, .pub-card"
-    );
-
-    interactiveCards.forEach((card) => {
-      // Click shockwave particle ripple
-      card.addEventListener("pointerdown", (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        const ripple = document.createElement("span");
-        ripple.className = "card-click-ripple";
-        const size = Math.max(rect.width, rect.height) * 1.5;
-        ripple.style.width = `${size}px`;
-        ripple.style.height = `${size}px`;
-        ripple.style.left = `${x}px`;
-        ripple.style.top = `${y}px`;
-
-        card.appendChild(ripple);
-
-        setTimeout(() => {
-          ripple.remove();
-        }, 600);
-      });
-    });
 
     // Initial run
     updateFeed();
