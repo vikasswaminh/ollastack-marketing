@@ -465,6 +465,7 @@ const categories = [
     background: #da291c;
     color: #ffffff;
     padding: 8px 0;
+    width: 100%;
     overflow: hidden;
     font-size: 12px;
     font-weight: 700;
@@ -472,9 +473,10 @@ const categories = [
   }
 
   .red-bar-inner {
-    max-width: 1440px;
-    margin: 0 auto;
-    padding: 0 24px;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0 32px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -500,18 +502,19 @@ const categories = [
 
   /* Main Wrapper */
   .blog-main-wrapper {
-    max-width: 1440px;
-    margin: 0 auto;
-    padding: 36px 24px 80px;
+    max-width: 100%;
+    margin: 0;
+    padding: 32px 32px 80px;
     width: 100%;
     background: #ffffff;
   }
 
   .magazine-grid {
     display: grid;
-    grid-template-columns: 240px 1fr 240px;
-    gap: 28px;
+    grid-template-columns: 280px minmax(0, 1fr) 280px;
+    gap: 32px;
     align-items: start;
+    width: 100%;
   }
 
   /* Sidebars (Left & Right) */
