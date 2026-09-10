@@ -1219,23 +1219,37 @@ const categories = [
   }
 
   /* Responsive Breakpoints */
-  @media (max-width: 1200px) {
+  @media (max-width: 1400px) {
     .magazine-grid {
-      grid-template-columns: 210px 1fr 210px;
+      grid-template-columns: 240px minmax(0, 1fr) 240px;
       gap: 20px;
-    }
-    .center-main-title {
-      font-size: 32px;
     }
   }
 
-  @media (max-width: 992px) {
+  @media (max-width: 1150px) {
+    .magazine-grid {
+      grid-template-columns: 210px minmax(0, 1fr) 210px;
+      gap: 16px;
+    }
+    .col-sidebar {
+      padding: 20px 14px;
+    }
+    .side-link {
+      font-size: 13.5px;
+    }
+    .center-main-title {
+      font-size: 30px;
+    }
+  }
+
+  @media (max-width: 860px) {
     .magazine-grid {
       grid-template-columns: 1fr;
       gap: 32px;
     }
     .col-sidebar {
       position: static;
+      max-height: none;
     }
     .hero-card-grid {
       grid-template-columns: 1fr;
