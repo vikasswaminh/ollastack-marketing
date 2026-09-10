@@ -137,14 +137,35 @@ const articleLd = {
         <slot />
 
         {faq && faq.length > 0 && (
-          <section class="post-faq">
-            <h2 id="faq">Frequently asked questions</h2>
-            {faq.map((f) => (
-              <details>
-                <summary>{f.q}</summary>
-                <p>{f.a}</p>
-              </details>
-            ))}
+          <section class="post-faq" id="faq-section">
+            <div class="faq-head-wrap">
+              <div class="faq-pill-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                  <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                <span>COMMONLY ASKED QUESTIONS</span>
+              </div>
+              <h2 id="faq">Frequently asked questions</h2>
+            </div>
+            <div class="faq-accordion-list">
+              {faq.map((f, i) => (
+                <details class="faq-card" open={i === 0}>
+                  <summary class="faq-summary">
+                    <span class="faq-q-text">{f.q}</span>
+                    <span class="faq-icon-arrow" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                      </svg>
+                    </span>
+                  </summary>
+                  <div class="faq-body-content">
+                    <p>{f.a}</p>
+                  </div>
+                </details>
+              ))}
+            </div>
           </section>
         )}
 
@@ -563,17 +584,19 @@ const articleLd = {
   .body :global(pre .prompt) { color: #64748b !important; user-select: none; }
 
   /* Key Takeaways Callout */
-  .body :global(.takeaways-box) {
+  .body :global(.takeaways-box),
+  .body :global(.tldr-box) {
     background: #fef2f2 !important;
     border: 2px solid #fca5a5 !important;
     border-left: 6px solid #dc2626 !important;
     border-radius: 16px !important;
     padding: 24px 28px !important;
-    margin: 32px 0 40px !important;
+    margin: 32px 0 36px !important;
     box-shadow: 0 6px 24px rgba(220, 38, 38, 0.08) !important;
   }
   .body :global(.takeaways-header),
-  .body :global(.takeaways-title) {
+  .body :global(.takeaways-title),
+  .body :global(.tldr-header) {
     font-size: 18px !important;
     font-weight: 800 !important;
     margin: 0 0 16px !important;
@@ -586,10 +609,35 @@ const articleLd = {
     padding: 0 !important;
   }
   .body :global(.takeaways-header svg),
-  .body :global(.takeaways-title svg) {
+  .body :global(.takeaways-title svg),
+  .body :global(.tldr-header svg) {
     color: #dc2626 !important;
     stroke: #dc2626 !important;
     flex-shrink: 0;
+  }
+  .body :global(.tldr-box h2),
+  .body :global(.tldr-title) {
+    font-size: 18px !important;
+    font-weight: 800 !important;
+    margin: 0 !important;
+    color: #991b1b !important;
+    display: inline-block !important;
+    border: none !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+  }
+  .body :global(.tldr-box p) {
+    font-size: 15.5px !important;
+    line-height: 1.68 !important;
+    color: #0f172a !important;
+    margin: 0 0 14px !important;
+  }
+  .body :global(.tldr-box p:last-child) {
+    margin-bottom: 0 !important;
+  }
+  .body :global(.tldr-box strong) {
+    color: #0f172a !important;
+    font-weight: 700 !important;
   }
   .body :global(.takeaways-box ul),
   .body :global(.takeaways-list) {
@@ -618,36 +666,151 @@ const articleLd = {
     text-underline-offset: 3px !important;
   }
 
+  /* Article Lead Summary Callout */
+  .body :global(.article-lead-summary) {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    border-left: 5px solid #0284c7 !important;
+    border-radius: 14px !important;
+    padding: 22px 26px !important;
+    margin: 0 0 32px !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02) !important;
+  }
+  .body :global(.article-lead-summary p) {
+    font-size: 16px !important;
+    line-height: 1.68 !important;
+    color: #334155 !important;
+    margin: 0 0 12px !important;
+  }
+  .body :global(.article-lead-summary p:last-child) {
+    margin-bottom: 0 !important;
+  }
+  .body :global(.article-lead-summary strong) {
+    color: #0f172a !important;
+    font-weight: 700 !important;
+  }
+
   .last-updated {
     margin-top: 56px;
     padding-top: 24px;
     border-top: 1px solid var(--line);
     font-size: 13.5px;
   }
-  .post-faq { margin-top: 24px; }
-  .post-faq :global(details) {
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 4px 18px;
+  /* ---------- FAQ Section Highlighted Styling ---------- */
+  .post-faq {
+    margin-top: 48px;
+    padding-top: 36px;
+    border-top: 1.5px solid var(--line);
+  }
+  .faq-head-wrap {
+    margin-bottom: 24px;
+  }
+  .faq-pill-badge {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fca5a5;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     margin-bottom: 10px;
-    background: var(--bg);
-    transition: border-color 0.15s ease;
   }
-  .post-faq :global(details:hover) {
-    border-color: #f87171;
+  .post-faq h2 {
+    font-size: 26px !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    margin: 0 0 8px !important;
+    letter-spacing: -0.02em !important;
   }
-  .post-faq :global(summary) {
+  .faq-accordion-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .post-faq :global(details.faq-card) {
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 0;
+    margin-bottom: 0;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    overflow: hidden;
+  }
+  .post-faq :global(details.faq-card:hover) {
+    border-color: #fca5a5;
+    background: #fffafa;
+    box-shadow: 0 6px 18px rgba(220, 38, 38, 0.06);
+    transform: translateY(-1px);
+  }
+  .post-faq :global(details.faq-card[open]) {
+    background: #fef2f2 !important;
+    border: 2px solid #fca5a5 !important;
+    border-left: 6px solid #dc2626 !important;
+    border-radius: 16px !important;
+    box-shadow: 0 6px 24px rgba(220, 38, 38, 0.08) !important;
+  }
+  .post-faq :global(summary.faq-summary) {
     cursor: pointer;
-    font-weight: 600;
-    padding: 12px 0;
+    font-weight: 700;
+    padding: 18px 22px;
     font-size: 16px;
-    color: var(--ink);
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    list-style: none;
+    user-select: none;
+    transition: color 0.15s ease;
   }
-  .post-faq :global(details p) {
-    margin: 0 0 14px;
-    color: var(--muted);
-    font-size: 15px;
-    line-height: 1.6;
+  .post-faq :global(summary.faq-summary::-webkit-details-marker) {
+    display: none;
+  }
+  .post-faq :global(summary.faq-summary::marker) {
+    display: none;
+  }
+  .post-faq :global(details.faq-card:hover summary.faq-summary) {
+    color: #dc2626;
+  }
+  .post-faq :global(details.faq-card[open] summary.faq-summary) {
+    color: #991b1b !important;
+    font-weight: 800 !important;
+  }
+  .post-faq :global(.faq-icon-arrow) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    color: #64748b;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+  }
+  .post-faq :global(details.faq-card:hover .faq-icon-arrow) {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+  .post-faq :global(details.faq-card[open] .faq-icon-arrow) {
+    background: #dc2626 !important;
+    color: #ffffff !important;
+    transform: rotate(180deg);
+  }
+  .post-faq :global(.faq-body-content) {
+    padding: 0 22px 20px;
+  }
+  .post-faq :global(.faq-body-content p) {
+    margin: 0;
+    color: #0f172a;
+    font-size: 15.5px;
+    line-height: 1.7;
   }
 
   /* ---------- Right rail (Agent Workflows Sidebar) ---------- */

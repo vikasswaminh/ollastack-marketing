@@ -29,23 +29,36 @@ faq:
     a: "CI pipelines commonly run tests in parallel to reduce total run time. Shared or predictable email addresses create race conditions where one test can accidentally read a message intended for another, producing intermittent failures that are difficult to diagnose because they depend on timing rather than logic."
 ---
 
-## TL;DR / Quick Summary
+<div class="tldr-box" id="tldr">
+  <div class="tldr-header">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+    </svg>
+    <h2 class="tldr-title" id="tldr-heading">TL;DR</h2>
+  </div>
+  <p>
+    <strong>Temporary email services</strong> were built for humans who want to dodge spam when signing up for something once. <strong>Disposable inboxes</strong>, at least the kind built for engineering teams, were built for something completely different: giving an automated test suite a real, addressable inbox it can create on demand, poll programmatically, and tear down after the test finishes.
+  </p>
+  <p>
+    They sound similar because both give you an email address you don't plan to keep, but the moment you try to use a consumer temporary email tool inside a CI pipeline, the differences become obvious fast. This guide breaks down what each one is, why the overlap in terminology causes so much confusion, and why testing OTPs, magic links, and verification flows in CI needs something purpose-built rather than a tool designed to dodge a newsletter signup.
+  </p>
+</div>
 
-**Temporary email services** were built for humans who want to dodge spam when signing up for something once. **Disposable inboxes**, at least the kind built for engineering teams, were built for something completely different: giving an automated test suite a real, addressable inbox it can create on demand, poll programmatically, and tear down after the test finishes.
-
-They sound similar because both give you an email address you don't plan to keep, but the moment you try to use a consumer temporary email tool inside a CI pipeline, the differences become obvious fast. This guide breaks down what each one is, why the overlap in terminology causes so much confusion, and why testing OTPs, magic links, and verification flows in CI needs something purpose-built rather than a tool designed to dodge a newsletter signup.
-
----
-
-## Key Takeaways
-
-1. **Different problems for different audiences:** Temporary email and disposable inbox are often used interchangeably, but for testing purposes they solve different problems: one is built for a human avoiding spam, the other is built for a machine that needs programmatic, reliable access to a message.
-2. **API-first automation lifecycle:** A real testing workflow needs an inbox that can be created through an API call, polled without guessing, and torn down automatically, none of which most consumer temporary email tools were ever designed to support.
-3. **SMTP catchers vs real delivery:** Mailhog and similar SMTP catchers prove that your application attempted to send an email. They cannot prove that a real message reached a real inbox the way your production users experience it, which is exactly the gap a proper disposable inbox closes.
-4. **Eliminating test flakiness:** Flaky OTP and verification tests are almost always caused by fixed sleeps and inbox reuse between test runs, not by the email provider itself, and a disposable inbox with long polling solves both problems at the source.
-5. **AI agents & autonomous workflows:** As AI agents start running through signup and verification flows during testing and in production, the inbox layer needs to be addressable by code from the start, not adapted from a tool built for a human clicking refresh on a webpage.
-
----
+<div class="takeaways-box" id="key-takeaways">
+  <div class="takeaways-header">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+    </svg>
+    Key Takeaways
+  </div>
+  <ul class="takeaways-list">
+    <li><strong>Different problems for different audiences:</strong> Temporary email and disposable inbox are often used interchangeably, but for testing purposes they solve different problems: one is built for a human avoiding spam, the other is built for a machine that needs programmatic, reliable access to a message.</li>
+    <li><strong>API-first automation lifecycle:</strong> A real testing workflow needs an inbox that can be created through an API call, polled without guessing, and torn down automatically, none of which most consumer temporary email tools were ever designed to support.</li>
+    <li><strong>SMTP catchers vs real delivery:</strong> Mailhog and similar SMTP catchers prove that your application attempted to send an email. They cannot prove that a real message reached a real inbox the way your production users experience it, which is exactly the gap a proper disposable inbox closes.</li>
+    <li><strong>Eliminating test flakiness:</strong> Flaky OTP and verification tests are almost always caused by fixed sleeps and inbox reuse between test runs, not by the email provider itself, and a disposable inbox with long polling solves both problems at the source.</li>
+    <li><strong>AI agents & autonomous workflows:</strong> As AI agents start running through signup and verification flows during testing and in production, the inbox layer needs to be addressable by code from the start, not adapted from a tool built for a human clicking refresh on a webpage.</li>
+  </ul>
+</div>
 
 ## Introduction
 
