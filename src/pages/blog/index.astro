@@ -716,18 +716,6 @@ const categories = [
     cursor: pointer;
   }
 
-  .hero-featured-card::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: radial-gradient(circle 280px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(245, 158, 11, 0.14) 0%, transparent 80%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-    z-index: 2;
-  }
-
   .hero-featured-card::after {
     content: "";
     position: absolute;
@@ -746,10 +734,6 @@ const categories = [
     transform: translateY(-4px) scale(1.005);
     box-shadow: 0 16px 36px -4px rgba(245, 158, 11, 0.22), 0 0 0 1.5px rgba(245, 158, 11, 0.65);
     border-color: #d97706;
-  }
-
-  .hero-featured-card:hover::before {
-    opacity: 1;
   }
 
   .hero-featured-card:hover::after {
@@ -888,18 +872,6 @@ const categories = [
     cursor: pointer;
   }
 
-  .card-amber-outline::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: radial-gradient(circle 220px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(245, 158, 11, 0.14) 0%, transparent 80%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-    z-index: 2;
-  }
-
   .card-amber-outline::after {
     content: "";
     position: absolute;
@@ -917,10 +889,6 @@ const categories = [
     transform: translateY(-5px) scale(1.008);
     box-shadow: 0 16px 32px -4px rgba(245, 158, 11, 0.22), 0 0 0 1.5px rgba(245, 158, 11, 0.65);
     border-color: #d97706;
-  }
-
-  .card-amber-outline:hover::before {
-    opacity: 1;
   }
 
   .card-amber-outline:hover::after {
@@ -1587,15 +1555,6 @@ const categories = [
     );
 
     interactiveCards.forEach((card) => {
-      // Dynamic mouse follow glare
-      card.addEventListener("mousemove", (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        card.style.setProperty("--mouse-x", `${x}px`);
-        card.style.setProperty("--mouse-y", `${y}px`);
-      });
-
       // Click shockwave particle ripple
       card.addEventListener("pointerdown", (e) => {
         const rect = card.getBoundingClientRect();
