@@ -264,7 +264,7 @@ const categories = [
         </ul>
 
         <div class="sidebar-footer-link">
-          <a href="#all-articles-section" class="view-all-link">View All →</a>
+          <a href="/blog" class="view-all-link">View All →</a>
         </div>
       </aside>
 
@@ -365,76 +365,6 @@ const categories = [
           </a>
 
         </div>
-
-        <!-- 3. ALL PUBLICATIONS SECTION WITH PAGE-WISE PAGINATION -->
-        <section class="all-publications-container" id="all-articles-section" aria-label="All Publications Archive">
-          <div class="feed-header-wrap">
-            <div class="feed-title-box">
-              <div class="pill-badge pill-section-highlight">
-                <span>📚 COMPLETE LIBRARY</span>
-              </div>
-              <h2 class="feed-title">
-                <span>All Publications</span>
-                <span class="feed-count-number">({posts.length})</span>
-              </h2>
-            </div>
-
-            <div class="search-input-wrap">
-              <svg class="search-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              </svg>
-              <input type="text" id="blog-search-input" class="search-input" placeholder="Search all guides & playbooks..." aria-label="Search articles" />
-            </div>
-          </div>
-
-          <!-- Category Filter Tabs -->
-          <div class="category-filter-bar">
-            {categories.map((cat, idx) => (
-              <button
-                type="button"
-                class={`cat-filter-btn ${idx === 0 ? "active" : ""}`}
-                data-category={cat.name}
-              >
-                {cat.name}
-              </button>
-            ))}
-          </div>
-
-          <!-- Publications Grid (Populated dynamically & page-wise) -->
-          <div class="publications-grid" id="publications-grid">
-            {posts.map((post) => (
-              <article
-                class="pub-card post-item-card"
-                data-category={post.category}
-                data-title={post.title.toLowerCase()}
-                data-desc={post.description.toLowerCase()}
-              >
-                <a href={`/blog/${post.slug}`} class="pub-card-link">
-                  <div class="pub-card-meta">
-                    <span class={`pub-pill pill-cat-${post.categorySlug}`}>{post.category}</span>
-                    <span class="pub-time mono">⏱ {post.readingTime}</span>
-                  </div>
-                  <h4 class="pub-title">{post.title}</h4>
-                  <p class="pub-desc">{post.description}</p>
-                  <div class="pub-card-foot">
-                    <span class="pub-read-action">Read guide <span class="action-arrow">→</span></span>
-                  </div>
-                </a>
-              </article>
-            ))}
-          </div>
-
-          <!-- Page Wise Pagination Controls -->
-          <div class="pagination-wrapper" id="pagination-wrapper">
-            <div class="pagination-controls" id="pagination-controls">
-              <!-- Dynamic JS injected page buttons -->
-            </div>
-            <span class="pagination-info" id="pagination-info">
-              Showing 1–6 of {posts.length} articles
-            </span>
-          </div>
-        </section>
       </section>
 
       <!-- ================= RIGHT COLUMN: AGENT WORKFLOWS ================= -->
@@ -454,7 +384,7 @@ const categories = [
         </ul>
 
         <div class="sidebar-footer-link">
-          <a href="#all-articles-section" class="view-all-link view-all-purple">View All →</a>
+          <a href="/blog" class="view-all-link view-all-purple">View All →</a>
         </div>
       </aside>
 
@@ -1408,195 +1338,6 @@ const categories = [
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    const postCards = Array.from(document.querySelectorAll<HTMLElement>(".post-item-card"));
-    const catButtons = document.querySelectorAll<HTMLButtonElement>(".cat-filter-btn");
-    const searchInput = document.getElementById("blog-search-input") as HTMLInputElement | null;
-    const paginationControls = document.getElementById("pagination-controls");
-    const paginationInfo = document.getElementById("pagination-info");
-    const feedCountBadge = document.getElementById("feed-count-badge");
-
-    let currentCategory = "All";
-    let searchQuery = "";
-    let currentPage = 1;
-    const postsPerPage = 6;
-
-    function getFilteredPosts() {
-      return postCards.filter((card) => {
-        const itemCat = card.getAttribute("data-category") || "";
-        const itemTitle = card.getAttribute("data-title") || "";
-        const itemDesc = card.getAttribute("data-desc") || "";
-
-        const matchesCat = currentCategory === "All" || itemCat.toLowerCase() === currentCategory.toLowerCase();
-        const matchesSearch =
-          !searchQuery ||
-          itemTitle.includes(searchQuery) ||
-          itemDesc.includes(searchQuery) ||
-          itemCat.toLowerCase().includes(searchQuery);
-
-        return matchesCat && matchesSearch;
-      });
-    }
-
-    function updateFeed() {
-      const filtered = getFilteredPosts();
-      const totalPosts = filtered.length;
-      const totalPages = Math.ceil(totalPosts / postsPerPage) || 1;
-
-      if (currentPage > totalPages) currentPage = 1;
-
-      const startIndex = (currentPage - 1) * postsPerPage;
-      const endIndex = Math.min(startIndex + postsPerPage, totalPosts);
-
-      // Hide all first
-      postCards.forEach((card) => {
-        card.style.display = "none";
-      });
-
-      // Show current page items
-      filtered.slice(startIndex, endIndex).forEach((card) => {
-        card.style.display = "flex";
-      });
-
-      // Update count badge
-      if (feedCountBadge) {
-        feedCountBadge.textContent = `${totalPosts}`;
-      }
-
-      // Update pagination
-      renderPagination(totalPages, totalPosts === 0 ? 0 : startIndex + 1, endIndex, totalPosts);
-    }
-
-    function renderPagination(totalPages: number, startItem: number, endItem: number, totalItems: number) {
-      if (!paginationControls || !paginationInfo) return;
-
-      if (totalItems === 0) {
-        paginationControls.innerHTML = "";
-        paginationInfo.innerHTML = "No articles found matching your criteria.";
-        return;
-      }
-
-      if (totalPages <= 1) {
-        paginationControls.innerHTML = "";
-        paginationInfo.innerHTML = `Showing all <strong>${totalItems}</strong> articles`;
-        return;
-      }
-
-      let buttonsHtml = "";
-
-      // Prev Button
-      buttonsHtml += `
-        <button type="button" class="btn-page-nav" id="btn-prev-page" ${currentPage === 1 ? "disabled" : ""}>
-          ← Prev
-        </button>
-      `;
-
-      // Numbered buttons with dynamic window
-      const maxVisible = 5;
-      let startPage = Math.max(1, currentPage - 2);
-      let endPage = Math.min(totalPages, startPage + maxVisible - 1);
-
-      if (endPage - startPage < maxVisible - 1) {
-        startPage = Math.max(1, endPage - maxVisible + 1);
-      }
-
-      if (startPage > 1) {
-        buttonsHtml += `<button type="button" class="btn-page-nav" data-page="1">1</button>`;
-        if (startPage > 2) {
-          buttonsHtml += `<span class="page-dots">…</span>`;
-        }
-      }
-
-      for (let i = startPage; i <= endPage; i++) {
-        buttonsHtml += `
-          <button type="button" class="btn-page-nav ${i === currentPage ? "active" : ""}" data-page="${i}">
-            ${i}
-          </button>
-        `;
-      }
-
-      if (endPage < totalPages) {
-        if (endPage < totalPages - 1) {
-          buttonsHtml += `<span class="page-dots">…</span>`;
-        }
-        buttonsHtml += `<button type="button" class="btn-page-nav" data-page="${totalPages}">${totalPages}</button>`;
-      }
-
-      // Next Button
-      buttonsHtml += `
-        <button type="button" class="btn-page-nav" id="btn-next-page" ${currentPage === totalPages ? "disabled" : ""}>
-          Next →
-        </button>
-      `;
-
-      paginationControls.innerHTML = buttonsHtml;
-      paginationInfo.innerHTML = `Showing <strong>${startItem}–${endItem}</strong> of <strong>${totalItems}</strong> articles (Page ${currentPage} of ${totalPages})`;
-
-      // Bind events
-      paginationControls.querySelectorAll("[data-page]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          currentPage = parseInt((btn as HTMLElement).dataset.page || "1", 10);
-          updateFeed();
-          scrollToSection();
-        });
-      });
-
-      const prevBtn = document.getElementById("btn-prev-page");
-      if (prevBtn) {
-        prevBtn.addEventListener("click", () => {
-          if (currentPage > 1) {
-            currentPage--;
-            updateFeed();
-            scrollToSection();
-          }
-        });
-      }
-
-      const nextBtn = document.getElementById("btn-next-page");
-      if (nextBtn) {
-        nextBtn.addEventListener("click", () => {
-          if (currentPage < totalPages) {
-            currentPage++;
-            updateFeed();
-            scrollToSection();
-          }
-        });
-      }
-    }
-
-    function scrollToSection() {
-      const section = document.getElementById("all-articles-section");
-      if (section) {
-        const offset = 80;
-        const bodyRect = document.body.getBoundingClientRect().top;
-        const elementRect = section.getBoundingClientRect().top;
-        const elementPosition = elementRect - bodyRect;
-        window.scrollTo({
-          top: elementPosition - offset,
-          behavior: "smooth",
-        });
-      }
-    }
-
-    // Category click handler
-    catButtons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        catButtons.forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-        currentCategory = btn.getAttribute("data-category") || "All";
-        currentPage = 1;
-        updateFeed();
-      });
-    });
-
-    // Search input handler
-    if (searchInput) {
-      searchInput.addEventListener("input", (e) => {
-        searchQuery = (e.target as HTMLInputElement).value.trim().toLowerCase();
-        currentPage = 1;
-        updateFeed();
-      });
-    }
-
     // Interactive dynamic mouse spotlight & click shockwave ripple for blog cards
     const interactiveCards = document.querySelectorAll<HTMLElement>(
       ".hero-featured-card, .card-amber-outline, .pub-card"
@@ -1633,8 +1374,5 @@ const categories = [
         }, 600);
       });
     });
-
-    // Initial run
-    updateFeed();
   });
 </script>
