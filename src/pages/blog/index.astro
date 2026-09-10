@@ -32,6 +32,7 @@ function getPostCategory(slug: string, title = ""): { category: string; category
 
   // 2. Email Testing
   if (
+    s === "disposable-inbox-vs-temporary-email" ||
     s === "how-to-automate-otp-email-testing-in-ci-cd-pipelines" ||
     s === "test-inbox-docker" ||
     s === "assert-on-email-in-playwright-cypress" ||
@@ -132,12 +133,15 @@ const rawContentPosts = await getCollection("blog");
 
 const contentPosts = rawContentPosts.map((entry) => {
   const meta = getPostCategory(entry.slug, entry.data.title);
+  const rawDate = entry.data.date || (entry.data as any).pubDate;
+  const dateStr = rawDate instanceof Date ? rawDate.toISOString().slice(0, 10) : (rawDate ? String(rawDate).slice(0, 10) : "2026-08-01");
+  const readTimeStr = typeof entry.data.readingTime === "number" ? `${entry.data.readingTime} min read` : (entry.data.readingTime || "8 min read");
   return {
     slug: entry.slug,
     title: entry.data.title,
     description: entry.data.description,
-    date: entry.data.pubDate ? entry.data.pubDate.toISOString().slice(0, 10) : "2026-08-01",
-    readingTime: entry.data.readingTime || "8 min read",
+    date: dateStr,
+    readingTime: readTimeStr,
     category: meta.category,
     categorySlug: meta.categorySlug,
     icon: meta.icon,
@@ -173,6 +177,7 @@ const posts = Array.from(allPostsMap.values()).sort(
 
 // Curated lists for sidebars matching the reference picture
 const essentialGuides = [
+  { title: "Disposable Inbox vs Temporary Email: Which One Is Better for Testing?", slug: "disposable-inbox-vs-temporary-email" },
   { title: "What Is a Headless Form? A Simple Guide to Modern Developers", slug: "what-is-a-headless-form-a-simple-guide-to-modern-developers" },
   { title: "How to Build AI-Ready Forms for Autonomous Agents", slug: "how-to-build-ai-ready-forms-for-autonomous-agents" },
   { title: "Mailosaur vs Mailinator vs Disposable Inboxes: Which Is Best for QA Testing in 2026", slug: "mailosaur-vs-mailinator-vs-disposable-inboxes" },
@@ -289,12 +294,12 @@ const categories = [
         </div>
 
         <!-- 1. HERO FEATURED ARTICLE (GOLDEN / AMBER BORDER) -->
-        <a href="/blog/what-is-a-headless-form-a-simple-guide-to-modern-developers" class="hero-featured-card" aria-label="Read What Is a Headless Form?">
+        <a href="/blog/disposable-inbox-vs-temporary-email" class="hero-featured-card" aria-label="Read Disposable Inbox vs Temporary Email: Which One Is Better for Testing?">
           <div class="hero-card-grid">
             <div class="hero-image-pane">
               <img
-                src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=700&q=80"
-                alt="Code editor and terminal workflow"
+                src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=700&q=80"
+                alt="Automated email testing and CI pipelines"
                 class="hero-thumb-img"
                 loading="eager"
               />
@@ -302,16 +307,16 @@ const categories = [
             <div class="hero-content-pane">
               <div>
                 <div class="hero-tags-row">
-                  <span class="tag-badge tag-forms">Forms</span>
+                  <span class="tag-badge tag-forms">Email Testing</span>
                   <span class="tag-badge tag-new">✨ NEW</span>
                 </div>
-                <h2 class="hero-title">What Is a Headless Form? A Simple Guide to Modern Developers</h2>
+                <h2 class="hero-title">Disposable Inbox vs Temporary Email: Which One Is Better for Testing?</h2>
                 <p class="hero-excerpt">
-                  A plain English breakdown of headless forms, what they are, how they work, why developers are switching to them, and how they compare to traditional forms and form builders in 2026.
+                  Disposable inbox and temporary email sound like the same thing, but for developers testing signup flows, OTPs, and CI pipelines, the difference matters a lot. Here's a full breakdown of both, and which one belongs in your test suite.
                 </p>
               </div>
               <div class="hero-meta-row">
-                <span>23 min read</span>
+                <span>19 min read</span>
                 <span>•</span>
                 <span class="read-more">Read article →</span>
               </div>
@@ -322,7 +327,21 @@ const categories = [
         <!-- 2. THREE-CARDS ROW (GOLDEN / AMBER BORDERS) -->
         <div class="three-cards-row">
           
-          <!-- Card 1: AI Agents -->
+          <!-- Card 1: Headless Forms -->
+          <a href="/blog/what-is-a-headless-form-a-simple-guide-to-modern-developers" class="card-amber-outline">
+            <div class="card-top-content">
+              <span class="card-category-badge">Forms</span>
+              <h3 class="card-title-3row">What Is a Headless Form? A Simple Guide to Modern Developers</h3>
+              <p class="card-excerpt-3row">
+                A plain English breakdown of headless forms, what they are, how they work, why developers are switching to them, and how they compare to traditional forms and form builders in 2026.
+              </p>
+            </div>
+            <div class="card-bottom-meta">
+              <span>23 min read</span>
+            </div>
+          </a>
+
+          <!-- Card 2: AI Agents -->
           <a href="/blog/how-to-build-ai-ready-forms-for-autonomous-agents" class="card-amber-outline">
             <div class="card-top-content">
               <span class="card-category-badge">AI Agents</span>
@@ -336,27 +355,13 @@ const categories = [
             </div>
           </a>
 
-          <!-- Card 2: Comparisons -->
+          <!-- Card 3: Comparisons -->
           <a href="/blog/mailosaur-vs-mailinator-vs-disposable-inboxes" class="card-amber-outline">
             <div class="card-top-content">
               <span class="card-category-badge">Comparisons</span>
               <h3 class="card-title-3row">Mailosaur vs Mailinator vs Disposable Inboxes: Which Is Best for QA Testing in 2026</h3>
               <p class="card-excerpt-3row">
                 A real-world comparison of Mailosaur, Mailinator and disposable inbox tools for QA testing. Learn which one fits OTP testing, CI pipelines, Playwright, Cypress and automated email verification.
-              </p>
-            </div>
-            <div class="card-bottom-meta">
-              <span>22 min read</span>
-            </div>
-          </a>
-
-          <!-- Card 3: Comparisons -->
-          <a href="/blog/self-host-vs-hosted-form-backend" class="card-amber-outline">
-            <div class="card-top-content">
-              <span class="card-category-badge">Comparisons</span>
-              <h3 class="card-title-3row">Self-Host vs Hosted Form Backend: Complete 2026 Decision Framework</h3>
-              <p class="card-excerpt-3row">
-                Should you build and self-host your own form backend or choose a hosted service? A complete 2026 engineering decision framework covering TCO, deliverability, spam quarantining, AI agent access, compliance, and zero-lock-in architectures.
               </p>
             </div>
             <div class="card-bottom-meta">
