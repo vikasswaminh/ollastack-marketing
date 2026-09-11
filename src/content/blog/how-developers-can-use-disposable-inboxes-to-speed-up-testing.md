@@ -479,12 +479,17 @@ When evaluating disposable inbox tools for CI testing, look for:
   </details>
 </div>
 
----
-
 ## Wrapping Up
 
 Testing email has always been an awkward corner of automated testing, sitting between two systems your test cannot directly control: your own backend, which sends the message, and a mail provider, which delivers it. Shared inboxes and SMTP catchers both try to work around that awkwardness, but they do it by giving something up: either isolation or realism.
 
 A disposable inbox that you can create and read entirely over HTTP gives up neither. Every test gets its own real, receivable address. Every wait is a long poll instead of a guess. Every code and link is already extracted instead of buried in HTML you must parse yourself.
 
+To dive deeper into related testing patterns, explore our guides on:
+- [Disposable Inbox vs Temporary Email: Which One Is Better for Testing?](/blog/disposable-inbox-vs-temporary-email/)
+- [How to Automate OTP Email Testing in CI/CD Pipelines](/blog/how-to-automate-otp-email-testing-in-ci-cd-pipelines/)
+- [Assert on Email in Playwright and Cypress](/blog/assert-on-email-in-playwright-cypress/)
+- [Mailosaur vs Mailinator vs Disposable Inboxes](/blog/mailosaur-vs-mailinator-vs-disposable-inboxes/)
+
 If your suite still has a `sleep(5000)` sitting in front of an email assertion somewhere, swap the shared inbox for a disposable one, swap the sleep for a long poll, and see how much of your flakiness disappears along with it.
+

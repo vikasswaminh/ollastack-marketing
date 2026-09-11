@@ -420,4 +420,11 @@ But the second you're building a test suite that needs to verify OTPs, magic lin
 - **A temporary email tool** was built for a person to glance at a webpage once.
 - **A developer disposable inbox** is built for code: created through an API, polled reliably without guesswork, read for structured data rather than raw HTML, and cleaned up automatically once its job is done.
 
+To learn more about implementing disposable inboxes in your stack:
+- [How Developers Can Use Disposable Inboxes to Speed Up Testing](/blog/how-developers-can-use-disposable-inboxes-to-speed-up-testing/)
+- [How to Automate OTP Email Testing in CI/CD Pipelines](/blog/how-to-automate-otp-email-testing-in-ci-cd-pipelines/)
+- [Mailosaur vs Mailinator vs Disposable Inboxes](/blog/mailosaur-vs-mailinator-vs-disposable-inboxes/)
+- [Test Email in Docker and CI with a Disposable Inbox](/blog/test-inbox-docker/)
+
 If your team keeps fighting flaky email tests or hitting walls trying to wire a consumer temp mail tool into CI, the fix isn't a smarter sleep timer. It's recognizing that testing needs its own purpose-built inbox layer designed from the ground up for automated code.
+
