@@ -1,8 +1,8 @@
 ---
 title: "Form webhooks done right: signing, retries, replay"
 description: "How to consume form submission webhooks properly — verify the signature, handle retries idempotently, and replay a delivery after fixing a bug."
-date: 2026-07-19
-updated: 2026-06-19
+date: 2026-08-26
+updated: 2026-08-26
 tags: ["webhooks", "guide", "backend"]
 author: "Ollastack"
 readingTime: 8

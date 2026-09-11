@@ -133,12 +133,12 @@ export const posts: PostMeta[] = [
     categorySlug: "forms-backend",
   },
   {
-    slug: "how-to-build-a-form-backend-for-a-static-site",
-    title: "How to Build a Form Backend for a Static Site",
+    slug: "form-webhooks-guide",
+    title: "Form Webhooks Done Right: Signing, Retries, Replay",
     description:
-      "Complete guide on building form backends for static websites (Astro, Next.js, Hugo) with webhook dispatch and spam protection.",
+      "How to consume form submission webhooks properly — verify HMAC signatures, handle retries idempotently, and replay deliveries after debugging.",
     date: "2026-08-26",
-    readingTime: "19 min read",
+    readingTime: "12 min read",
     category: "Forms & Backend",
     categorySlug: "forms-backend",
   },
