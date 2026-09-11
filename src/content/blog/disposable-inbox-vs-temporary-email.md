@@ -47,9 +47,9 @@ faq:
 <div class="takeaways-box" id="key-takeaways">
   <div class="takeaways-header">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
     </svg>
-    Key Takeaways
+    <span>Key Takeaways</span>
   </div>
   <ul class="takeaways-list">
     <li><strong>Different problems for different audiences:</strong> Temporary email and disposable inbox are often used interchangeably, but for testing purposes they solve different problems: one is built for a human avoiding spam, the other is built for a machine that needs programmatic, reliable access to a message.</li>

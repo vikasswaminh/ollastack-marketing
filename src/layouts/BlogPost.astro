@@ -864,25 +864,31 @@ const faqLd =
     margin-bottom: 0;
   }
 
-  /* Key Takeaways Box */
+  /* Key Takeaways Box (Bold Red Aesthetic) */
   .body :global(.takeaways-box) {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-left: 5px solid #ea580c;
+    background: #fff8f8;
+    border: 1.5px solid #fecaca;
+    border-left: 6px solid #dc2626;
     border-radius: 14px;
     padding: 22px 24px;
-    margin: 24px 0 32px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    margin: 28px 0 36px;
+    box-shadow: 0 4px 16px rgba(220, 38, 38, 0.05);
   }
 
   .body :global(.takeaways-header) {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 16px;
+    gap: 10px;
+    font-size: 17px;
     font-weight: 800;
-    color: #c2410c;
+    color: #dc2626;
+    letter-spacing: -0.01em;
     margin-bottom: 14px;
+  }
+
+  .body :global(.takeaways-header svg) {
+    color: #dc2626;
+    stroke: #dc2626;
   }
 
   .body :global(.takeaways-list) {
@@ -892,10 +898,19 @@ const faqLd =
   }
 
   .body :global(.takeaways-list li) {
-    font-size: 14.5px;
-    line-height: 1.65;
-    color: #334155;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #1e293b;
     margin-bottom: 10px;
+  }
+
+  .body :global(.takeaways-list li::marker) {
+    color: #dc2626;
+  }
+
+  .body :global(.takeaways-list li strong) {
+    color: #b91c1c;
+    font-weight: 700;
   }
 
   /* FAQ Section */
