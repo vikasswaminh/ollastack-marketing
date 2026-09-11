@@ -78,6 +78,47 @@ export const docsBreadcrumbLd = (name: string, slug: string) => ({
   ],
 });
 
+export const blogBreadcrumbLd = (title: string, slug: string) => ({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: `${SITE}/` },
+    { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE}/blog/` },
+    { "@type": "ListItem", position: 3, name: title, item: `${SITE}/blog/${slug}/` },
+  ],
+});
+
+export const blogIndexBreadcrumbLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: `${SITE}/` },
+    { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE}/blog/` },
+  ],
+};
+
+export const organizationLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Ollastack",
+  url: `${SITE}/`,
+  logo: `${SITE}/logo.svg`,
+  sameAs: ["https://github.com/vikasswaminh/ollastack-marketing"],
+  description: "One platform for AI agents: forms they can submit, agent mailboxes that send and receive email, and disposable inboxes for email testing in CI.",
+};
+
+export const webSiteLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Ollastack",
+  url: `${SITE}/`,
+  potentialAction: {
+    "@type": "SearchAction",
+    target: `${SITE}/blog?q={search_term_string}`,
+    "query-input": "required name=search_term_string",
+  },
+};
+
 export const techArticleLd = (opts: {
   title: string;
   description: string;
@@ -96,3 +137,4 @@ export const techArticleLd = (opts: {
   mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE}/docs/${opts.slug}` },
   image: `${SITE}/og.png`,
 });
+

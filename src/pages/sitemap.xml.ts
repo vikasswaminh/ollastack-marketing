@@ -41,7 +41,7 @@ function changefreqFor(url: string): "weekly" | "monthly" {
 
 // Better lastmod for the standalone .astro blog posts, from their post metadata.
 const postDate: Record<string, string> = Object.fromEntries(
-  posts.map((p) => [`/blog${p.slug}`, p.date])
+  posts.map((p) => [`/blog/${p.slug.replace(/^\//, "")}`, p.date])
 );
 
 const staticEntries: Entry[] = Object.keys(pageFiles)
@@ -57,17 +57,23 @@ const staticEntries: Entry[] = Object.keys(pageFiles)
 // Markdown blog posts (not .astro files, so not in the glob above).
 const collectionBlog: Entry[] = (
   await getCollection("blog", ({ data }) => data.draft !== true)
-).map((p) => ({
-  url: `/blog${p.slug}`,
-  lastmod: (p.data.updated ?? p.data.date).toISOString().slice(0, 10),
-  changefreq: "monthly",
-  priority: "0.7",
-}));
+).map((p) => {
+  const cleanSlug = p.slug.replace(/^\//, "");
+  return {
+    url: `/blog/${cleanSlug}`,
+    lastmod: (p.data.updated ?? p.data.date).toISOString().slice(0, 10),
+    changefreq: "monthly",
+    priority: "0.7",
+  };
+});
 
 // Dedupe by URL (a standalone .astro post and its posts[] entry can overlap).
 const byUrl = new Map<string, Entry>();
 for (const e of [...staticEntries, ...collectionBlog]) {
-  if (!byUrl.has(e.url)) byUrl.set(e.url, e);
+  const normalizedUrl = e.url.replace(/\/$/, "") || "/";
+  if (!byUrl.has(normalizedUrl)) {
+    byUrl.set(normalizedUrl, { ...e, url: normalizedUrl });
+  }
 }
 const all = [...byUrl.values()].sort((a, b) => a.url.localeCompare(b.url));
 

@@ -215,6 +215,8 @@ const agentWorkflows = [
   { title: "AgentMail alternative: agent email + forms + testing", slug: "agentmail-alternative" },
 ];
 
+import { blogIndexBreadcrumbLd } from "../../lib/schema";
+
 const categories = [
   { name: "All", slug: "all" },
   { name: "Forms", slug: "forms" },
@@ -230,6 +232,7 @@ const categories = [
   title="Engineering Blog & Developer Playbooks — Ollastack"
   description="Technical deep-dives, architectural guides, and developer playbooks on AI agent forms, disposable test inboxes, programmatic email APIs, and webhook reliability."
   current="blog"
+  breadcrumbsLd={blogIndexBreadcrumbLd}
 >
   <!-- TOP RED SOCIAL PROOF BANNER -->
   <div class="red-social-bar">

@@ -85,6 +85,8 @@ const agentWorkflows = [
   { title: "AgentMail alternative: agent email + forms + testing", slug: "agentmail-alternative" },
 ];
 
+import { blogBreadcrumbLd } from "../lib/schema";
+
 // Related posts
 const collectionPosts: PostMeta[] = (
   await getCollection("blog", ({ data }) => data.draft !== true)
@@ -106,22 +108,31 @@ const related: PostMeta[] = [...posts, ...collectionPosts]
   .slice(0, 4)
   .map((x) => x.p);
 
+const breadcrumbLd = blogBreadcrumbLd(title, slug);
+
 // Article structured data
 const articleLd = {
   "@context": "https://schema.org",
-  "@type": "Article",
+  "@type": "BlogPosting",
   headline: title,
   description,
   datePublished: publishedAt,
-  dateModified: updatedAt,
-  author: { "@type": "Organization", name: "Ollastack", url: SITE },
+  dateModified: updatedAt || publishedAt,
+  author: {
+    "@type": "Organization",
+    name: "Ollastack",
+    url: SITE,
+    logo: `${SITE}/logo.svg`,
+  },
   publisher: {
     "@type": "Organization",
     name: "Ollastack",
     logo: { "@type": "ImageObject", url: `${SITE}/logo.svg` },
   },
   mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE}/blog/${slug}/` },
+  url: `${SITE}/blog/${slug}/`,
   image: `${SITE}/og.png`,
+  articleSection: catMeta.name,
 };
 
 // FAQPage structured data
@@ -139,7 +150,20 @@ const faqLd =
     : null;
 ---
 
-<Base title={title} description={description} current="blog">
+<Base
+  title={title}
+  description={description}
+  current="blog"
+  ogType="article"
+  canonicalUrl={`${SITE}/blog/${slug}/`}
+  articleMeta={{
+    publishedTime: publishedAt,
+    modifiedTime: updatedAt || publishedAt,
+    author: "Ollastack",
+    section: catMeta.name,
+  }}
+  breadcrumbsLd={breadcrumbLd}
+>
   <script type="application/ld+json" set:html={JSON.stringify(articleLd)} is:inline />
   {faqLd && <script type="application/ld+json" set:html={JSON.stringify(faqLd)} is:inline />}
 
