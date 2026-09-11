@@ -165,7 +165,7 @@ const mappedLegacyPosts = (legacyPosts || []).map((p: any) => {
 
 // Merge and deduplicate by slug
 const allPostsMap = new Map<string, any>();
-for (const p of [...contentPosts, ...mappedLegacyPosts]) {
+for (const p of [...mappedLegacyPosts, ...contentPosts]) {
   if (!allPostsMap.has(p.slug)) {
     allPostsMap.set(p.slug, p);
   }
@@ -334,7 +334,7 @@ const categories = [
         <!-- 2. THREE-CARDS ROW (GOLDEN / AMBER BORDERS) -->
         <div class="three-cards-row">
           
-          <!-- Card 1: Disposable vs Temp Email -->
+          <!-- Card 1: Disposable vs Temp Email (Sep 10) -->
           <a href="/blog/disposable-inbox-vs-temporary-email" class="card-amber-outline">
             <div class="card-top-content">
               <span class="card-category-badge">Email Testing</span>
@@ -350,35 +350,35 @@ const categories = [
             </div>
           </a>
 
-          <!-- Card 2: Headless Forms -->
-          <a href="/blog/what-is-a-headless-form-a-simple-guide-to-modern-developers" class="card-amber-outline">
+          <!-- Card 2: Form Submission APIs (Sep 9) -->
+          <a href="/blog/form-submission-apis-explained-when-to-use-them-and-why-they-matter" class="card-amber-outline">
             <div class="card-top-content">
-              <span class="card-category-badge">Forms</span>
-              <h3 class="card-title-3row">What Is a Headless Form? A Simple Guide to Modern Developers</h3>
+              <span class="card-category-badge">Forms & Backend</span>
+              <h3 class="card-title-3row">Form Submission APIs Explained: When to Use Them and Why They Matter</h3>
               <p class="card-excerpt-3row">
-                A plain English breakdown of headless forms, what they are, how they work, why developers are switching to them, and how they compare to traditional forms in 2026.
+                A complete guide to form submission APIs. Learn what they are, how they work, when to use one instead of a form builder, and why they matter for developers, SaaS products, and AI agents in 2026.
               </p>
             </div>
             <div class="card-bottom-meta">
-              <span>📅 Sep 8, 2026</span>
+              <span>📅 Sep 09, 2026</span>
               <span class="meta-dot">•</span>
-              <span>⏱ 23 min read</span>
+              <span>⏱ 22 min read</span>
             </div>
           </a>
 
-          <!-- Card 3: AI Agents -->
-          <a href="/blog/how-to-build-ai-ready-forms-for-autonomous-agents" class="card-amber-outline">
+          <!-- Card 3: Headless Forms (Sep 8) -->
+          <a href="/blog/what-is-a-headless-form-a-simple-guide-to-modern-developers" class="card-amber-outline">
             <div class="card-top-content">
-              <span class="card-category-badge">AI Agents</span>
-              <h3 class="card-title-3row">How to Build AI-Ready Forms for Autonomous Agents</h3>
+              <span class="card-category-badge">Forms & Backend</span>
+              <h3 class="card-title-3row">What Is a Headless Form? A Simple Guide to Modern Developers</h3>
               <p class="card-excerpt-3row">
-                A practical, developer-focused guide on designing forms that AI agents can fill, validate, and submit reliably, covering schema design, auth, and error handling.
+                A plain English breakdown of headless forms, what they are, how they work, why developers are switching to them, and how they compare to traditional forms and form builders in 2026.
               </p>
             </div>
             <div class="card-bottom-meta">
-              <span>📅 Sep 7, 2026</span>
+              <span>📅 Sep 08, 2026</span>
               <span class="meta-dot">•</span>
-              <span>⏱ 22 min read</span>
+              <span>⏱ 23 min read</span>
             </div>
           </a>
 

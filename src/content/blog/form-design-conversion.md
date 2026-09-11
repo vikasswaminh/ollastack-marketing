@@ -1,8 +1,8 @@
 ---
 title: "Form design for higher conversions (and less spam)"
 description: "Form-design choices that lift completion — fewer fields, one column, inline validation — plus anti-spam that doesn't cost conversions (honeypot over CAPTCHA)."
-date: 2026-08-24
-updated: 2026-06-22
+date: 2026-08-25
+updated: 2026-08-25
 tags: ["forms", "conversion", "design", "guide"]
 author: "Ollastack"
 readingTime: 7

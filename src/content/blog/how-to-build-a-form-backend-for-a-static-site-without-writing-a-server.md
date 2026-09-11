@@ -1,8 +1,8 @@
 ---
 title: "How to Build a Form Backend for a Static Site Without Writing a Server"
 description: "You don't need Express, a database, or a $5/month droplet just to catch a contact form. Here's exactly how to give a static site a real form backend — spam filtering, notifications, webhooks and all — without writing a line of server code."
-date: 2026-08-24
-updated: 2026-08-24
+date: 2026-08-27
+updated: 2026-08-27
 tags: ["forms", "static-site", "hugo", "astro", "webhooks", "ai-agents"]
 author: "Ollastack"
 readingTime: 21

@@ -1,8 +1,8 @@
 ---
 title: "Test email in Docker and CI with a disposable inbox"
 description: "Mailhog proves an email was sent, not delivered. Test real email from a Docker container or CI job with a disposable inbox over HTTP — create, wait, assert."
-date: 2026-08-22
-updated: 2026-06-22
+date: 2026-08-24
+updated: 2026-08-24
 tags: ["testing", "docker", "ci", "email"]
 author: "Ollastack"
 readingTime: 7

@@ -1,8 +1,8 @@
 ---
 title: "What Is an Agent Email API and Why Does It Matter for AI Workflows?"
 description: "AI agents are booking meetings, signing up for tools, verifying accounts, and following up on leads — and every one of those tasks eventually hits an inbox. Here's what an agent email API actually is, why a normal transactional email service can't do the job, and how to wire email into an agentic workflow properly."
-date: 2026-08-31
-updated: 2026-08-31
+date: 2026-09-03
+updated: 2026-09-03
 author: "By the OllaStack Team"
 readingTime: 21
 tags: ["AI Agents", "Email API", "Agent Workflows", "Security"]
