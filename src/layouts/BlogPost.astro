@@ -50,26 +50,6 @@ const STOP = new Set(["the","a","an","to","for","and","in","of","with","your","f
 const toks = (s: string) => new Set(s.split("-").filter((t) => t.length > 2 && !STOP.has(t)));
 const cur = toks(slug);
 
-// Agent Workflows Curated List for Right Sidebar
-const agentWorkflows = [
-  { title: "How Developers Can Use Disposable Inboxes to Speed Up Testing", slug: "how-developers-can-use-disposable-inboxes-to-speed-up-testing" },
-  { title: "How to Build AI-Ready Forms for Autonomous Agents", slug: "how-to-build-ai-ready-forms-for-autonomous-agents" },
-  { title: "Mailosaur vs Mailinator vs Disposable Inboxes: Which Is Best for QA Testing in 2026", slug: "mailosaur-vs-mailinator-vs-disposable-inboxes" },
-  { title: "How to Connect a Contact Form to Email Without Backend Code (2026 Guide)", slug: "how-to-connect-a-contact-form-to-email-without-backend-code" },
-  { title: "What Is an Agent Email API and Why Does It Matter for AI Workflows?", slug: "what-is-an-agent-email-api" },
-  { title: "Form Backend vs Form Builder: What Developers Should Choose in 2026", slug: "form-backend-vs-form-builder" },
-  { title: "How to Automate OTP Email Testing in CI/CD Pipelines", slug: "how-to-automate-otp-email-testing-in-ci-cd-pipelines" },
-  { title: "Test email in Docker and CI with a disposable inbox", slug: "test-inbox-docker" },
-  { title: "Can AI Agents Submit Forms Safely? Here's What Developers Need to Know", slug: "can-ai-agents-submit-forms-safely" },
-  { title: "Assert on email in Playwright and Cypress", slug: "assert-on-email-in-playwright-cypress" },
-  { title: "Email testing API: assert on real emails in CI", slug: "email-testing-api-for-ci" },
-  { title: "How to read an OTP / verification code in an AI agent", slug: "read-otp-verification-code-in-ai-agent" },
-  { title: "Build an AI agent that sends and receives email (with MCP)", slug: "build-ai-agent-that-sends-and-receives-email" },
-  { title: "Email for AI agents: give an agent its own inbox", slug: "email-for-ai-agents" },
-  { title: "ML spam quarantine, and why a form backend should fail open", slug: "ml-quarantine-explained" },
-  { title: "AgentMail alternative: agent email + forms + testing", slug: "agentmail-alternative" }
-];
-
 const related: PostMeta[] = [...posts, ...collectionPosts]
   .filter((p) => p.slug !== slug)
   .map((p) => ({ p, score: [...toks(p.slug)].filter((t) => cur.has(t)).length }))
@@ -188,26 +168,6 @@ const articleLd = {
         </nav>
       )}
     </article>
-
-    <aside class="right-rail" aria-label="Agent Workflows">
-      <div class="col-sidebar sidebar-right">
-        <div class="sidebar-badge-wrap">
-          <div class="pill-badge pill-purple">
-            <span>🤖 AGENT WORKFLOWS</span>
-          </div>
-        </div>
-        <ul class="sidebar-link-list">
-          {agentWorkflows.map((guide, idx) => (
-            <li class="sidebar-link-item">
-              <a href={`/blog/${guide.slug}`} class={`side-link ${idx === 0 ? 'highlight-first' : ''} ${slug === guide.slug ? 'active-guide' : ''}`}>{guide.title}</a>
-            </li>
-          ))}
-        </ul>
-        <div class="sidebar-footer-link">
-          <a href="/blog#all-articles-section" class="view-all-link">View All →</a>
-        </div>
-      </div>
-    </aside>
   </div>
 </Base>
 
@@ -267,9 +227,9 @@ const articleLd = {
 <style>
   .blog-shell {
     display: grid;
-    grid-template-columns: 280px minmax(0, 1fr) 280px;
-    gap: 32px;
-    max-width: 1560px;
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: 48px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 36px 20px 96px;
     align-items: start;
@@ -847,76 +807,6 @@ const articleLd = {
   .sidebar-badge-wrap {
     margin-bottom: 20px;
   }
-  .pill-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 7px 16px;
-    border-radius: 9999px;
-    font-size: 11.5px;
-    font-weight: 800;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    user-select: none;
-  }
-  .pill-purple {
-    background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
-    color: #ffffff;
-    box-shadow: 0 2px 6px rgba(124, 58, 237, 0.25);
-  }
-  .sidebar-link-list {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  .sidebar-link-item {
-    margin: 0;
-    padding: 0;
-  }
-  .side-link {
-    font-size: 14.5px;
-    font-weight: 600;
-    line-height: 1.45;
-    color: #334155 !important;
-    display: block;
-    text-decoration: none !important;
-    border-bottom: none !important;
-    transition: all 0.15s ease;
-  }
-  .side-link:hover {
-    color: #7c3aed !important;
-    transform: translateX(2px);
-  }
-  .side-link.highlight-first {
-    color: #7c3aed !important;
-    font-weight: 700;
-  }
-  .side-link.active-guide {
-    color: #7c3aed !important;
-    font-weight: 800;
-  }
-  .sidebar-footer-link {
-    margin-top: 20px;
-    padding-top: 14px;
-    border-top: 1px dashed #e2e8f0;
-  }
-  .view-all-link {
-    font-size: 12.5px;
-    font-weight: 700;
-    color: #7c3aed !important;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    text-decoration: none !important;
-    transition: gap 0.15s ease;
-  }
-  .view-all-link:hover {
-    gap: 7px;
-  }
-
   /* Related reading cards in bottom section */
   .related-foot {
     margin-top: 56px;
@@ -999,22 +889,11 @@ const articleLd = {
   }
 
   /* ---------- Responsive ---------- */
-  @media (max-width: 1280px) {
-    .blog-shell {
-      grid-template-columns: 220px minmax(0, 1fr) 240px;
-      gap: 24px;
-      padding: 30px 16px 80px;
-    }
-  }
-
   @media (max-width: 1024px) {
     .blog-shell {
-      grid-template-columns: 200px minmax(0, 1fr) 220px;
-      gap: 20px;
-      padding: 24px 14px 64px;
-    }
-    .side-link {
-      font-size: 13px;
+      grid-template-columns: 240px minmax(0, 1fr);
+      gap: 32px;
+      padding: 28px 16px 64px;
     }
   }
 
@@ -1028,10 +907,6 @@ const articleLd = {
       position: static;
       border-bottom: 1px solid var(--line);
       padding-bottom: 20px;
-    }
-    .right-rail {
-      position: static;
-      margin-top: 24px;
     }
     .post-head h1 { font-size: 28px; }
   }
