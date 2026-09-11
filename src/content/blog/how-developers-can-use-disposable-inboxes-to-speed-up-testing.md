@@ -78,8 +78,6 @@ Now two tests are racing to read the same inbox, and whichever one grabs the six
 
 All that complexity exists purely because the inbox is shared when it should not be. This is the exact problem disposable inboxes solve, and it is worth being precise about what "disposable" means here, because the term gets used loosely.
 
----
-
 ## What a Disposable Inbox Is
 
 A [disposable inbox](/email-api), in the context of automated testing, is a real, receivable email address that your test suite can create on demand, read from over HTTP, and discard when it is done.
@@ -112,8 +110,6 @@ The practical workflow with a disposable inbox almost always follows the same th
 3. **Wait for the message:** Usually via a long poll endpoint rather than a fixed sleep, and once it lands you assert on whatever matters: the subject line, a six-digit code, a magic link, an attachment, or simply that the message exists at all.
 
 That third step is where most of the flakiness in traditional email testing setups comes from, so it deserves its own section.
-
----
 
 ## The Sleep Problem, and Why Long Polling Fixes It
 
@@ -156,8 +152,6 @@ Notice there is no sleep anywhere in that test. The wait call blocks until the e
 
 That extraction step matters more than it sounds; parsing verification codes out of email HTML is one of those tasks that looks trivial until a marketing team redesigns the email template and every test that scraped the old markup breaks overnight. When the API extracts codes and links for you, template redesigns stop being a testing concern.
 
----
-
 ## Where This Shows Up in a Real Test Suite
 
 It helps to walk through specific places in a typical application where email testing gets exercised, because "test email" is not one scenario, it is several, and each has slightly different requirements.
@@ -168,8 +162,6 @@ It helps to walk through specific places in a typical application where email te
 * **Transactional and notification emails:** Receipts, invoices, weekly digests, "someone commented on your post" style notifications, are less time-sensitive but still worth testing for content correctness. Did the receipt include the right total? Did the digest include the right number of items? These tests usually check the message body rather than extracting a code, and they benefit from the same isolated inbox pattern so that two tests running receipt generation at the same time don't cross wires.
 * **Multi-tenant and per-customer SMTP:** Where your product sends notification emails from each customer's own domain rather than a shared sending address, adds another layer: you need to confirm not just that the email arrived, but that it arrived from the expected sender, with the expected DKIM alignment for that specific tenant's domain. Disposable inboxes are useful here too, since you can inspect headers on the received message rather than trusting that your sending code did the right thing.
 * **Team invitations and multi-party flows:** Where shared inboxes cause the most visible pain, because you need at least two distinct addresses in a single test: the inviter and the invitee. Creating two disposable inboxes in one test, one for each party, is trivial with an API and awkward with a single shared Gmail account, since you would need some way to distinguish which message belongs to which "user" inside the same mailbox.
-
----
 
 ## Wiring This into Playwright and Cypress
 
@@ -262,8 +254,6 @@ it("completes full signup with verification", () => {
 
 Selenium-based suites, whether in Java, Python or C#, follow the exact same conceptual pattern; you are just making an HTTP request from whatever language your test harness is written in rather than from inside the browser context.
 
----
-
 ## Running This Inside Docker and CI Pipelines
 
 A lot of teams containerize their test environment, and this is exactly where local SMTP catchers start to feel heavy. You end up adding another service to your Docker Compose file, wiring up ports between containers, and hoping the catcher's own web UI or API stays stable across versions.
@@ -309,8 +299,6 @@ There is no service container block needed, no port mapping, no health checks wa
 
 GitLab CI, CircleCI, Jenkins and every other pipeline tool follow the identical pattern: set the token as a protected secret variable, expose it to the job as an environment variable, and let your existing test code do the rest.
 
----
-
 ## Keeping Parallel Test Runs from Colliding
 
 Once your test suite runs faster and more reliably, teams tend to run more of it in parallel, sharding tests across multiple workers to keep pull request feedback fast. This is exactly the scenario where a shared inbox falls apart.
@@ -326,8 +314,6 @@ Once your test suite runs faster and more reliably, teams tend to run more of it
 2. **Set a retention window on test mode inboxes** so that anything you forget to clean up manually expires after a day or two, rather than silently growing stored message counts.
 3. **Mark inboxes as test mode specifically:** Test inboxes typically skip spam filtering entirely, which ensures legitimate verification emails never get quietly quarantined by heuristics during CI.
 
----
-
 ## Security Considerations
 
 It is tempting to treat test infrastructure as lower stakes than production infrastructure, but email testing has a couple of specific security considerations worth calling out:
@@ -335,8 +321,6 @@ It is tempting to treat test infrastructure as lower stakes than production infr
 1. **Credential handling:** An API token that can create inboxes and read their contents is a secret. It should live in your CI provider's secret store, never committed to a repository, never printed in logs, and never shared across environments that do not need it.
 2. **Scope:** If your provider supports scoped tokens, generate a token that can only create and read test mode inboxes, not one with full account access. This limits the blast radius if a token does leak through a misconfigured log line or CI artifact.
 3. **Customer data protection:** If your test suite ever sends real customer data through a test flow, even accidentally, that data now lives in third-party storage. Always use synthetic test data, fake names, and fake addresses in any test flow.
-
----
 
 ## The AI Agent Angle
 
@@ -355,16 +339,12 @@ await agent.verifyAccount(code);
 
 An AI agent reading an OTP from an email faces the identical problem a Playwright test faces: it needs an inbox, a way to wait for a message without guessing at sleep durations, and structured access to the code inside rather than raw HTML to parse. Teams building agent workflows that touch email are reusing the exact same testing infrastructure pattern.
 
----
-
 ## Common Mistakes Teams Make Adopting This
 
 * **Reusing one inbox across an entire test file** because it felt convenient to create it once in a `beforeAll` hook. Create a fresh inbox per test unless there is a specific reason two tests need to share one.
 * **Replacing sleep with a short, fixed timeout** on the wait call and calling it done. A long poll with a five-second timeout is barely better than a five-second sleep; set a timeout generous enough (such as 30s) that it almost never gets hit under normal conditions while still returning immediately when the message arrives.
 * **Parsing HTML manually instead of using extracted codes and links.** Avoid regexing raw HTML when the API provides parsed structured fields.
 * **Testing only the happy path.** Disposable inboxes make it just as easy to test expired tokens, resend flows, and rate limiting.
-
----
 
 ## Choosing an Inbox Provider for Testing
 
@@ -377,8 +357,6 @@ When evaluating disposable inbox tools for CI testing, look for:
 
 [Ollastack's Email Testing API](/email-api) is built around exactly this workflow: create an inbox, long poll for the message, get extracted codes and links back instantly across Playwright, Cypress, Jest, and CI workflows. For a detailed comparison of options, check out our [Mailosaur alternative breakdown](/blog/mailosaur-alternative).
 
----
-
 ## A Realistic Before and After
 
 | Before (Shared Inbox / Sleep / Regex) | After (Disposable Inbox / Long Polling) |
@@ -388,8 +366,6 @@ When evaluating disposable inbox tools for CI testing, look for:
 | Fragile HTML regex breaks when email template changes | Pre-extracted structured `codes` and `links` arrays |
 | Manual IMAP / webmail scraping configuration | Simple `fetch()` calls to clean REST API |
 | Frequent intermittent false-negative CI test failures | Deterministic, rock-solid passing test runs |
-
----
 
 <h2 id="wrapping-up" style="text-align: center; margin: 48px auto 20px;">Wrapping Up</h2>
 
