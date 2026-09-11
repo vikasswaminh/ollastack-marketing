@@ -11,6 +11,27 @@ export interface PostMeta {
 
 export const posts: PostMeta[] = [
   {
+    slug: "how-developers-can-use-disposable-inboxes-to-speed-up-testing",
+    title: "How Developers Can Use Disposable Inboxes to Speed Up Testing",
+    description:
+      "Disposable inboxes let developers test signups, OTPs, password resets and transactional email in seconds instead of minutes. Here's how to use them in CI, Docker, Playwright and Cypress without flaky sleeps or shared test accounts.",
+    date: "2026-09-11",
+    readingTime: "19 min read",
+    category: "Email Testing",
+    categorySlug: "email-testing",
+    featured: true,
+  },
+  {
+    slug: "disposable-inbox-vs-temporary-email",
+    title: "Disposable Inbox vs Temporary Email: Which One Is Better for Testing?",
+    description:
+      "Disposable inbox and temporary email sound like the same thing, but for developers testing signup flows, OTPs, and CI pipelines, the difference matters a lot. Here's a full breakdown of both, and which one belongs in your test suite.",
+    date: "2026-09-10",
+    readingTime: "19 min read",
+    category: "Email Testing",
+    categorySlug: "email-testing",
+  },
+  {
     slug: "form-submission-apis-explained-when-to-use-them-and-why-they-matter",
     title: "Form Submission APIs Explained: When to Use Them and Why They Matter",
     description:
@@ -19,7 +40,6 @@ export const posts: PostMeta[] = [
     readingTime: "22 min read",
     category: "Forms & Backend",
     categorySlug: "forms-backend",
-    featured: true,
   },
   {
     slug: "what-is-a-headless-form-a-simple-guide-to-modern-developers",
