@@ -261,38 +261,7 @@ const faqLd =
         <div class="body-content-area body">
           <slot />
 
-          {faq && faq.length > 0 && (
-            <section class="post-faq" id="faq-section">
-              <div class="faq-head-wrap">
-                <div class="faq-pill-badge">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                  </svg>
-                  <span>COMMONLY ASKED QUESTIONS</span>
-                </div>
-                <h2 id="faq">Frequently asked questions</h2>
-              </div>
-              <div class="faq-accordion-list">
-                {faq.map((f, i) => (
-                  <details class="faq-card" open={i === 0}>
-                    <summary class="faq-summary">
-                      <span class="faq-q-text">{f.q}</span>
-                      <span class="faq-icon-arrow" aria-hidden="true">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                          <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                      </span>
-                    </summary>
-                    <div class="faq-body-content">
-                      <p>{f.a}</p>
-                    </div>
-                  </details>
-                ))}
-              </div>
-            </section>
-          )}
+
         </div>
 
         {related.length > 0 && (
