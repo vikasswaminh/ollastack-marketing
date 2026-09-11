@@ -391,7 +391,7 @@ When evaluating disposable inbox tools for CI testing, look for:
 
 ---
 
-## Wrapping Up
+<h2 id="wrapping-up" style="text-align: center; margin: 48px auto 20px;">Wrapping Up</h2>
 
 Testing email has always been an awkward corner of automated testing, sitting between two systems your test cannot directly control: your own backend, which sends the message, and a mail provider, which delivers it. Shared inboxes and SMTP catchers both try to work around that awkwardness, but they do it by giving something up: either isolation or realism.
 
