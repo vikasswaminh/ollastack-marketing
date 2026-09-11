@@ -318,7 +318,9 @@ const categories = [
                 </p>
               </div>
               <div class="hero-meta-row">
-                <span>19 min read</span>
+                <span>📅 Sep 11, 2026</span>
+                <span>•</span>
+                <span>⏱ 19 min read</span>
                 <span>•</span>
                 <span class="read-more">Read article →</span>
               </div>
@@ -339,7 +341,9 @@ const categories = [
               </p>
             </div>
             <div class="card-bottom-meta">
-              <span>19 min read</span>
+              <span>📅 Sep 10, 2026</span>
+              <span class="meta-dot">•</span>
+              <span>⏱ 19 min read</span>
             </div>
           </a>
 
@@ -353,7 +357,9 @@ const categories = [
               </p>
             </div>
             <div class="card-bottom-meta">
-              <span>23 min read</span>
+              <span>📅 Sep 8, 2026</span>
+              <span class="meta-dot">•</span>
+              <span>⏱ 23 min read</span>
             </div>
           </a>
 
@@ -367,7 +373,9 @@ const categories = [
               </p>
             </div>
             <div class="card-bottom-meta">
-              <span>22 min read</span>
+              <span>📅 Sep 7, 2026</span>
+              <span class="meta-dot">•</span>
+              <span>⏱ 22 min read</span>
             </div>
           </a>
 
@@ -410,7 +418,11 @@ const categories = [
                 <a href={`/blog/${post.slug}`} class="pub-card-link">
                   <div class="pub-card-meta">
                     <span class={`pub-pill pill-cat-${post.categorySlug}`}>{post.category}</span>
-                    <span class="pub-time mono">⏱ {post.readingTime}</span>
+                    <div class="pub-meta-right">
+                      <span class="pub-date mono">📅 {fmtDate(post.date)}</span>
+                      <span class="pub-meta-dot">•</span>
+                      <span class="pub-time mono">⏱ {post.readingTime}</span>
+                    </div>
                   </div>
                   <h4 class="pub-title">{post.title}</h4>
                   <p class="pub-desc">{post.description}</p>
@@ -1100,7 +1112,32 @@ const categories = [
   .pill-cat-security { background: #fef2f2; color: #b91c1c; border: 1px solid #fee2e2; }
   .pill-cat-migrations { background: #fdf4ff; color: #a21caf; border: 1px solid #fae8ff; }
 
-  .pub-time {
+  .card-bottom-meta {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    margin-top: auto;
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .meta-dot, .pub-meta-dot {
+    color: #cbd5e1;
+  }
+
+  .pub-meta-right {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 600;
+  }
+
+  .pub-date, .pub-time {
     font-size: 12px;
     color: #64748b;
     font-weight: 600;
