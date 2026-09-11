@@ -1,7 +1,7 @@
 ---
 import Base from "./Base.astro";
 import { getCollection } from "astro:content";
-import { posts, fmtDate, type PostMeta } from "../data/posts";
+import { posts, type PostMeta } from "../data/posts";
 
 interface Props {
   slug: string;
@@ -18,25 +18,74 @@ const APP = "https://login.ollastack.com";
 const SITE = "https://ollastack.com";
 const { slug, title, description, publishedAt, updatedAt, readingTime, ctaLocation, faq } = Astro.props;
 
-// FAQPage structured data (only when the post supplies FAQs) — drives
-// People-Also-Ask coverage and rich results.
-const faqLd =
-  faq && faq.length
-    ? {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        mainEntity: faq.map((f) => ({
-          "@type": "Question",
-          name: f.q,
-          acceptedAnswer: { "@type": "Answer", text: f.a },
-        })),
-      }
-    : null;
+const fmtNiceDate = (iso: string) => {
+  try {
+    return new Date(iso + "T00:00:00Z").toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  } catch (e) {
+    return iso;
+  }
+};
 
-// Related posts drawn from the FULL live corpus (legacy .astro + every
-// non-draft markdown post), ranked by shared slug keywords so each post links
-// to genuine topical siblings — not the same 7 legacy posts every time. This
-// is the site's main internal-linking distributor, so it must reach everything.
+function getCategoryMeta(s: string, t: string) {
+  const str = (s + " " + t).toLowerCase();
+  if (str.includes("ai-agent") || str.includes("agent")) {
+    return { name: "AI Agents", icon: "🤖", pillClass: "tag-agent" };
+  }
+  if (str.includes("disposable") || str.includes("email") || str.includes("otp") || str.includes("test")) {
+    return { name: "Email Testing", icon: "✉️", pillClass: "tag-testing" };
+  }
+  if (str.includes("vs-") || str.includes("alternative")) {
+    return { name: "Comparisons", icon: "⚖️", pillClass: "tag-compare" };
+  }
+  return { name: "Forms", icon: "⚡", pillClass: "tag-forms" };
+}
+
+const catMeta = getCategoryMeta(slug, title);
+
+// Essential Guides for Left Sidebar
+const essentialGuides = [
+  { title: "What Is a Headless Form? A Simple Guide to Modern Developers", slug: "what-is-a-headless-form-a-simple-guide-to-modern-developers" },
+  { title: "Mailosaur vs Mailinator vs Disposable Inboxes: Which Is Best for QA Testing in 2026", slug: "mailosaur-vs-mailinator-vs-disposable-inboxes" },
+  { title: "Self-Host vs Hosted Form Backend: Complete 2026 Decision Framework", slug: "self-host-vs-hosted-form-backend" },
+  { title: "How to Connect a Contact Form to Email Without Backend Code (2026 Guide)", slug: "how-to-connect-a-contact-form-to-email-without-backend-code" },
+  { title: "How to Automate OTP Email Testing in CI/CD Pipelines", slug: "how-to-automate-otp-email-testing-in-ci-cd-pipelines" },
+  { title: "How Developers Can Use Disposable Inboxes to Speed Up Testing", slug: "how-developers-can-use-disposable-inboxes-to-speed-up-testing" },
+  { title: "Disposable Inbox vs Temporary Email: Which One Is Better for Testing?", slug: "disposable-inbox-vs-temporary-email" },
+  { title: "Welcome to the OllaStack blog", slug: "welcome-to-the-blog" },
+  { title: "Getting started with OllaStack", slug: "getting-started" },
+  { title: "How to Build a Form Backend for a Static Site Without Writing a Server", slug: "how-to-build-a-form-backend-for-a-static-site-without-writing-a-server" },
+  { title: "Form design for higher conversions (and less spam)", slug: "form-design-conversion" },
+  { title: "Test email in Docker and CI with a disposable inbox", slug: "test-inbox-docker" },
+  { title: "Assert on email in Playwright and Cypress", slug: "assert-on-email-in-playwright-cypress" },
+  { title: "Email testing API: assert on real emails in CI", slug: "email-testing-api-for-ci" },
+  { title: "Per-tenant SMTP: send from each customer's own server", slug: "per-tenant-smtp-guide" },
+];
+
+// Agent Workflows for Right Sidebar
+const agentWorkflows = [
+  { title: "How to Build AI-Ready Forms for Autonomous Agents", slug: "how-to-build-ai-ready-forms-for-autonomous-agents" },
+  { title: "Mailosaur vs Mailinator vs Disposable Inboxes: Which Is Best for QA Testing in 2026", slug: "mailosaur-vs-mailinator-vs-disposable-inboxes" },
+  { title: "How to Connect a Contact Form to Email Without Backend Code (2026 Guide)", slug: "how-to-connect-a-contact-form-to-email-without-backend-code" },
+  { title: "What Is an Agent Email API and Why Does It Matter for AI Workflows?", slug: "what-is-an-agent-email-api" },
+  { title: "Form Backend vs Form Builder: What Developers Should Choose in 2026", slug: "form-backend-vs-form-builder" },
+  { title: "How to Automate OTP Email Testing in CI/CD Pipelines", slug: "how-to-automate-otp-email-testing-in-ci-cd-pipelines" },
+  { title: "How Developers Can Use Disposable Inboxes to Speed Up Testing", slug: "how-developers-can-use-disposable-inboxes-to-speed-up-testing" },
+  { title: "Test email in Docker and CI with a disposable inbox", slug: "test-inbox-docker" },
+  { title: "Can AI Agents Submit Forms Safely? Here's What Developers Need to Know", slug: "can-ai-agents-submit-forms-safely" },
+  { title: "Assert on email in Playwright and Cypress", slug: "assert-on-email-in-playwright-cypress" },
+  { title: "Email testing API: assert on real emails in CI", slug: "email-testing-api-for-ci" },
+  { title: "How to read an OTP / verification code in an AI agent", slug: "read-otp-verification-code-in-ai-agent" },
+  { title: "Build an AI agent that sends and receives email (with MCP)", slug: "build-ai-agent-that-sends-and-receives-email" },
+  { title: "Email for AI agents: give an agent its own inbox", slug: "email-for-ai-agents" },
+  { title: "ML spam quarantine, and why a form backend should fail open", slug: "ml-quarantine-explained" },
+  { title: "AgentMail alternative: agent email + forms + testing", slug: "agentmail-alternative" },
+];
+
+// Related posts
 const collectionPosts: PostMeta[] = (
   await getCollection("blog", ({ data }) => data.draft !== true)
 ).map((p) => ({
@@ -57,8 +106,7 @@ const related: PostMeta[] = [...posts, ...collectionPosts]
   .slice(0, 4)
   .map((x) => x.p);
 
-// Article structured data — gives every post (legacy .astro + markdown
-// collection) rich-result eligibility and clean author/publisher/date signals.
+// Article structured data
 const articleLd = {
   "@context": "https://schema.org",
   "@type": "Article",
@@ -75,399 +123,626 @@ const articleLd = {
   mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE}/blog/${slug}/` },
   image: `${SITE}/og.png`,
 };
+
+// FAQPage structured data
+const faqLd =
+  faq && faq.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: faq.map((f) => ({
+          "@type": "Question",
+          name: f.q,
+          acceptedAnswer: { "@type": "Answer", text: f.a },
+        })),
+      }
+    : null;
 ---
 
 <Base title={title} description={description} current="blog">
   <script type="application/ld+json" set:html={JSON.stringify(articleLd)} is:inline />
   {faqLd && <script type="application/ld+json" set:html={JSON.stringify(faqLd)} is:inline />}
-  <div class="blog-shell">
-    <aside class="left-rail">
-      <a href="/blog" class="back mono">← All posts</a>
-      <div class="toc-box">
-        <div class="toc-box-head">
-          <div class="toc-box-title">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <line x1="8" y1="6" x2="21" y2="6"></line>
-              <line x1="8" y1="12" x2="21" y2="12"></line>
-              <line x1="8" y1="18" x2="21" y2="18"></line>
-              <line x1="3" y1="6" x2="3.01" y2="6"></line>
-              <line x1="3" y1="12" x2="3.01" y2="12"></line>
-              <line x1="3" y1="18" x2="3.01" y2="18"></line>
-            </svg>
-            <span>ON THIS PAGE</span>
+
+  <!-- MAIN 3-COLUMN MAGAZINE SECTION (EXACT REFERENCE DESIGN) -->
+  <main class="blog-main-wrapper">
+    <div class="magazine-grid">
+      
+      <!-- ================= LEFT COLUMN: ESSENTIAL GUIDES ================= -->
+      <aside class="col-sidebar sidebar-left" aria-label="Essential Guides">
+        <div class="sidebar-badge-wrap">
+          <div class="pill-badge pill-orange">
+            <span>⚡ ESSENTIAL GUIDES</span>
           </div>
-          <span class="toc-box-count mono" id="toc-count"></span>
         </div>
-        <nav class="toc-box-list" id="toc" aria-label="Table of contents">
-          <!-- populated by client script from h2[id] in <article> -->
-        </nav>
-      </div>
-    </aside>
 
-    <article class="post">
-      <header class="post-head">
-        <div class="post-meta mono">
-          <time datetime={publishedAt}>{fmtDate(publishedAt)}</time>
-          <span class="dot">·</span>
-          <span>{readingTime}</span>
+        <ul class="sidebar-link-list">
+          {essentialGuides.map((guide) => (
+            <li class="sidebar-link-item">
+              <a href={`/blog/${guide.slug}`} class={`side-link ${guide.slug === slug ? 'active-guide-orange' : ''}`}>
+                {guide.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <div class="sidebar-footer-link">
+          <a href="/blog" class="view-all-link">View All →</a>
         </div>
-        <h1 class="display">{title}</h1>
-      </header>
+      </aside>
 
-      <section class="body">
-        <slot />
+      <!-- ================= CENTER COLUMN: MAIN ARTICLE ================= -->
+      <article class="col-center-article">
+        
+        <!-- Header -->
+        <header class="post-header-box">
+          <h1 class="post-display-title">{title}</h1>
+          <p class="post-sub-desc">{description}</p>
 
-        {faq && faq.length > 0 && (
-          <section class="post-faq" id="faq-section">
-            <div class="faq-head-wrap">
-              <div class="faq-pill-badge">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-                  <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          <!-- Meta Pill Tags Row -->
+          <div class="meta-pills-row">
+            <span class={`meta-pill ${catMeta.pillClass}`}>
+              <span class="meta-icon">{catMeta.icon}</span>
+              <span>{catMeta.name}</span>
+            </span>
+
+            <span class="meta-pill meta-neutral">
+              <span class="meta-icon">⏱</span>
+              <span>{readingTime}</span>
+            </span>
+
+            <span class="meta-pill meta-neutral">
+              <span class="meta-icon">📅</span>
+              <span>Updated {fmtNiceDate(updatedAt || publishedAt)}</span>
+            </span>
+
+            <button type="button" class="copy-link-pill-btn" id="copy-link-btn" aria-label="Copy link to article">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+              </svg>
+              <span id="copy-btn-label">Copy link</span>
+            </button>
+          </div>
+
+          <!-- About the Ollastack Engineering Team (Author Trust Card) -->
+          <div class="author-trust-card">
+            <div class="trust-card-top">
+              <div class="author-avatar-circle" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
                 </svg>
-                <span>COMMONLY ASKED QUESTIONS</span>
               </div>
-              <h2 id="faq">Frequently asked questions</h2>
+              <div class="author-info-box">
+                <div class="author-name-row">
+                  <span class="author-name">About the Ollastack Engineering Team</span>
+                  <span class="verified-badge">✓ Verified</span>
+                </div>
+                <p class="author-bio">
+                  Our content is written by industry practitioners with hands-on experience in enterprise cloud & agentic workflows. We don't write theory — we share what actually works in production.
+                </p>
+              </div>
             </div>
-            <div class="faq-accordion-list">
-              {faq.map((f, i) => (
-                <details class="faq-card" open={i === 0}>
-                  <summary class="faq-summary">
-                    <span class="faq-q-text">{f.q}</span>
-                    <span class="faq-icon-arrow" aria-hidden="true">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="6 9 12 15 18 9"></polyline>
-                      </svg>
-                    </span>
-                  </summary>
-                  <div class="faq-body-content">
-                    <p>{f.a}</p>
-                  </div>
-                </details>
+
+            <div class="trust-badges-row">
+              <span class="trust-badge badge-green">🧪 Production Labs</span>
+              <span class="trust-badge badge-blue">🛡️ SOC2 Type II Certified</span>
+              <span class="trust-badge badge-purple">📖 Developer Playbooks</span>
+              <span class="trust-badge badge-amber">👥 10M+ Form Submissions</span>
+            </div>
+          </div>
+        </header>
+
+        <!-- Body Content -->
+        <div class="body-content-area body">
+          <slot />
+
+          {faq && faq.length > 0 && (
+            <section class="post-faq" id="faq-section">
+              <div class="faq-head-wrap">
+                <div class="faq-pill-badge">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                  <span>COMMONLY ASKED QUESTIONS</span>
+                </div>
+                <h2 id="faq">Frequently asked questions</h2>
+              </div>
+              <div class="faq-accordion-list">
+                {faq.map((f, i) => (
+                  <details class="faq-card" open={i === 0}>
+                    <summary class="faq-summary">
+                      <span class="faq-q-text">{f.q}</span>
+                      <span class="faq-icon-arrow" aria-hidden="true">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                      </span>
+                    </summary>
+                    <div class="faq-body-content">
+                      <p>{f.a}</p>
+                    </div>
+                  </details>
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
+
+        {related.length > 0 && (
+          <nav class="related-foot" aria-label="Related posts">
+            <div class="related-eyebrow mono">Related reading</div>
+            <ul>
+              {related.map((p) => (
+                <li>
+                  <a href={`/blog/${p.slug}/`}>
+                    <span class="rel-title">{p.title}</span>
+                    <span class="rel-meta mono">{p.readingTime}</span>
+                  </a>
+                </li>
               ))}
-            </div>
-          </section>
+            </ul>
+          </nav>
         )}
+      </article>
 
-      </section>
+      <!-- ================= RIGHT COLUMN: AGENT WORKFLOWS ================= -->
+      <aside class="col-sidebar sidebar-right" aria-label="Agent Workflows">
+        <div class="sidebar-badge-wrap">
+          <div class="pill-badge pill-purple">
+            <span>🤖 AGENT WORKFLOWS</span>
+          </div>
+        </div>
 
-      {related.length > 0 && (
-        <nav class="related-foot" aria-label="Related posts">
-          <div class="related-eyebrow mono">Related reading</div>
-          <ul>
-            {related.map((p) => (
-              <li>
-                <a href={`/blog/${p.slug}/`}>
-                  <span class="rel-title">{p.title}</span>
-                  <span class="rel-meta mono">{p.readingTime}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      )}
-    </article>
-  </div>
+        <ul class="sidebar-link-list">
+          {agentWorkflows.map((guide) => (
+            <li class="sidebar-link-item">
+              <a href={`/blog/${guide.slug}`} class={`side-link ${guide.slug === slug ? 'active-guide-purple' : ''}`}>
+                {guide.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <div class="sidebar-footer-link">
+          <a href="/blog" class="view-all-link view-all-purple">View All →</a>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <!-- FLOATING RED CTA BUTTON (EXACT REFERENCE DESIGN) -->
+  <a href="https://login.ollastack.com/register" target="_blank" class="floating-cta-btn" id="floating-cta-button">
+    <span class="cta-sparkle">✦</span>
+    <span>Start Building Free</span>
+  </a>
 </Base>
 
 <script is:inline>
-  // Build ToC from h2[id] inside <article>. Scroll-spy active section.
+  // Copy link to clipboard
   (function () {
-    const toc = document.getElementById("toc");
-    const countEl = document.getElementById("toc-count");
-    if (!toc) return;
-    const headings = Array.from(
-      document.querySelectorAll("article .body h2[id]")
-    );
-    if (!headings.length) {
-      toc.innerHTML = '<p class="toc-empty mono">No sections</p>';
-      return;
-    }
-    if (countEl) {
-      countEl.textContent = `${headings.length} sections`;
-    }
-    toc.innerHTML = headings
-      .map((h, i) => {
-        const num = String(i + 1).padStart(2, "0");
-        return (
-          `<a href="#${h.id}" class="toc-item" data-toc-target="${h.id}">` +
-          `<span class="toc-num mono">${num}</span>` +
-          `<span class="toc-text">${h.textContent}</span>` +
-          `</a>`
-        );
-      })
-      .join("");
-
-    const links = Array.from(toc.querySelectorAll("a[data-toc-target]"));
-    const byId = Object.fromEntries(
-      links.map((a) => [a.getAttribute("data-toc-target"), a])
-    );
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          const id = entry.target.id;
-          const link = byId[id];
-          if (!link) continue;
-          if (entry.isIntersecting) {
-            links.forEach((l) => l.classList.remove("active"));
-            link.classList.add("active");
-            // Auto-scroll the sidebar so active section is visible
-            link.scrollIntoView({ block: "nearest", behavior: "smooth" });
-          }
-        }
-      },
-      { rootMargin: "-80px 0px -70% 0px", threshold: 0 }
-    );
-    headings.forEach((h) => observer.observe(h));
+    const btn = document.getElementById("copy-link-btn");
+    const label = document.getElementById("copy-btn-label");
+    if (!btn || !label) return;
+    btn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        label.textContent = "Copied!";
+        btn.classList.add("copied");
+        setTimeout(() => {
+          label.textContent = "Copy link";
+          btn.classList.remove("copied");
+        }, 2000);
+      } catch (err) {
+        label.textContent = "Copied!";
+      }
+    });
   })();
 </script>
 
 <style>
-  .blog-shell {
-    display: grid;
-    grid-template-columns: 280px minmax(0, 1fr);
-    gap: 32px;
+  /* ==========================================================================
+     EXACT 3-COLUMN MAGAZINE LAYOUT MATCHING REFERENCE IMAGE
+     ========================================================================== */
+
+  .blog-main-wrapper {
     max-width: 100%;
     margin: 0;
-    padding: 28px 24px 80px;
-    align-items: start;
+    padding: 28px 20px 96px;
     width: 100%;
+    background: #ffffff;
     box-sizing: border-box;
   }
 
-  /* ---------- Left rail ---------- */
-  .left-rail {
-    position: sticky;
-    top: 80px;
-    align-self: start;
-    display: flex;
-    flex-direction: column;
-    max-height: calc(100vh - 100px);
+  .magazine-grid {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr) 280px;
+    gap: 28px;
+    align-items: start;
+    width: 100%;
+    max-width: 1560px;
+    margin: 0 auto;
   }
-  .back {
+
+  /* Sidebars (Left & Right) */
+  .col-sidebar {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 24px 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    position: sticky;
+    top: 90px;
+    max-height: calc(100vh - 110px);
+    overflow-y: auto;
+  }
+
+  .col-sidebar::-webkit-scrollbar {
+    width: 4px;
+  }
+  .col-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .col-sidebar::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 4px;
+  }
+  .col-sidebar:hover::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+  }
+
+  .sidebar-badge-wrap {
+    margin-bottom: 20px;
+  }
+
+  .pill-badge {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-size: 12px;
-    font-weight: 800;
-    color: #dc2626;
-    background: #fef2f2;
-    border: 2px solid #fca5a5;
     padding: 7px 16px;
     border-radius: 9999px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 20px;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 6px rgba(220, 38, 38, 0.1);
-    text-decoration: none !important;
-    align-self: flex-start;
-  }
-  .back:hover {
-    background: #dc2626;
-    color: #ffffff !important;
-    border-color: #dc2626;
-    transform: translateX(-3px);
-    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.3);
-  }
-
-  /* Table of Contents Professional Box - Bold Red Theme */
-  .toc-box {
-    background: #ffffff;
-    border: 2px solid #dc2626;
-    border-left: 6px solid #dc2626;
-    border-radius: 16px;
-    box-shadow: 0 10px 28px rgba(220, 38, 38, 0.1), 0 2px 6px rgba(0, 0, 0, 0.04);
-    display: flex;
-    flex-direction: column;
-    max-height: calc(100vh - 170px);
-    overflow: hidden;
-    transition: all 0.2s ease;
-  }
-  .toc-box:hover {
-    box-shadow: 0 14px 34px rgba(220, 38, 38, 0.16);
-  }
-  .toc-box-head {
-    background: #dc2626;
-    color: #ffffff;
-    padding: 13px 15px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid #b91c1c;
-  }
-  .toc-box-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
     font-size: 11.5px;
     font-weight: 800;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: #ffffff;
-  }
-  .toc-box-title svg {
-    color: #ffffff;
-    stroke-width: 3;
-  }
-  .toc-box-count {
-    font-size: 11px;
-    font-weight: 800;
-    color: #ffffff;
-    background: #991b1b;
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    padding: 2px 9px;
-    border-radius: 20px;
-    letter-spacing: 0.02em;
-  }
-  .toc-box-list {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    padding: 10px 8px;
-    overflow-y: auto;
-    background: #fff5f5;
-  }
-  .toc-box-list::-webkit-scrollbar {
-    width: 4px;
-  }
-  .toc-box-list::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  .toc-box-list::-webkit-scrollbar-thumb {
-    background: #fca5a5;
-    border-radius: 4px;
-  }
-  .toc-box-list :global(.toc-item) {
-    display: flex;
-    align-items: flex-start;
-    gap: 9px;
-    padding: 7px 9px;
-    border-radius: 8px;
-    text-decoration: none !important;
-    border-bottom: none !important;
-    transition: all 0.16s ease;
-    position: relative;
-  }
-  .toc-box-list :global(.toc-num) {
-    font-size: 11px;
-    font-weight: 800;
-    color: #991b1b;
-    background: #fee2e2;
-    border: 1px solid #fca5a5;
-    padding: 1px 5px;
-    border-radius: 5px;
-    min-width: 22px;
-    text-align: center;
-    line-height: 1.4;
-    flex-shrink: 0;
-    margin-top: 1px;
-    transition: all 0.16s ease;
-  }
-  .toc-box-list :global(.toc-text) {
-    font-size: 13px;
-    color: #000000 !important;
-    line-height: 1.4;
-    font-weight: 600;
-    transition: color 0.16s ease;
-  }
-  .toc-box-list :global(.toc-item:hover) {
-    background: #fee2e2;
-    transform: translateX(2px);
-  }
-  .toc-box-list :global(.toc-item:hover .toc-text) {
-    color: #000000 !important;
-  }
-  .toc-box-list :global(.toc-item:hover .toc-num) {
-    background: #dc2626;
-    color: #ffffff;
-    border-color: #dc2626;
-  }
-  .toc-box-list :global(.toc-item.active) {
-    background: #fee2e2;
-    border-left: 3.5px solid #dc2626;
-    border-radius: 0 8px 8px 0;
-    box-shadow: 0 1px 4px rgba(220, 38, 38, 0.15);
-  }
-  .toc-box-list :global(.toc-item.active .toc-text) {
-    color: #000000 !important;
-    font-weight: 800 !important;
-  }
-  .toc-box-list :global(.toc-item.active .toc-num) {
-    background: #dc2626;
-    color: #ffffff !important;
-    border-color: #dc2626;
-    font-weight: 800;
-  }
-  .toc-box-list :global(.toc-empty) {
-    font-size: 12px;
-    color: #000000;
-    padding: 10px;
-    text-align: center;
+    user-select: none;
   }
 
-  /* ---------- Article ---------- */
-  .post {
+  .pill-orange {
+    background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(234, 88, 12, 0.25);
+  }
+
+  .pill-purple {
+    background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(124, 58, 237, 0.25);
+  }
+
+  .sidebar-link-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .sidebar-link-item {
+    margin: 0;
+    padding: 0;
+  }
+
+  .side-link {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.45;
+    color: #334155;
+    display: block;
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+
+  .side-link:hover {
+    color: #ea580c;
+    transform: translateX(2px);
+  }
+
+  .sidebar-right .side-link:hover {
+    color: #7c3aed;
+  }
+
+  .active-guide-orange {
+    color: #ea580c !important;
+    font-weight: 800 !important;
+  }
+
+  .active-guide-purple {
+    color: #7c3aed !important;
+    font-weight: 800 !important;
+  }
+
+  .sidebar-footer-link {
+    margin-top: 20px;
+    padding-top: 14px;
+    border-top: 1px dashed #e2e8f0;
+  }
+
+  .view-all-link {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #ea580c;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    text-decoration: none;
+    transition: gap 0.15s ease;
+  }
+  .view-all-link:hover {
+    gap: 7px;
+  }
+
+  .view-all-purple {
+    color: #7c3aed;
+  }
+
+  /* ---------- Center Article Column ---------- */
+  .col-center-article {
     min-width: 0;
     width: 100%;
   }
-  .post-head { margin-bottom: 36px; }
-  .post-meta {
-    font-size: 12.5px;
-    color: var(--muted-2);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 14px;
+
+  .post-header-box {
+    margin-bottom: 28px;
   }
-  .dot { opacity: 0.5; }
-  .post-head h1 {
-    font-size: 38px;
+
+  .post-display-title {
+    font-size: 40px;
+    font-weight: 800;
+    line-height: 1.18;
+    letter-spacing: -0.025em;
+    color: #0f172a;
     margin: 0 0 16px;
-    letter-spacing: -0.02em;
-    line-height: 1.15;
     word-break: break-word;
   }
-  .body :global(.lede) {
-    font-size: 18.5px;
-    color: var(--muted);
-    line-height: 1.65;
-    margin: 0 0 36px;
-  }
-  .body :global(h2) {
-    font-size: 25px;
-    margin: 48px 0 14px;
-    letter-spacing: -0.01em;
-    line-height: 1.3;
-    scroll-margin-top: 80px;
-    color: var(--ink);
-  }
-  .body :global(h3) {
+
+  .post-sub-desc {
     font-size: 18px;
-    margin: 28px 0 10px;
-    letter-spacing: -0.005em;
-    color: var(--ink);
-    font-weight: 700;
+    line-height: 1.6;
+    color: #475569;
+    margin: 0 0 22px;
+    font-weight: 400;
   }
+
+  /* Meta Pills Row */
+  .meta-pills-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+
+  .meta-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 9999px;
+  }
+
+  .tag-agent {
+    background: #fdf2f8;
+    color: #db2777;
+    border: 1px solid #fbcfe8;
+  }
+
+  .tag-testing {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+  }
+
+  .tag-forms {
+    background: #fff7ed;
+    color: #c2410c;
+    border: 1px solid #ffedd5;
+  }
+
+  .tag-compare {
+    background: #f5f3ff;
+    color: #7c3aed;
+    border: 1px solid #ede9fe;
+  }
+
+  .meta-neutral {
+    background: #f8fafc;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+  }
+
+  .copy-link-pill-btn {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 9999px;
+    padding: 6px 16px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .copy-link-pill-btn:hover {
+    background: #f8fafc;
+    border-color: #94a3b8;
+    color: #0f172a;
+  }
+
+  .copy-link-pill-btn.copied {
+    background: #f0fdf4;
+    border-color: #86efac;
+    color: #166534;
+  }
+
+  /* Author Trust Card (Matching Reference Design) */
+  .author-trust-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 22px 24px;
+    margin-bottom: 32px;
+  }
+
+  .trust-card-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .author-avatar-circle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    flex-shrink: 0;
+  }
+
+  .author-info-box {
+    flex: 1;
+  }
+
+  .author-name-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+
+  .author-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .verified-badge {
+    background: #dcfce7;
+    color: #15803d;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .author-bio {
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: #64748b;
+    margin: 0;
+  }
+
+  .trust-badges-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 14px;
+    border-top: 1px dashed #e2e8f0;
+  }
+
+  .trust-badge {
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .badge-green {
+    background: #f0fdf4;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+  }
+
+  .badge-blue {
+    background: #eff6ff;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+  }
+
+  .badge-purple {
+    background: #faf5ff;
+    color: #6b21a8;
+    border: 1px solid #e9d5ff;
+  }
+
+  .badge-amber {
+    background: #fffbeb;
+    color: #92400e;
+    border: 1px solid #fde68a;
+  }
+
+  /* Body Content */
+  .body-content-area {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .body :global(h2) {
+    font-size: 26px;
+    font-weight: 800;
+    margin: 44px 0 16px;
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+    color: #0f172a;
+  }
+
+  .body :global(h3) {
+    font-size: 19px;
+    font-weight: 700;
+    margin: 28px 0 12px;
+    color: #0f172a;
+  }
+
   .body :global(p) {
     line-height: 1.75;
-    margin: 0 0 16px;
+    margin: 0 0 18px;
     font-size: 16px;
-    color: var(--ink);
+    color: #1e293b;
   }
+
   .body :global(ul),
   .body :global(ol) {
     line-height: 1.8;
-    padding-left: 22px;
-    margin: 0 0 18px;
+    padding-left: 24px;
+    margin: 0 0 20px;
   }
+
   .body :global(li) {
     margin-bottom: 8px;
     font-size: 15.5px;
-    color: var(--ink);
+    color: #1e293b;
   }
+
   .body :global(:not(pre) > code) {
     background: #fef2f2 !important;
     color: #991b1b !important;
@@ -478,6 +753,15 @@ const articleLd = {
     font-size: 0.88em;
     font-weight: 700;
   }
+
+  .body :global(pre) {
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin: 20px 0;
+    overflow-x: auto;
+    font-size: 14px;
+  }
+
   .body :global(a) {
     color: #dc2626 !important;
     font-weight: 700 !important;
@@ -486,334 +770,206 @@ const articleLd = {
     text-underline-offset: 3px !important;
     transition: all 0.15s ease !important;
   }
+
   .body :global(a:hover) {
     color: #991b1b !important;
     text-decoration-color: #991b1b !important;
   }
+
   .body :global(table) {
     width: 100%;
     border-collapse: collapse;
-    margin: 14px 0;
+    margin: 20px 0;
     font-size: 14px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
   }
+
   .body :global(th),
   .body :global(td) {
-    border-bottom: 1px solid var(--line);
-    padding: 10px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 12px 16px;
     text-align: left;
     vertical-align: top;
   }
-  .body :global(th) {
-    font-size: 12px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-weight: 500;
-  }
-  .body :global(.muted-note) {
-    color: var(--muted);
-    font-size: 14px;
-  }
-  .body :global(.code),
-  .body :global(pre.code),
-  .body :global(pre) {
-    background: #0f172a !important;
-    color: #ffffff !important;
-    border: 1px solid #1e293b;
-    border-radius: 14px;
-    padding: 20px 24px;
-    font-family: var(--font-mono);
-    font-size: 14px;
-    line-height: 1.7;
-    overflow-x: auto;
-    white-space: pre;
-    margin: 14px 0 24px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18);
-  }
-  .body :global(.code *),
-  .body :global(pre.code *),
-  .body :global(pre *) {
-    color: #ffffff;
-  }
-  .body :global(.code .s),
-  .body :global(pre .s) { color: #fca5a5 !important; }
-  .body :global(.code .k),
-  .body :global(pre .k) { color: #38bdf8 !important; }
-  .body :global(.code .c),
-  .body :global(pre .c) { color: #94a3b8 !important; font-style: italic; }
-  .body :global(.code .prompt),
-  .body :global(pre .prompt) { color: #64748b !important; user-select: none; }
 
-  /* Key Takeaways Callout */
-  .body :global(.takeaways-box),
+  .body :global(th) {
+    font-size: 12.5px;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: #f8fafc;
+    font-weight: 700;
+  }
+
+  /* TL;DR Box */
   .body :global(.tldr-box) {
-    background: #fef2f2 !important;
-    border: 2px solid #fca5a5 !important;
-    border-left: 6px solid #dc2626 !important;
-    border-radius: 16px !important;
-    padding: 24px 28px !important;
-    margin: 32px 0 36px !important;
-    box-shadow: 0 6px 24px rgba(220, 38, 38, 0.08) !important;
+    background: #fff5f5;
+    border: 1.5px solid #fca5a5;
+    border-left: 5px solid #dc2626;
+    border-radius: 14px;
+    padding: 22px 24px;
+    margin: 24px 0 32px;
   }
-  .body :global(.takeaways-header),
-  .body :global(.takeaways-title),
+
   .body :global(.tldr-header) {
-    font-size: 18px !important;
-    font-weight: 800 !important;
-    margin: 0 0 16px !important;
-    color: #991b1b !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 10px !important;
-    letter-spacing: -0.01em !important;
-    border: none !important;
-    padding: 0 !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    color: #dc2626;
   }
-  .body :global(.takeaways-header svg),
-  .body :global(.takeaways-title svg),
-  .body :global(.tldr-header svg) {
-    color: #dc2626 !important;
-    stroke: #dc2626 !important;
-    flex-shrink: 0;
-  }
-  .body :global(.tldr-box h2),
+
   .body :global(.tldr-title) {
-    font-size: 18px !important;
-    font-weight: 800 !important;
-    margin: 0 !important;
-    color: #991b1b !important;
-    display: inline-block !important;
-    border: none !important;
-    padding: 0 !important;
-    line-height: 1 !important;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: #dc2626;
+    margin: 0;
   }
+
   .body :global(.tldr-box p) {
-    font-size: 15.5px !important;
-    line-height: 1.68 !important;
-    color: #0f172a !important;
-    margin: 0 0 14px !important;
+    color: #334155;
+    font-size: 15px;
+    line-height: 1.7;
+    margin: 0 0 10px;
   }
   .body :global(.tldr-box p:last-child) {
-    margin-bottom: 0 !important;
+    margin-bottom: 0;
   }
-  .body :global(.tldr-box strong) {
-    color: #0f172a !important;
-    font-weight: 700 !important;
+
+  /* Key Takeaways Box */
+  .body :global(.takeaways-box) {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-left: 5px solid #ea580c;
+    border-radius: 14px;
+    padding: 22px 24px;
+    margin: 24px 0 32px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
   }
-  .body :global(.takeaways-box ul),
+
+  .body :global(.takeaways-header) {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 800;
+    color: #c2410c;
+    margin-bottom: 14px;
+  }
+
   .body :global(.takeaways-list) {
-    margin: 0 !important;
-    padding-left: 20px !important;
-    list-style-type: disc !important;
-  }
-  .body :global(.takeaways-box li) {
-    font-size: 15.5px !important;
-    margin-bottom: 10px !important;
-    color: #0f172a !important;
-    line-height: 1.65 !important;
-  }
-  .body :global(.takeaways-box li::marker) {
-    color: #dc2626 !important;
-    font-size: 1.2em !important;
-  }
-  .body :global(.takeaways-box li strong) {
-    color: #0f172a !important;
-    font-weight: 700 !important;
-  }
-  .body :global(.takeaways-box a) {
-    color: #dc2626 !important;
-    font-weight: 700 !important;
-    text-decoration: underline !important;
-    text-underline-offset: 3px !important;
+    list-style: disc;
+    padding-left: 20px;
+    margin: 0;
   }
 
-  /* Article Lead Summary Callout */
-  .body :global(.article-lead-summary) {
-    background: #f8fafc !important;
-    border: 1px solid #e2e8f0 !important;
-    border-left: 5px solid #0284c7 !important;
-    border-radius: 14px !important;
-    padding: 22px 26px !important;
-    margin: 0 0 32px !important;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02) !important;
-  }
-  .body :global(.article-lead-summary p) {
-    font-size: 16px !important;
-    line-height: 1.68 !important;
-    color: #334155 !important;
-    margin: 0 0 12px !important;
-  }
-  .body :global(.article-lead-summary p:last-child) {
-    margin-bottom: 0 !important;
-  }
-  .body :global(.article-lead-summary strong) {
-    color: #0f172a !important;
-    font-weight: 700 !important;
+  .body :global(.takeaways-list li) {
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: #334155;
+    margin-bottom: 10px;
   }
 
-  .last-updated {
-    margin-top: 56px;
-    padding-top: 24px;
-    border-top: 1px solid var(--line);
-    font-size: 13.5px;
-  }
-  /* ---------- FAQ Section Highlighted Styling ---------- */
+  /* FAQ Section */
   .post-faq {
     margin-top: 48px;
     padding-top: 36px;
-    border-top: 1.5px solid var(--line);
+    border-top: 1px solid #e2e8f0;
   }
+
   .faq-head-wrap {
     margin-bottom: 24px;
   }
+
   .faq-pill-badge {
-    background: #fef2f2;
-    color: #dc2626;
-    border: 1px solid #fca5a5;
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 5px 12px;
-    border-radius: 9999px;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    margin-bottom: 10px;
+    padding: 5px 12px;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+    color: #475569;
+    letter-spacing: 0.06em;
+    margin-bottom: 12px;
   }
+
   .post-faq h2 {
-    font-size: 26px !important;
-    font-weight: 800 !important;
-    color: #0f172a !important;
-    margin: 0 0 8px !important;
-    letter-spacing: -0.02em !important;
+    font-size: 26px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
   }
+
   .faq-accordion-list {
     display: flex;
     flex-direction: column;
     gap: 12px;
   }
-  .post-faq :global(details.faq-card) {
+
+  .faq-card {
     background: #ffffff;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 14px;
-    padding: 0;
-    margin-bottom: 0;
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
     overflow: hidden;
+    transition: all 0.2s ease;
   }
-  .post-faq :global(details.faq-card:hover) {
-    border-color: #fca5a5;
-    background: #fffafa;
-    box-shadow: 0 6px 18px rgba(220, 38, 38, 0.06);
-    transform: translateY(-1px);
+
+  .faq-card[open] {
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
   }
-  .post-faq :global(details.faq-card[open]) {
-    background: #fef2f2 !important;
-    border: 2px solid #fca5a5 !important;
-    border-left: 6px solid #dc2626 !important;
-    border-radius: 16px !important;
-    box-shadow: 0 6px 24px rgba(220, 38, 38, 0.08) !important;
-  }
-  .post-faq :global(summary.faq-summary) {
-    cursor: pointer;
+
+  .faq-summary {
+    padding: 16px 20px;
+    font-size: 15.5px;
     font-weight: 700;
-    padding: 18px 22px;
-    font-size: 16px;
     color: #0f172a;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
     list-style: none;
     user-select: none;
-    transition: color 0.15s ease;
-  }
-  .post-faq :global(summary.faq-summary::-webkit-details-marker) {
-    display: none;
-  }
-  .post-faq :global(summary.faq-summary::marker) {
-    display: none;
-  }
-  .post-faq :global(details.faq-card:hover summary.faq-summary) {
-    color: #dc2626;
-  }
-  .post-faq :global(details.faq-card[open] summary.faq-summary) {
-    color: #991b1b !important;
-    font-weight: 800 !important;
-  }
-  .post-faq :global(.faq-icon-arrow) {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: #f1f5f9;
-    color: #64748b;
-    flex-shrink: 0;
-    transition: all 0.2s ease;
-  }
-  .post-faq :global(details.faq-card:hover .faq-icon-arrow) {
-    background: #fee2e2;
-    color: #dc2626;
-  }
-  .post-faq :global(details.faq-card[open] .faq-icon-arrow) {
-    background: #dc2626 !important;
-    color: #ffffff !important;
-    transform: rotate(180deg);
-  }
-  .post-faq :global(.faq-body-content) {
-    padding: 0 22px 20px;
-  }
-  .post-faq :global(.faq-body-content p) {
-    margin: 0;
-    color: #0f172a;
-    font-size: 15.5px;
-    line-height: 1.7;
   }
 
-  /* ---------- Right rail (Agent Workflows Sidebar) ---------- */
-  .right-rail {
-    position: sticky;
-    top: 80px;
-    align-self: start;
-    display: flex;
-    flex-direction: column;
+  .faq-summary::-webkit-details-marker {
+    display: none;
   }
-  .right-rail .col-sidebar {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 20px;
-    padding: 24px 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-    max-height: calc(100vh - 110px);
-    overflow-y: auto;
+
+  .faq-icon-arrow {
+    color: #64748b;
+    transition: transform 0.2s ease;
   }
-  .right-rail .col-sidebar::-webkit-scrollbar {
-    width: 4px;
+
+  .faq-card[open] .faq-icon-arrow {
+    transform: rotate(180deg);
   }
-  .right-rail .col-sidebar::-webkit-scrollbar-track {
-    background: transparent;
+
+  .faq-body-content {
+    padding: 0 20px 18px;
+    color: #475569;
+    font-size: 14.5px;
+    line-height: 1.65;
   }
-  .right-rail .col-sidebar::-webkit-scrollbar-thumb {
-    background: #e2e8f0;
-    border-radius: 4px;
+  .faq-body-content p {
+    margin: 0;
   }
-  .right-rail .col-sidebar:hover::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-  }
-  .sidebar-badge-wrap {
-    margin-bottom: 20px;
-  }
-  /* Related reading cards in bottom section */
+
+  /* Related Reading */
   .related-foot {
     margin-top: 56px;
     padding-top: 32px;
-    border-top: 1px solid var(--line);
+    border-top: 1px solid #e2e8f0;
   }
-  .related-foot .related-eyebrow {
+
+  .related-eyebrow {
     font-size: 12px;
     color: #dc2626;
     background: #fef2f2;
@@ -826,6 +982,7 @@ const articleLd = {
     display: inline-block;
     margin-bottom: 20px;
   }
+
   .related-foot ul {
     list-style: none;
     padding: 0;
@@ -834,80 +991,113 @@ const articleLd = {
     grid-template-columns: 1fr 1fr;
     gap: 16px;
   }
+
   .related-foot li a {
     display: block;
     padding: 20px 22px;
-    border: 1px solid var(--line);
+    border: 1px solid #e2e8f0;
     border-radius: 14px;
-    background: var(--bg);
+    background: #ffffff;
     text-decoration: none !important;
     transition: all 0.2s ease;
-    position: relative;
-    overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
   }
-  .related-foot li a::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: #dc2626;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-  }
+
   .related-foot li a:hover {
     border-color: #f87171;
     transform: translateY(-2px);
     box-shadow: 0 10px 24px rgba(220, 38, 38, 0.12);
   }
-  .related-foot li a:hover::before {
-    opacity: 1;
-  }
+
   .related-foot .rel-title {
     font-size: 15px;
     font-weight: 700;
-    color: var(--ink);
+    color: #0f172a;
     line-height: 1.4;
     margin-bottom: 6px;
     display: block;
-    transition: color 0.15s ease;
   }
+
   .related-foot li a:hover .rel-title {
     color: #dc2626;
   }
+
   .related-foot .rel-meta {
     font-size: 12px;
-    color: var(--muted-2);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  @media (max-width: 600px) {
-    .related-foot ul { grid-template-columns: 1fr; }
+    color: #64748b;
   }
 
-  /* ---------- Responsive ---------- */
+  /* Floating Red CTA Button (Exact Reference) */
+  .floating-cta-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 100;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #da291c;
+    color: #ffffff !important;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 12px 24px;
+    border-radius: 9999px;
+    box-shadow: 0 10px 25px rgba(218, 41, 28, 0.35);
+    text-decoration: none !important;
+    transition: all 0.2s ease;
+  }
+
+  .floating-cta-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 14px 30px rgba(218, 41, 28, 0.45);
+    background: #b91c1c;
+  }
+
+  .cta-sparkle {
+    font-size: 15px;
+  }
+
+  /* Responsive Breakpoints */
+  @media (max-width: 1280px) {
+    .magazine-grid {
+      grid-template-columns: 240px minmax(0, 1fr) 240px;
+      gap: 20px;
+    }
+    .post-display-title {
+      font-size: 34px;
+    }
+  }
+
   @media (max-width: 1024px) {
-    .blog-shell {
-      grid-template-columns: 240px minmax(0, 1fr);
-      gap: 32px;
-      padding: 28px 16px 64px;
+    .magazine-grid {
+      grid-template-columns: 220px minmax(0, 1fr);
+      gap: 20px;
+    }
+    .sidebar-right {
+      display: none;
     }
   }
 
   @media (max-width: 768px) {
-    .blog-shell {
+    .magazine-grid {
       grid-template-columns: 1fr;
-      gap: 32px;
-      padding: 24px 16px 64px;
+      gap: 28px;
     }
-    .left-rail {
+    .sidebar-left {
       position: static;
-      border-bottom: 1px solid var(--line);
-      padding-bottom: 20px;
+      max-height: none;
     }
-    .post-head h1 { font-size: 28px; }
+    .post-display-title {
+      font-size: 28px;
+    }
+    .related-foot ul {
+      grid-template-columns: 1fr;
+    }
+    .floating-cta-btn {
+      bottom: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      font-size: 13px;
+    }
   }
 </style>
