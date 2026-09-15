@@ -316,7 +316,7 @@ Reading through ten options back-to-back can start to blur together, so let's zo
 - **If your priority is a beautiful, easy-to-navigate dashboard** and you are managing forms for multiple clients or projects, **Basin's** polish is a real advantage worth paying for.
 - **If your priority is staying inside an ecosystem you already use** and your form traffic is light, **Netlify Forms** still works, just go in with eyes open about the credit-based pricing shift and do the math on whether it saves you money compared to a dedicated tool.
 - **If your priority is the simplest possible "email me this form data" setup** with strong privacy defaults and no server-side dependency at all, **EmailJS** or **Formspark** both get you there quickly.
-- **If your priority is developer control, reliable webhooks with retries and delivery logs, spam handling that never silently drops legitimate submissions, and support for both human browser traffic and authenticated AI agents submitting programmatically**, that is where **[Ollastack's](https://ollastack.com)** backend-first, API-first approach earns its place at the top of this list.
+- **If your priority is developer control**, reliable webhooks with retries and delivery logs, spam handling that never silently drops legitimate submissions, and support for both human browser traffic and authenticated AI agents submitting programmatically, that is where **[Ollastack's](https://ollastack.com)** backend-first, API-first approach earns its place at the top of this list.
 
 ---
 
@@ -390,9 +390,6 @@ If you have read this far and still feel torn, here is a straightforward way to 
 
 <div class="wrapping-up-box" id="wrapping-up-box">
   <div class="wrapping-up-header">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-    </svg>
     <h2 id="wrapping-up">Wrapping Up</h2>
   </div>
   <p>
