@@ -389,8 +389,8 @@ If you have read this far and still feel torn, here is a straightforward way to 
 4. **Switching risk is remarkably low:** And if you are simply unsatisfied with Formspree specifically, whether that is about pricing, spam handling, or the limits of its webhook system, know that switching is one of the lowest-risk changes you can make to a codebase. The integration patterns this entire category shares are intentionally simple, and that simplicity is exactly what makes trying a new option low stakes.
 
 <div class="wrapping-up-box" id="wrapping-up-box">
-  <div class="wrapping-up-header">
-    <h2 id="wrapping-up">Wrapping Up</h2>
+  <div class="wrapping-up-header" style="text-align: center; justify-content: center;">
+    <h2 id="wrapping-up" style="text-align: center; margin: 0 auto;">Wrapping Up</h2>
   </div>
   <p>
     Formspree earned its popularity fairly, and for a huge number of simple use cases, it still gets the job done without drama. But "the tool everyone defaults on" and "the tool that fits your specific project" are not always the same thing, and it is worth periodically checking whether your assumptions about what you need still match what is available.
