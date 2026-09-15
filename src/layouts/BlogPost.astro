@@ -339,6 +339,15 @@ const faqLd =
 </Base>
 
 <script is:inline>
+  // Relocate FAQ section to be placed right above the Wrapping Up box if present
+  (function () {
+    const faqSection = document.getElementById("faq-section");
+    const wrappingUpBox = document.getElementById("wrapping-up-box");
+    if (faqSection && wrappingUpBox && wrappingUpBox.parentNode) {
+      wrappingUpBox.parentNode.insertBefore(faqSection, wrappingUpBox);
+    }
+  })();
+
   // Copy link to clipboard
   (function () {
     const btn = document.getElementById("copy-link-btn");
@@ -725,9 +734,9 @@ const faqLd =
   }
 
   .body :global(h2) {
-    font-size: 26px;
+    font-size: 25px;
     font-weight: 800;
-    margin: 44px 0 16px;
+    margin: 28px 0 12px;
     letter-spacing: -0.015em;
     line-height: 1.3;
     color: #0f172a;
@@ -738,14 +747,14 @@ const faqLd =
   .body :global(h2[id*="final-thoughts"]),
   .body :global(h2[id*="conclusion"]),
   .body :global(h2[id*="final-takeaway"]) {
-    text-align: center !important;
-    margin: 48px auto 20px !important;
+    text-align: left !important;
+    margin: 0 !important;
   }
 
   .body :global(h3) {
-    font-size: 19px;
+    font-size: 18.5px;
     font-weight: 700;
-    margin: 28px 0 12px;
+    margin: 20px 0 8px;
     color: #0f172a;
   }
 
@@ -754,21 +763,21 @@ const faqLd =
   }
 
   .body :global(p) {
-    line-height: 1.75;
-    margin: 0 0 18px;
+    line-height: 1.7;
+    margin: 0 0 14px;
     font-size: 16px;
     color: #1e293b;
   }
 
   .body :global(ul),
   .body :global(ol) {
-    line-height: 1.8;
-    padding-left: 24px;
-    margin: 0 0 20px;
+    line-height: 1.72;
+    padding-left: 22px;
+    margin: 0 0 14px;
   }
 
   .body :global(li) {
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     font-size: 15.5px;
     color: #1e293b;
   }
@@ -786,8 +795,8 @@ const faqLd =
 
   .body :global(pre) {
     border-radius: 12px;
-    padding: 18px 20px;
-    margin: 20px 0;
+    padding: 14px 18px;
+    margin: 14px 0;
     overflow-x: auto;
     font-size: 14px;
   }
@@ -811,13 +820,13 @@ const faqLd =
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    margin: 36px 0;
+    margin: 22px 0;
     font-size: 14px;
     background: #0a192f;
     border: 2px solid #1e40af;
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 12px 36px rgba(10, 25, 47, 0.3), 0 0 0 1px rgba(30, 64, 175, 0.25);
+    box-shadow: 0 10px 30px rgba(10, 25, 47, 0.25), 0 0 0 1px rgba(30, 64, 175, 0.25);
     display: table;
   }
 
@@ -832,7 +841,7 @@ const faqLd =
     letter-spacing: 0.08em;
     background: #0f274a;
     font-weight: 800;
-    padding: 16px 20px;
+    padding: 14px 18px;
     border-bottom: 2px solid #1d4ed8;
     border-right: 1px solid rgba(59, 130, 246, 0.22);
     text-align: left;
@@ -846,11 +855,11 @@ const faqLd =
   .body :global(td) {
     border-bottom: 1px solid rgba(59, 130, 246, 0.16);
     border-right: 1px solid rgba(59, 130, 246, 0.16);
-    padding: 15px 20px;
+    padding: 13px 18px;
     text-align: left;
     vertical-align: top;
     color: #e2e8f0;
-    line-height: 1.65;
+    line-height: 1.6;
   }
 
   .body :global(td:last-child) {
@@ -893,15 +902,15 @@ const faqLd =
     border: 1.5px solid #fca5a5;
     border-left: 5px solid #dc2626;
     border-radius: 14px;
-    padding: 22px 24px;
-    margin: 24px 0 32px;
+    padding: 18px 22px;
+    margin: 16px 0 22px;
   }
 
   .body :global(.tldr-header) {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     color: #dc2626;
   }
 
@@ -916,8 +925,8 @@ const faqLd =
   .body :global(.tldr-box p) {
     color: #334155;
     font-size: 15px;
-    line-height: 1.7;
-    margin: 0 0 10px;
+    line-height: 1.65;
+    margin: 0 0 8px;
   }
   .body :global(.tldr-box p:last-child) {
     margin-bottom: 0;
@@ -930,8 +939,8 @@ const faqLd =
     border: 1.5px solid #fecaca !important;
     border-left: 6px solid #dc2626 !important;
     border-radius: 14px !important;
-    padding: 22px 24px !important;
-    margin: 28px 0 36px !important;
+    padding: 18px 22px !important;
+    margin: 18px 0 24px !important;
     box-shadow: 0 4px 16px rgba(220, 38, 38, 0.06) !important;
   }
 
@@ -940,11 +949,11 @@ const faqLd =
     display: flex !important;
     align-items: center !important;
     gap: 10px !important;
-    font-size: 17px !important;
+    font-size: 16.5px !important;
     font-weight: 800 !important;
     color: #dc2626 !important;
     letter-spacing: -0.01em !important;
-    margin-bottom: 14px !important;
+    margin-bottom: 12px !important;
   }
 
   :global(.takeaways-header svg),
@@ -963,9 +972,9 @@ const faqLd =
   :global(.takeaways-list li),
   .body :global(.takeaways-list li) {
     font-size: 15px !important;
-    line-height: 1.7 !important;
+    line-height: 1.65 !important;
     color: #1e293b !important;
-    margin-bottom: 10px !important;
+    margin-bottom: 8px !important;
   }
 
   :global(.takeaways-list li::marker),
@@ -979,10 +988,59 @@ const faqLd =
     font-weight: 700 !important;
   }
 
+  /* Wrapping Up Box (Styled Distinct Container) */
+  :global(.wrapping-up-box),
+  .body :global(.wrapping-up-box) {
+    background: #f8fafc !important;
+    border: 1.5px solid #cbd5e1 !important;
+    border-left: 6px solid #da291c !important;
+    border-radius: 16px !important;
+    padding: 22px 24px !important;
+    margin: 28px 0 28px !important;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05) !important;
+  }
+
+  :global(.wrapping-up-header),
+  .body :global(.wrapping-up-header) {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    margin-bottom: 14px !important;
+  }
+
+  :global(.wrapping-up-header svg),
+  .body :global(.wrapping-up-header svg) {
+    color: #da291c !important;
+    stroke: #da291c !important;
+  }
+
+  :global(.wrapping-up-header h2),
+  .body :global(.wrapping-up-header h2) {
+    font-size: 21px !important;
+    font-weight: 800 !important;
+    color: #da291c !important;
+    margin: 0 !important;
+    letter-spacing: -0.01em !important;
+  }
+
+  :global(.wrapping-up-box p),
+  .body :global(.wrapping-up-box p) {
+    color: #334155 !important;
+    font-size: 15.5px !important;
+    line-height: 1.72 !important;
+    margin: 0 0 12px !important;
+  }
+
+  :global(.wrapping-up-box p:last-child),
+  .body :global(.wrapping-up-box p:last-child) {
+    margin-bottom: 0 !important;
+  }
+
   /* FAQ Section (Highlighted Premium Design) */
   .post-faq {
-    margin-top: 48px;
-    padding: 32px 28px;
+    margin-top: 32px;
+    margin-bottom: 24px;
+    padding: 26px 24px;
     background: #fffafa;
     border: 1.5px solid #fecaca;
     border-left: 6px solid #dc2626;
@@ -991,14 +1049,14 @@ const faqLd =
   }
 
   .faq-head-wrap {
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
 
   .faq-pill-badge {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 14px;
+    padding: 5px 12px;
     background: #fef2f2;
     border: 1.5px solid #fca5a5;
     border-radius: 20px;
@@ -1006,11 +1064,11 @@ const faqLd =
     font-weight: 800;
     color: #dc2626;
     letter-spacing: 0.06em;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
 
   .post-faq h2 {
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 800;
     color: #0f172a;
     letter-spacing: -0.02em;
