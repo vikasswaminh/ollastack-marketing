@@ -12,11 +12,15 @@ interface Props {
   readingTime: string;
   ctaLocation: string;
   faq?: { q: string; a: string }[];
+  wrappingUp?: {
+    title?: string;
+    paragraphs: string[];
+  };
 }
 
 const APP = "https://login.ollastack.com";
 const SITE = "https://ollastack.com";
-const { slug, title, description, publishedAt, updatedAt, readingTime, ctaLocation, faq } = Astro.props;
+const { slug, title, description, publishedAt, updatedAt, readingTime, ctaLocation, faq, wrappingUp } = Astro.props;
 
 const fmtNiceDate = (iso: string) => {
   try {
@@ -287,6 +291,17 @@ const faqLd =
           </section>
         )}
 
+        {wrappingUp && (
+          <div class="wrapping-up-box" id="wrapping-up-box">
+            <div class="wrapping-up-header">
+              <h2 id="wrapping-up">{wrappingUp.title || "Wrapping Up"}</h2>
+            </div>
+            {wrappingUp.paragraphs.map((p) => (
+              <p set:html={p} />
+            ))}
+          </div>
+        )}
+
         {related.length > 0 && (
           <nav class="related-foot" aria-label="Related posts">
             <div class="related-eyebrow mono">Related reading</div>
@@ -338,15 +353,6 @@ const faqLd =
 </Base>
 
 <script is:inline>
-  // Relocate FAQ section to be placed right above the Wrapping Up box if present
-  (function () {
-    const faqSection = document.getElementById("faq-section");
-    const wrappingUpBox = document.getElementById("wrapping-up-box");
-    if (faqSection && wrappingUpBox && wrappingUpBox.parentNode) {
-      wrappingUpBox.parentNode.insertBefore(faqSection, wrappingUpBox);
-    }
-  })();
-
   // Copy link to clipboard
   (function () {
     const btn = document.getElementById("copy-link-btn");

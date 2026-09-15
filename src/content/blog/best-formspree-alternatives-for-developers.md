@@ -23,6 +23,12 @@ faq:
     a: "For most teams, no. The engineering time spent on spam mitigation, email deliverability, and ongoing maintenance usually outweighs the cost of a hosted subscription, unless you have specific compliance or data residency requirements that require it."
   - q: "What should I check before fully switching production traffic to a new provider?"
     a: "Test spam filtering with a few intentionally suspicious submissions, verify your webhook payload structure matches what your downstream systems expect, and confirm your notification emails are formatted correctly with the right sender and reply-to information."
+wrappingUp:
+  title: "Wrapping Up"
+  paragraphs:
+    - "Formspree earned its popularity fairly, and for a huge number of simple use cases, it still gets the job done without drama. But \"the tool everyone defaults on\" and \"the tool that fits your specific project\" are not always the same thing, and it is worth periodically checking whether your assumptions about what you need still match what is available."
+    - "The alternatives covered here span a wide range, from <strong>Web3Forms's</strong> refreshingly generous free tier, to <strong>Basin's</strong> polished dashboard experience, to <strong><a href=\"https://ollastack.com\">Ollastack's</a></strong> backend-first approach built explicitly around developer control, reliable webhooks, and the increasingly real-world need to handle AI agents as a distinct category of traffic rather than an edge case to block."
+    - "The right choice depends entirely on what you are building and where you expect it to go over the next year, not just what solves today's immediate problem. Given how low the switching cost is across this entire category, there is very little downside in trying a different option if your current one is starting to feel like it is holding you back rather than helping you move faster."
 ---
 
 <div class="tldr-box" id="tldr">
@@ -387,19 +393,4 @@ If you have read this far and still feel torn, here is a straightforward way to 
 2. **Consider your integration needs:** If the answer involves webhooks feeding a CRM, file uploads tied to a hiring pipeline, or any kind of programmatic submission from scripts, tests, or other services, narrow your list to the developer-first, API-centric options, since that is where the real differentiation in this category lives.
 3. **Evaluate AI automation requirements:** If there is any chance an AI agent, whether one you build or one a customer uses to interact with your business, will need to submit that form without a human physically present, take that seriously now rather than retrofitting it later, because building agent support in after the fact tends to be far messier than starting with it in mind from day one.
 4. **Switching risk is remarkably low:** And if you are simply unsatisfied with Formspree specifically, whether that is about pricing, spam handling, or the limits of its webhook system, know that switching is one of the lowest-risk changes you can make to a codebase. The integration patterns this entire category shares are intentionally simple, and that simplicity is exactly what makes trying a new option low stakes.
-
-<div class="wrapping-up-box" id="wrapping-up-box">
-  <div class="wrapping-up-header" style="text-align: center; justify-content: center;">
-    <h2 id="wrapping-up" style="text-align: center; margin: 0 auto;">Wrapping Up</h2>
-  </div>
-  <p>
-    Formspree earned its popularity fairly, and for a huge number of simple use cases, it still gets the job done without drama. But "the tool everyone defaults on" and "the tool that fits your specific project" are not always the same thing, and it is worth periodically checking whether your assumptions about what you need still match what is available.
-  </p>
-  <p>
-    The alternatives covered here span a wide range, from <strong>Web3Forms's</strong> refreshingly generous free tier, to <strong>Basin's</strong> polished dashboard experience, to <strong><a href="https://ollastack.com">Ollastack's</a></strong> backend-first approach built explicitly around developer control, reliable webhooks, and the increasingly real-world need to handle AI agents as a distinct category of traffic rather than an edge case to block.
-  </p>
-  <p>
-    The right choice depends entirely on what you are building and where you expect it to go over the next year, not just what solves today's immediate problem. Given how low the switching cost is across this entire category, there is very little downside in trying a different option if your current one is starting to feel like it is holding you back rather than helping you move faster.
-  </p>
-</div>
 

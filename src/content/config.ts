@@ -22,6 +22,13 @@ const blog = defineCollection({
     faq: z
       .array(z.object({ q: z.string(), a: z.string() }))
       .optional(),
+    // Optional Wrapping Up section rendered after FAQ
+    wrappingUp: z
+      .object({
+        title: z.string().optional(),
+        paragraphs: z.array(z.string()),
+      })
+      .optional(),
   }),
 });
 
