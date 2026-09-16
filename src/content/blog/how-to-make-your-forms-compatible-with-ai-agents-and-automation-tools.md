@@ -492,14 +492,3 @@ A hosted form backend like [Ollastack](https://ollastack.com) gives you agent co
 - You get signed webhooks, spam quarantine, and full delivery logs by default.
 
 If you are evaluating whether your current form setup needs an upgrade, start by checking your logs. If you have no record of whether submissions came from tokens versus browsers, or if suspicious submissions get deleted outright with no audit trail, that is a clear sign your setup was built for a world where every form submission came from a human at a keyboard—a world that is rapidly evolving.
-
----
-
-## Related Reading
-
-- **[Can AI Agents Submit Forms Safely? Here's What Developers Need to Know](/blog/can-ai-agents-submit-forms-safely)** (21 min read)
-- **[How to Build AI-Ready Forms for Autonomous Agents](/blog/how-to-build-ai-ready-forms-for-autonomous-agents)** (22 min read)
-- **[Form Backend vs Form Builder: What Developers Should Choose in 2026](/blog/form-backend-vs-form-builder)** (18 min read)
-- **[Form Submission APIs Explained: When to Use Them and Why They Matter](/blog/form-submission-apis-explained-when-to-use-them-and-why-they-matter)** (22 min read)
-- **[What Is an Agent Email API and Why Does It Matter for AI Workflows?](/blog/what-is-an-agent-email-api)** (21 min read)
-- **[ML Spam Quarantine, and Why a Form Backend Should Fail Open](/blog/ml-quarantine-explained)** (8 min read)
