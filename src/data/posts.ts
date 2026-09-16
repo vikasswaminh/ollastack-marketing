@@ -11,6 +11,27 @@ export interface PostMeta {
 
 export const posts: PostMeta[] = [
   {
+    slug: "how-to-make-your-forms-compatible-with-ai-agents-and-automation-tools",
+    title: "How to Make Your Forms Compatible with AI Agents and Automation Tools (2026 Guide)",
+    description:
+      "Learn how to make your web forms compatible with AI agents and automation tools in 2026. Practical guidance on APIs, authentication, spam handling, schema design, and testing that lets both humans and agents submit safely.",
+    date: "2026-09-15",
+    readingTime: "23 min read",
+    category: "AI Agents",
+    categorySlug: "ai-agents",
+    featured: true,
+  },
+  {
+    slug: "best-formspree-alternatives-for-developers",
+    title: "Best Formspree Alternatives for Developers in 2026 (Faster, Simpler, More Flexible)",
+    description:
+      "Looking for a Formspree alternative? Here are the best form-related options for developers in 2026, compared by speed, pricing, webhooks, AI agent support, and real-world flexibility.",
+    date: "2026-09-14",
+    readingTime: "19 min read",
+    category: "Comparisons & Migrations",
+    categorySlug: "comparisons",
+  },
+  {
     slug: "how-developers-can-use-disposable-inboxes-to-speed-up-testing",
     title: "How Developers Can Use Disposable Inboxes to Speed Up Testing",
     description:
@@ -19,7 +40,6 @@ export const posts: PostMeta[] = [
     readingTime: "19 min read",
     category: "Email Testing",
     categorySlug: "email-testing",
-    featured: true,
   },
   {
     slug: "disposable-inbox-vs-temporary-email",
