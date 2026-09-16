@@ -33,6 +33,25 @@ wrappingUp:
     - "The web form has been a stable, mostly unchanged pattern for a very long time. Fields, labels, a submit button, and an assumption that a human is on the other end reading everything and typing it in by hand. That assumption served the internet well for decades, and it is not wrong exactly, it is simply incomplete now."
     - "Agents are not trying to sneak past your defenses maliciously when they trip a honeypot field or fail a CAPTCHA. They behave exactly as designed, just not in a way your form anticipated. The fix is not to weaken your security or throw out everything you have built. It is to recognize that two fundamentally different kinds of visitors are now showing up at your form, giving each one an appropriate, well-designed path, test that path deliberately rather than assuming it works, and build the visibility to know what is happening when something inevitably needs debugging."
     - "The forms that will hold up well over the next few years are not necessarily the most visually polished ones. They are the ones built with a documented API, clear authentication boundaries, predictable schemas, honest and reviewable spam handling, and a real test suite behind them, ready for whoever, or whatever, is on the other end of that submit button."
+relatedReading:
+  - title: "Can AI Agents Submit Forms Safely? Here's What Developers Need to Know"
+    url: "/blog/can-ai-agents-submit-forms-safely"
+    readTime: "21 min read"
+  - title: "How to Build AI-Ready Forms for Autonomous Agents"
+    url: "/blog/how-to-build-ai-ready-forms-for-autonomous-agents"
+    readTime: "22 min read"
+  - title: "Form Backend vs Form Builder: What Developers Should Choose in 2026"
+    url: "/blog/form-backend-vs-form-builder"
+    readTime: "18 min read"
+  - title: "Form Submission APIs Explained: When to Use Them and Why They Matter"
+    url: "/blog/form-submission-apis-explained-when-to-use-them-and-why-they-matter"
+    readTime: "22 min read"
+  - title: "What Is an Agent Email API and Why Does It Matter for AI Workflows?"
+    url: "/blog/what-is-an-agent-email-api"
+    readTime: "21 min read"
+  - title: "ML Spam Quarantine, and Why a Form Backend Should Fail Open"
+    url: "/blog/ml-quarantine-explained"
+    readTime: "8 min read"
 ---
 
 <div class="tldr-box" id="tldr">

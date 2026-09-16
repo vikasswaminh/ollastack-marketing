@@ -16,11 +16,16 @@ interface Props {
     title?: string;
     paragraphs: string[];
   };
+  relatedReading?: {
+    title: string;
+    url: string;
+    readTime?: string;
+  }[];
 }
 
 const APP = "https://login.ollastack.com";
 const SITE = "https://ollastack.com";
-const { slug, title, description, publishedAt, updatedAt, readingTime, ctaLocation, faq, wrappingUp } = Astro.props;
+const { slug, title, description, publishedAt, updatedAt, readingTime, ctaLocation, faq, wrappingUp, relatedReading } = Astro.props;
 
 const fmtNiceDate = (iso: string) => {
   try {
@@ -304,20 +309,38 @@ const faqLd =
           </div>
         )}
 
-        {related.length > 0 && (
-          <nav class="related-foot" aria-label="Related posts">
-            <div class="related-eyebrow mono">Related reading</div>
-            <ul>
-              {related.map((p) => (
-                <li>
-                  <a href={`/blog/${p.slug}/`}>
-                    <span class="rel-title">{p.title}</span>
-                    <span class="rel-meta mono">{p.readingTime}</span>
+        {relatedReading && relatedReading.length > 0 ? (
+          <section class="related-reading-box" id="related-reading">
+            <div class="related-reading-header">
+              <h2 class="related-reading-title">Related Reading</h2>
+            </div>
+            <ul class="related-reading-list">
+              {relatedReading.map((item) => (
+                <li class="related-reading-item">
+                  <a href={item.url} class="related-reading-link">
+                    <strong>{item.title}</strong>
                   </a>
+                  {item.readTime && <span class="read-time-pill mono">({item.readTime})</span>}
                 </li>
               ))}
             </ul>
-          </nav>
+          </section>
+        ) : related.length > 0 && (
+          <section class="related-reading-box" id="related-reading">
+            <div class="related-reading-header">
+              <h2 class="related-reading-title">Related Reading</h2>
+            </div>
+            <ul class="related-reading-list">
+              {related.map((p) => (
+                <li class="related-reading-item">
+                  <a href={`/blog/${p.slug}/`} class="related-reading-link">
+                    <strong>{p.title}</strong>
+                  </a>
+                  <span class="read-time-pill mono">({p.readingTime})</span>
+                </li>
+              ))}
+            </ul>
+          </section>
         )}
       </article>
 
@@ -1035,6 +1058,82 @@ const faqLd =
   :global(.wrapping-up-box p:last-child),
   .body :global(.wrapping-up-box p:last-child) {
     margin-bottom: 0 !important;
+  }
+
+  /* Related Reading Box (Styled at bottom of article) */
+  :global(.related-reading-box),
+  .related-reading-box {
+    background: #ffffff !important;
+    border: 1.5px solid #e2e8f0 !important;
+    border-radius: 16px !important;
+    padding: 24px 26px !important;
+    margin: 28px 0 20px !important;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04) !important;
+  }
+
+  :global(.related-reading-header),
+  .related-reading-header {
+    margin-bottom: 16px !important;
+    padding-bottom: 12px !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+  }
+
+  :global(.related-reading-title),
+  .related-reading-title {
+    font-size: 20px !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    margin: 0 !important;
+    letter-spacing: -0.01em !important;
+  }
+
+  :global(.related-reading-list),
+  .related-reading-list {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  :global(.related-reading-item),
+  .related-reading-item {
+    display: flex !important;
+    align-items: baseline !important;
+    gap: 10px !important;
+    font-size: 15.5px !important;
+    line-height: 1.6 !important;
+  }
+
+  :global(.related-reading-item::before),
+  .related-reading-item::before {
+    content: "•" !important;
+    color: #da291c !important;
+    font-weight: 800 !important;
+    font-size: 18px !important;
+    line-height: 1 !important;
+  }
+
+  :global(.related-reading-link),
+  .related-reading-link {
+    color: #0f172a !important;
+    text-decoration: none !important;
+    font-weight: 700 !important;
+    transition: color 0.15s ease !important;
+  }
+
+  :global(.related-reading-link:hover),
+  .related-reading-link:hover {
+    color: #da291c !important;
+    text-decoration: underline !important;
+  }
+
+  :global(.read-time-pill),
+  .read-time-pill {
+    color: #64748b !important;
+    font-size: 13.5px !important;
+    white-space: nowrap !important;
   }
 
   /* FAQ Section (Highlighted Premium Design) */

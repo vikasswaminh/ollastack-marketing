@@ -29,6 +29,16 @@ const blog = defineCollection({
         paragraphs: z.array(z.string()),
       })
       .optional(),
+    // Optional Related Reading section rendered at the very end
+    relatedReading: z
+      .array(
+        z.object({
+          title: z.string(),
+          url: z.string(),
+          readTime: z.string().optional(),
+        })
+      )
+      .optional(),
   }),
 });
 
