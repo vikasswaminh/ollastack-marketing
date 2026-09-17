@@ -115,7 +115,14 @@ const STOP = new Set(["the","a","an","to","for","and","in","of","with","your","f
 const toks = (s: string) => new Set(s.split("-").filter((t) => t.length > 2 && !STOP.has(t)));
 const cur = toks(slug);
 
-const related: PostMeta[] = [...posts, ...collectionPosts]
+const uniquePostsMap = new Map<string, PostMeta>();
+for (const p of [...posts, ...collectionPosts]) {
+  if (!uniquePostsMap.has(p.slug)) {
+    uniquePostsMap.set(p.slug, p);
+  }
+}
+
+const related: PostMeta[] = Array.from(uniquePostsMap.values())
   .filter((p) => p.slug !== slug)
   .map((p) => ({ p, score: [...toks(p.slug)].filter((t) => cur.has(t)).length }))
   .sort((a, b) => b.score - a.score || b.p.date.localeCompare(a.p.date))

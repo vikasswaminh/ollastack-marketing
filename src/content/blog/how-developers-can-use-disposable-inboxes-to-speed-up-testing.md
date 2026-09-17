@@ -31,6 +31,25 @@ faq:
     a: "A long poll or webhook based wait mechanism, automatic extraction of codes and links, a test mode that skips spam filtering, cheap and fast inbox creation for isolation, and a plain HTTP API that works the same from any language or CI provider."
   - q: "Is it worth switching from a shared test Gmail account?"
     a: "For any suite running more than a handful of email dependent tests, or running tests in parallel, yes. A shared inbox becomes a source of race conditions and flaky failures as soon as more than one test tries to read from it around the same time, and that problem only gets worse as a suite grows."
+wrappingUp:
+  title: "Wrapping Up"
+  paragraphs:
+    - "Testing email has always been an awkward corner of automated testing, sitting between two systems your test cannot directly control: your own backend, which sends the message, and a mail provider, which delivers it. Shared inboxes and SMTP catchers both try to work around that awkwardness, but they do it by giving something up: either isolation or realism."
+    - "A disposable inbox that you can create and read entirely over HTTP gives up neither. Every test gets its own real, receivable address. Every wait is a long poll instead of a guess. Every code and link is already extracted instead of buried in HTML you must parse yourself."
+    - "If your suite still has a <code>sleep(5000)</code> sitting in front of an email assertion somewhere, swap the shared inbox for a disposable one, swap the sleep for a long poll, and see how much of your flakiness disappears along with it."
+relatedReading:
+  - title: "Disposable Inbox vs Temporary Email: Which One Is Better for Testing?"
+    url: "/blog/disposable-inbox-vs-temporary-email"
+    readTime: "19 min read"
+  - title: "How to Automate OTP Email Testing in CI/CD Pipelines"
+    url: "/blog/how-to-automate-otp-email-testing-in-ci-cd-pipelines"
+    readTime: "20 min read"
+  - title: "Assert on Email in Playwright and Cypress"
+    url: "/blog/assert-on-email-in-playwright-cypress"
+    readTime: "14 min read"
+  - title: "Mailosaur vs Mailinator vs Disposable Inboxes"
+    url: "/blog/mailosaur-vs-mailinator-vs-disposable-inboxes"
+    readTime: "18 min read"
 ---
 
 <div class="tldr-box" id="tldr">
@@ -366,18 +385,3 @@ When evaluating disposable inbox tools for CI testing, look for:
 | Fragile HTML regex breaks when email template changes | Pre-extracted structured `codes` and `links` arrays |
 | Manual IMAP / webmail scraping configuration | Simple `fetch()` calls to clean REST API |
 | Frequent intermittent false-negative CI test failures | Deterministic, rock-solid passing test runs |
-
-<h2 id="wrapping-up" style="text-align: center; margin: 48px auto 20px;">Wrapping Up</h2>
-
-Testing email has always been an awkward corner of automated testing, sitting between two systems your test cannot directly control: your own backend, which sends the message, and a mail provider, which delivers it. Shared inboxes and SMTP catchers both try to work around that awkwardness, but they do it by giving something up: either isolation or realism.
-
-A disposable inbox that you can create and read entirely over HTTP gives up neither. Every test gets its own real, receivable address. Every wait is a long poll instead of a guess. Every code and link is already extracted instead of buried in HTML you must parse yourself.
-
-To dive deeper into related testing patterns, explore our guides on:
-- [Disposable Inbox vs Temporary Email: Which One Is Better for Testing?](/blog/disposable-inbox-vs-temporary-email/)
-- [How to Automate OTP Email Testing in CI/CD Pipelines](/blog/how-to-automate-otp-email-testing-in-ci-cd-pipelines/)
-- [Assert on Email in Playwright and Cypress](/blog/assert-on-email-in-playwright-cypress/)
-- [Mailosaur vs Mailinator vs Disposable Inboxes](/blog/mailosaur-vs-mailinator-vs-disposable-inboxes/)
-
-If your suite still has a `sleep(5000)` sitting in front of an email assertion somewhere, swap the shared inbox for a disposable one, swap the sleep for a long poll, and see how much of your flakiness disappears along with it.
-

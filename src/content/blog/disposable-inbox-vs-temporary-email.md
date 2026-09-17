@@ -27,6 +27,25 @@ faq:
     a: "Not necessarily, but many teams keep Mailhog for fast local development checks and reserve a hosted disposable inbox for CI and staging tests that need to verify real, end to end delivery. The two aren't mutually exclusive."
   - q: "Why does isolation matter so much for CI pipelines specifically?"
     a: "CI pipelines commonly run tests in parallel to reduce total run time. Shared or predictable email addresses create race conditions where one test can accidentally read a message intended for another, producing intermittent failures that are difficult to diagnose because they depend on timing rather than logic."
+wrappingUp:
+  title: "Final Thoughts"
+  paragraphs:
+    - "The words <em>\"temporary email\"</em> and <em>\"disposable inbox\"</em> get used almost interchangeably in casual conversation, and for a human trying to dodge a spammy newsletter, that looseness doesn't matter."
+    - "But the second you're building a test suite that needs to verify OTPs, magic links, or account verification flows reliably—or the second an AI agent needs to complete a signup on someone's behalf—the difference stops being semantic and becomes architectural."
+    - "If your team keeps fighting flaky email tests or hitting walls trying to wire a consumer temp mail tool into CI, the fix isn't a smarter sleep timer. It's recognizing that testing needs its own purpose-built inbox layer designed from the ground up for automated code."
+relatedReading:
+  - title: "How Developers Can Use Disposable Inboxes to Speed Up Testing"
+    url: "/blog/how-developers-can-use-disposable-inboxes-to-speed-up-testing"
+    readTime: "19 min read"
+  - title: "How to Automate OTP Email Testing in CI/CD Pipelines"
+    url: "/blog/how-to-automate-otp-email-testing-in-ci-cd-pipelines"
+    readTime: "20 min read"
+  - title: "Mailosaur vs Mailinator vs Disposable Inboxes"
+    url: "/blog/mailosaur-vs-mailinator-vs-disposable-inboxes"
+    readTime: "18 min read"
+  - title: "Test Email in Docker and CI with a Disposable Inbox"
+    url: "/blog/test-inbox-docker"
+    readTime: "12 min read"
 ---
 
 <div class="tldr-box" id="tldr">
@@ -375,56 +394,4 @@ A developer disposable inbox guarantees:
 | **Local offline development** | Mailhog / Mock SMTP | Fast local sanity check without internet connection |
 | **Autonomous AI agent workflows** | **Developer Disposable Inbox API** | Machine-readable JSON, bearer auth, no DOM scraping |
 
----
-
-## Frequently Asked Questions
-
-### Is a disposable inbox the same thing as a temporary email address?
-They're related but built for different audiences. A temporary email address is typically a consumer-facing tool designed for a human to avoid spam during a one-time signup. A disposable inbox, in the developer sense, is built to be created and read programmatically through an API, specifically for automated testing or agent workflows.
-
-### Can I use a free temporary email service for automated testing?
-You can try, but most consumer temporary email services lack a documented API, reliable long polling, and per-test isolation, which means your automated tests will likely become flaky or unreliable, especially once you introduce parallel test execution.
-
-### Why do OTP tests fail intermittently even when the code looks correct?
-The most common cause is a fixed sleep used to wait for the email instead of long polling. If the email occasionally arrives later than the fixed wait time, the test fails even though nothing is broken.
-
-### Does Mailhog solve the same problem as a disposable inbox?
-Not quite. Mailhog confirms that your application attempted to send an email through SMTP. It doesn't confirm that a real message was delivered and received the way your production users would experience it. A disposable inbox over HTTP tests the full, real delivery path.
-
-### How does a disposable inbox handle parallel test runs safely?
-Each test creates its own unique, privately scoped inbox through an API call at the start of the test. Since no two tests share the same address, there's no risk of one test reading a message meant for another, even when dozens of tests run at the same time.
-
-### Can AI agents use a disposable inbox to complete signups?
-Yes, and this is becoming increasingly common. An agent can create an inbox, submit it into a signup or verification form, and poll for the resulting message the same way an automated test would, without needing to visually interact with a webpage.
-
-### What should I look for in a disposable inbox API for testing?
-At minimum, look for programmatic inbox creation, long polling or webhook based message retrieval, structured extraction of codes and links rather than raw HTML, per-inbox privacy, and clean expiration or deletion once a test finishes.
-
-### Is it safe to use disposable inboxes for testing flows that touch real credentials?
-It's safer than using a public consumer temporary email tool, provided the disposable inbox service guarantees private, scoped access to each inbox. Always confirm that inboxes created for testing aren't visible or guessable by anyone outside your own account.
-
-### Do I still need Mailhog if I'm using a hosted disposable inbox?
-Not necessarily, but many teams keep Mailhog for fast local development checks and reserve a hosted disposable inbox for CI and staging tests that need to verify real, end-to-end delivery. The two aren't mutually exclusive.
-
-### Why does isolation matter so much for CI pipelines specifically?
-CI pipelines commonly run tests in parallel to reduce total run time. Shared or predictable email addresses create race conditions where one test can accidentally read a message intended for another, producing intermittent failures that are difficult to diagnose because they depend on timing rather than logic.
-
----
-
-## Final Thoughts
-
-The words *"temporary email"* and *"disposable inbox"* get used almost interchangeably in casual conversation, and for a human trying to dodge a spammy newsletter, that looseness doesn't matter.
-
-But the second you're building a test suite that needs to verify OTPs, magic links, or account verification flows reliably—or the second an AI agent needs to complete a signup on someone's behalf—the difference stops being semantic and becomes architectural.
-
-- **A temporary email tool** was built for a person to glance at a webpage once.
-- **A developer disposable inbox** is built for code: created through an API, polled reliably without guesswork, read for structured data rather than raw HTML, and cleaned up automatically once its job is done.
-
-To learn more about implementing disposable inboxes in your stack:
-- [How Developers Can Use Disposable Inboxes to Speed Up Testing](/blog/how-developers-can-use-disposable-inboxes-to-speed-up-testing/)
-- [How to Automate OTP Email Testing in CI/CD Pipelines](/blog/how-to-automate-otp-email-testing-in-ci-cd-pipelines/)
-- [Mailosaur vs Mailinator vs Disposable Inboxes](/blog/mailosaur-vs-mailinator-vs-disposable-inboxes/)
-- [Test Email in Docker and CI with a Disposable Inbox](/blog/test-inbox-docker/)
-
-If your team keeps fighting flaky email tests or hitting walls trying to wire a consumer temp mail tool into CI, the fix isn't a smarter sleep timer. It's recognizing that testing needs its own purpose-built inbox layer designed from the ground up for automated code.
 
