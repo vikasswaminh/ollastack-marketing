@@ -15,7 +15,7 @@ export const posts: PostMeta[] = [
     title: "How to Make Your Forms Compatible with AI Agents and Automation Tools (2026 Guide)",
     description:
       "Learn how to make your web forms compatible with AI agents and automation tools in 2026. Practical guidance on APIs, authentication, spam handling, schema design, and testing that lets both humans and agents submit safely.",
-    date: "2026-09-15",
+    date: "2026-09-16",
     readingTime: "23 min read",
     category: "AI Agents",
     categorySlug: "ai-agents",
@@ -26,7 +26,7 @@ export const posts: PostMeta[] = [
     title: "Best Formspree Alternatives for Developers in 2026 (Faster, Simpler, More Flexible)",
     description:
       "Looking for a Formspree alternative? Here are the best form-related options for developers in 2026, compared by speed, pricing, webhooks, AI agent support, and real-world flexibility.",
-    date: "2026-09-14",
+    date: "2026-09-15",
     readingTime: "19 min read",
     category: "Comparisons & Migrations",
     categorySlug: "comparisons",

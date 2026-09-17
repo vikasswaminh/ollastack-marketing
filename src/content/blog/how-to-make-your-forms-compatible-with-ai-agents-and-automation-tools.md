@@ -1,8 +1,8 @@
 ---
 title: "How to Make Your Forms Compatible with AI Agents and Automation Tools (2026 Guide)"
 description: "Learn how to make your web forms compatible with AI agents and automation tools in 2026. Practical guidance on APIs, authentication, spam handling, schema design, and testing that lets both humans and agents submit safely."
-date: 2026-09-15
-updated: 2026-09-15
+date: 2026-09-16
+updated: 2026-09-16
 tags: ["AI Agents", "Form Automation", "Agent-Friendly Forms", "Form Backends", "API for AI Agents", "Developer Tools", "Schema Design"]
 author: "By Keerthi SB"
 readingTime: 23
@@ -226,7 +226,7 @@ The same logic applies to your response format:
 {
   "success": true,
   "submissionId": "sub_92kL104xPq",
-  "timestamp": "2026-09-15T14:32:00Z",
+  "timestamp": "2026-09-16T14:32:00Z",
   "message": "Submission received and queued for delivery."
 }
 ```
