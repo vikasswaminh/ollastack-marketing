@@ -11,6 +11,17 @@ export interface PostMeta {
 
 export const posts: PostMeta[] = [
   {
+    slug: "how-to-capture-form-leads-on-landing-pages-in-minutes",
+    title: "How to Capture Form Leads on Landing Pages in Minutes (2026 Guide)",
+    description:
+      "Learn how to capture form leads on any landing page in minutes, without a backend server or a single line of code you must maintain. A practical walkthrough covering setup, spam protection, notifications, webhooks, and conversion focused design for developers and marketers.",
+    date: "2026-09-17",
+    readingTime: "21 min read",
+    category: "Forms",
+    categorySlug: "forms",
+    featured: true,
+  },
+  {
     slug: "how-to-make-your-forms-compatible-with-ai-agents-and-automation-tools",
     title: "How to Make Your Forms Compatible with AI Agents and Automation Tools (2026 Guide)",
     description:
@@ -19,7 +30,6 @@ export const posts: PostMeta[] = [
     readingTime: "23 min read",
     category: "AI Agents",
     categorySlug: "ai-agents",
-    featured: true,
   },
   {
     slug: "best-formspree-alternatives-for-developers",
