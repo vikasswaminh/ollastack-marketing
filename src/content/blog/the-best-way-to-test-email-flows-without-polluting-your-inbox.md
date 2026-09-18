@@ -24,7 +24,7 @@ faq:
   - q: "What's the difference between this and just using a local mail catcher?"
     a: "A local mail catcher proves the application attempted to send an email. A disposable inbox proves the email was delivered and readable, which is a meaningfully stronger guarantee, especially for catching real world deliverability issues that only show up outside a local sandbox."
 wrappingUp:
-  title: "Final Takeaway"
+  title: "Wrapping Up"
   paragraphs:
     - "Testing email flows doesn't have to mean sacrificing a real inbox, and it shouldn't mean writing tests that pass locally and flake constantly in CI because of a guessed timeout. The pattern that works is straightforward once it's laid out clearly."
     - "Give every test its own disposable, programmatically readable inbox, wait for the real message instead of guessing how long it'll take, extract exactly what's needed, and let the whole thing disappear when the test is done. This isn't a workaround or a clever hack. It's become the standard way serious engineering teams handle email testing in 2026, precisely because it's the only approach that satisfies isolation, automation, and cleanliness all at the same time."
