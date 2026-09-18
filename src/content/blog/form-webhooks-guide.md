@@ -6,6 +6,21 @@ updated: 2026-08-26
 tags: ["webhooks", "guide", "backend"]
 author: "Ollastack"
 readingTime: 8
+wrappingUp:
+  title: "Wrapping Up"
+  paragraphs:
+    - "Forwarding form submissions to your own service via webhooks decouples your business logic from the frontend. Always verify the HMAC signature against the raw request body, make consumers idempotent by keying on submissionId, and return a 200 status promptly."
+    - "When debugging downstream issues, rely on delivery logs and replay capabilities rather than asking users to re-submit forms."
+relatedReading:
+  - title: "Form Submission APIs Explained: When to Use Them and Why They Matter"
+    url: "/blog/form-submission-apis-explained-when-to-use-them-and-why-they-matter"
+    readTime: "12 min read"
+  - title: "How to Build a Form Backend for a Static Site Without Writing a Server"
+    url: "/blog/how-to-build-a-form-backend-for-a-static-site-without-writing-a-server"
+    readTime: "21 min read"
+  - title: "How to Make Your Forms Compatible with AI Agents and Automation Tools"
+    url: "/blog/how-to-make-your-forms-compatible-with-ai-agents-and-automation-tools"
+    readTime: "15 min read"
 faq:
   - q: "How do I verify a form webhook signature?"
     a: "Each delivery carries an HMAC-SHA256 signature header; recompute the HMAC of the raw body with your secret and compare in constant time."
@@ -14,6 +29,21 @@ faq:
   - q: "How do I handle retries idempotently?"
     a: "Key on the delivery or submission id and ignore duplicates, so a retry or replay doesn't double-process."
 ---
+
+<div class="tldr-box" id="tldr">
+  <div class="tldr-header">TL;DR: The Quick Answer</div>
+  <p>To consume form submission webhooks securely and reliably, verify the HMAC-SHA256 signature against the raw body using constant-time comparison, make your consumer idempotent using the unique submission ID, and return a 200 HTTP response immediately before performing asynchronous processing.</p>
+</div>
+
+<div class="takeaways-box" id="key-takeaways">
+  <div class="takeaways-header">Key Takeaways</div>
+  <ul class="takeaways-list">
+    <li><strong>Verify HMAC Signatures:</strong> Always validate <code>X-Ollastack-Signature</code> against raw request bytes using <code>timingSafeEqual</code>.</li>
+    <li><strong>Design for At-Least-Once Delivery:</strong> Deduplicate records using <code>submissionId</code> to safely handle retries without double-processing.</li>
+    <li><strong>Acknowledge Fast:</strong> Return a 200 response immediately and process heavy background tasks (emails, CRM syncs) asynchronously.</li>
+    <li><strong>Use Webhook Replay:</strong> Replay failed deliveries directly from the dashboard after resolving consumer outages.</li>
+  </ul>
+</div>
 
 Forwarding form submissions to your own service via webhook is the right pattern — it decouples your processing from the form backend. But a naive webhook setup (unsigned, fire-and-forget, no retry visibility) turns into a debugging nightmare the first time a submission goes missing. Here's how to do it so it's boring and reliable.
 

@@ -28,7 +28,7 @@ faq:
   - q: "How can I test whether my form is compatible before relying on it?"
     a: "Write a simple script that mimics authenticated agent behavior, testing valid submissions, missing field errors, invalid tokens, rate limits, and idempotent retries. If possible, run a genuine test using an actual agent framework guided only by your public documentation to see whether it can complete a submission without additional hand holding."
 wrappingUp:
-  title: "Final Thoughts"
+  title: "Wrapping Up"
   paragraphs:
     - "The web form has been a stable, mostly unchanged pattern for a very long time. Fields, labels, a submit button, and an assumption that a human is on the other end reading everything and typing it in by hand. That assumption served the internet well for decades, and it is not wrong exactly, it is simply incomplete now."
     - "Agents are not trying to sneak past your defenses maliciously when they trip a honeypot field or fail a CAPTCHA. They behave exactly as designed, just not in a way your form anticipated. The fix is not to weaken your security or throw out everything you have built. It is to recognize that two fundamentally different kinds of visitors are now showing up at your form, giving each one an appropriate, well-designed path, test that path deliberately rather than assuming it works, and build the visibility to know what is happening when something inevitably needs debugging."

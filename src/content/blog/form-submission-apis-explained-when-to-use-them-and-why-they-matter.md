@@ -29,7 +29,7 @@ faq:
   - q: "Is it worth using an API if my current form is very simple?"
     a: "If the form is genuinely temporary or standalone, probably not—a simple no-code tool is a better fit. If the form is part of a product that's likely to grow, starting with an API-based approach saves you a painful migration later."
 wrappingUp:
-  title: "Final Thoughts"
+  title: "Wrapping Up"
   paragraphs:
     - "Forms look simple because the part everyone sees, the input fields and the submit button, are simple. What's not visible is everything that has to happen correctly and quietly behind that button every single time: validation that catches bad data before it spreads further, spam defenses that keep your inbox usable, notifications that actually arrive, webhooks that reliably move data where it needs to go, and increasingly, a clear path for scripts and AI agents to interact with the same form a human would, without needing to pretend to be one."
     - "A form submission API exists to handle exactly that layer, so you can spend your time building the parts of your product that differentiate it, rather than reinventing spam filtering and webhook retry logic from scratch. Whether you're maintaining a simple static site, running a growing SaaS product, or building workflows where AI agents are now a genuine source of traffic, the underlying question is the same: do you want that infrastructure to be something you build and maintain forever, or something you can rely on so you can focus on everything else?"

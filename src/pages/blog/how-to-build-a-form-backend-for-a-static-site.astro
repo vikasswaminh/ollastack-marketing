@@ -35,6 +35,32 @@ const faq = [
     a: "Every major provider in this space has paid tiers that scale submission volume, recipient counts, and form counts upward — check the specific pricing page for current limits, since these change more often than the underlying integration mechanics do. The good news is that moving between tiers, or even between providers later, doesn't touch your site's HTML beyond the endpoint URL itself."
   }
 ];
+
+const wrappingUp = {
+  title: "Wrapping Up",
+  paragraphs: [
+    "Static sites won an argument that used to be genuinely contentious: for the vast majority of content-driven sites, you don't need a server humming along 24/7 just to serve pages. Forms were the last real gap in that argument — the one place where 'static' seemed to force your hand back toward a runtime. Hosted form backends close that gap cleanly.",
+    "The next time you're staring at a <form> tag on a static site wondering what to put in the action attribute, resist the urge to reach for a framework. Point it at an endpoint built for exactly this job, spend your afternoon on something your site actually needs, and let someone else worry about SPF records and retry backoffs."
+  ]
+};
+
+const relatedReading = [
+  {
+    title: "Form Backend vs Form Builder: Which One Do You Actually Need?",
+    url: "/blog/form-backend-vs-form-builder",
+    readTime: "10 min read"
+  },
+  {
+    title: "Self-Host vs Hosted Form Backend: A Practical Comparison",
+    url: "/blog/self-host-vs-hosted-form-backend",
+    readTime: "12 min read"
+  },
+  {
+    title: "Form Webhooks Guide: Best Practices for Reliable Data Delivery",
+    url: "/blog/form-webhooks-guide",
+    readTime: "15 min read"
+  }
+];
 ---
 
 <BlogPost
@@ -45,11 +71,14 @@ const faq = [
   readingTime="21 min read"
   ctaLocation="blog"
   slug="how-to-build-a-form-backend-for-a-static-site"
+  wrappingUp={wrappingUp}
+  relatedReading={relatedReading}
   faq={faq}
 >
-  <p class="lede">
-    You don't need Express, a database, or a $5/month droplet just to catch a contact form. Here's exactly how to give a static site a real form backend — spam filtering, notifications, webhooks and all — without writing a line of server code.
-  </p>
+  <div class="tldr-box" id="tldr">
+    <div class="tldr-header">TL;DR: The Quick Answer</div>
+    <p>You don't need Express, a database, or a $5/month droplet just to catch a contact form. Hosted form backends give static sites full form handling — spam filtering, notifications, webhooks, and attachments — by pointing your HTML form or <code>fetch()</code> request directly to a dedicated API endpoint.</p>
+  </div>
 
   <p>
     Here's a scene that plays out a hundred times a day, on every corner of the web. Someone builds a beautiful, fast, static site — Hugo, Astro, Eleventy, plain HTML, doesn't matter which — and it's <em>great</em>. Pages load in a blink. There's no database to patch, no server to reboot at 2 a.m., no dependency-update Tuesday. Then they get to the contact page, or the newsletter signup, or the "request a demo" form, and they hit a wall: <code>&lt;form&gt;</code> tags need somewhere to send their data, and a static site, by definition, has nowhere for that data to go.
@@ -443,13 +472,6 @@ function verifyWebhook(headers, rawBody, secret) &#123;
     Even in these cases, a common pattern is to use a hosted form backend for the <em>front door</em> — validation, spam filtering, the honeypot, the notification — and have its webhook trigger your custom logic downstream, rather than reimplementing spam filtering and deliverability from scratch just to get to the one piece of genuinely custom logic you actually needed.
   </p>
 
-  <h2 id="the-bigger-picture">The bigger picture</h2>
-  <p>
-    Static sites won an argument that used to be genuinely contentious: for the vast majority of content-driven sites, you don't need a server humming along 24/7 just to serve pages. Forms were the last real gap in that argument — the one place where "static" seemed to force your hand back toward a runtime. Hosted form backends close that gap cleanly, and they do it by being <em>narrowly</em> good at one thing rather than broadly mediocre at everything a general-purpose backend would need to be.
-  </p>
-  <p>
-    The practical upshot: the next time you're staring at a <code>&lt;form&gt;</code> tag on a static site wondering what to put in the <code>action</code> attribute, resist the urge to reach for a framework. Point it at an endpoint built for exactly this job, spend your afternoon on something your site actually needs, and let someone else worry about SPF records and retry backoffs. If you want to see the whole flow live before committing anything, <a href="https://login.ollastack.com/register">create a form on Ollastack</a> — most services, Ollastack included, have a <a href="https://ollastack.com/pricing">free tier</a> generous enough to fully evaluate the fit before you touch a paid plan.
-  </p>
 
   <style>
     .takeaways-box {

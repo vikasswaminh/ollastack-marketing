@@ -27,6 +27,31 @@ const faq = [
     a: "An agent-ready form backend is a form submission system designed to support both humans and authorized AI agents. It typically provides APIs, secure authentication, validation, rate limiting, structured responses, webhooks, and auditability so agents can submit data reliably without relying on fragile browser automation."
   }
 ];
+const wrappingUp = {
+  title: "Wrapping Up",
+  paragraphs: [
+    "AI agents submitting forms on behalf of humans are an increasingly common reality. The solution is not to weaken anti-bot defenses, nor is it to force legitimate agents to mimic human browser sessions.",
+    "By providing scoped credentials, dedicated API endpoints, structured validation, and transparent audit logs, developers can safely and reliably support agent traffic while keeping spam and abuse firmly locked out."
+  ]
+};
+
+const relatedReading = [
+  {
+    title: "How to Make Your Forms Compatible with AI Agents and Automation Tools",
+    url: "/blog/how-to-make-your-forms-compatible-with-ai-agents-and-automation-tools",
+    readTime: "15 min read"
+  },
+  {
+    title: "Test Email in Docker and CI with a Disposable Inbox",
+    url: "/blog/test-inbox-docker",
+    readTime: "7 min read"
+  },
+  {
+    title: "Form Design for Higher Conversions (and Less Spam)",
+    url: "/blog/form-design-conversion",
+    readTime: "7 min read"
+  }
+];
 ---
 
 <BlogPost
@@ -36,11 +61,14 @@ const faq = [
   readingTime="21 min read"
   ctaLocation="blog"
   slug="can-ai-agents-submit-forms-safely"
+  wrappingUp={wrappingUp}
+  relatedReading={relatedReading}
   faq={faq}
 >
-  <p class="lede">
-    AI agents are filling out and submitting forms on behalf of humans at scale. Here's what "safe" actually means for that traffic, where it breaks, and how to build (or choose) a form backend that handles it properly.
-  </p>
+  <div class="tldr-box" id="tldr">
+    <div class="tldr-header">TL;DR: The Quick Answer</div>
+    <p>An AI agent can submit a form safely when the submission goes through an authenticated, scoped API endpoint with dedicated credentials, schema validation, and audit logging — rather than puppeting a browser and pretending to be a human.</p>
+  </div>
 
   <p>
     Somewhere in the last eighteen months, the web quietly picked up a new kind of visitor. Not a person with a mouse, not a scraper harvesting product prices, but something in between — an AI agent that reads a page, understands a form, decides what to type into each field, and clicks submit. It might be booking a demo call for someone in a Slack thread. It might be requesting ten vendor quotes in parallel so a procurement manager doesn't have to. It might be an internal script re-testing your signup flow every night at 2 a.m. so a human doesn't have to catch the bug in the morning.
@@ -406,47 +434,4 @@ curl -X POST https://login.ollastack.com/api/forms/frm_.../agents \
   <p>
     The fix on both sides is the same idea, applied from opposite directions: identity and scoped authorization, established explicitly and revocably, instead of trust inferred from behavior that's increasingly easy for both good and bad actors to fake. An agent that submits with its own credential, to an endpoint built to receive it, gets a categorically safer interaction than one trying to look human enough to sneak past defenses designed to catch exactly that. And a form backend that recognizes disclosed, authorized agents as a legitimate third category — not just "human" or "bot" — gets to keep its real defenses sharp instead of quietly dulling them to let automation through.
   </p>
-
-  <p>
-    Forms were the first place this tension showed up at scale, because they're the oldest, most universal way the web asks a visitor to hand over structured information. They almost certainly won't be the last. Getting the pattern right here — scoped credentials, explicit authorization, structured results, instant revocation, full audit trails — is a template that holds up well beyond forms specifically, which is exactly why it's worth building properly now rather than patching around it later.
-  </p>
-
-  <p>
-    We built Ollastack around this pattern from the start, on the theory that "an agent needs to reach a form" and "an agent needs to reach an inbox" are the same underlying problem wearing two different hats. If you're building something that needs to submit forms — or receive what those forms trigger — on behalf of real users, <a href="https://login.ollastack.com/register">start free and see the agent path directly</a>; it's in every plan, including the free tier.
-  </p>
-
-  <h2 id="frequently-asked-questions">Frequently asked questions</h2>
-
-  <div class="faq-grid" style="margin-top:20px;">
-    {faq.map((item) => (
-      <div class="faq-card" style="background:#fff;border:1px solid var(--line);border-radius:var(--radius-sm);margin-bottom:12px;padding:16px;">
-        <h3 class="faq-question" style="font-size:16px;font-weight:700;color:var(--ink-heading);margin-top:0;margin-bottom:8px;">{item.q}</h3>
-        <p class="faq-answer" style="color:var(--muted);font-size:14.5px;margin:0;line-height:1.6;">{item.a}</p>
-      </div>
-    ))}
-  </div>
-
-  <h2 id="related-reading">Related reading</h2>
-  <div class="related-grid" style="margin-top:20px;">
-    <a href="/blog/form-backend-for-ai-agents" class="related-card">
-      <div class="related-card-meta mono">9 min read</div>
-      <h4 class="related-card-title">Form backend for AI agents: why forms break for LLMs</h4>
-    </a>
-    <a href="/blog/email-for-ai-agents" class="related-card">
-      <div class="related-card-meta mono">10 min read</div>
-      <h4 class="related-card-title">Email for AI agents: give an agent its own inbox</h4>
-    </a>
-    <a href="/blog/test-inbox-docker" class="related-card">
-      <div class="related-card-meta mono">7 min read</div>
-      <h4 class="related-card-title">Test email in Docker and CI with a disposable inbox</h4>
-    </a>
-    <a href="/blog/assert-on-email-in-playwright-cypress" class="related-card">
-      <div class="related-card-meta mono">7 min read</div>
-      <h4 class="related-card-title">Assert on email in Playwright and Cypress</h4>
-    </a>
-    <a href="/blog/form-design-conversion" class="related-card">
-      <div class="related-card-meta mono">7 min read</div>
-      <h4 class="related-card-title">Form design for higher conversions (and less spam)</h4>
-    </a>
-  </div>
 </BlogPost>

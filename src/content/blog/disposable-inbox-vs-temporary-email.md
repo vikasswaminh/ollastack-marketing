@@ -28,7 +28,7 @@ faq:
   - q: "Why does isolation matter so much for CI pipelines specifically?"
     a: "CI pipelines commonly run tests in parallel to reduce total run time. Shared or predictable email addresses create race conditions where one test can accidentally read a message intended for another, producing intermittent failures that are difficult to diagnose because they depend on timing rather than logic."
 wrappingUp:
-  title: "Final Thoughts"
+  title: "Wrapping Up"
   paragraphs:
     - "The words <em>\"temporary email\"</em> and <em>\"disposable inbox\"</em> get used almost interchangeably in casual conversation, and for a human trying to dodge a spammy newsletter, that looseness doesn't matter."
     - "But the second you're building a test suite that needs to verify OTPs, magic links, or account verification flows reliably—or the second an AI agent needs to complete a signup on someone's behalf—the difference stops being semantic and becomes architectural."

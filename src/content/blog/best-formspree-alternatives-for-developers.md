@@ -29,6 +29,16 @@ wrappingUp:
     - "Formspree earned its popularity fairly, and for a huge number of simple use cases, it still gets the job done without drama. But \"the tool everyone defaults on\" and \"the tool that fits your specific project\" are not always the same thing, and it is worth periodically checking whether your assumptions about what you need still match what is available."
     - "The alternatives covered here span a wide range, from <strong>Web3Forms's</strong> refreshingly generous free tier, to <strong>Basin's</strong> polished dashboard experience, to <strong><a href=\"https://ollastack.com\">Ollastack's</a></strong> backend-first approach built explicitly around developer control, reliable webhooks, and the increasingly real-world need to handle AI agents as a distinct category of traffic rather than an edge case to block."
     - "The right choice depends entirely on what you are building and where you expect it to go over the next year, not just what solves today's immediate problem. Given how low the switching cost is across this entire category, there is very little downside in trying a different option if your current one is starting to feel like it is holding you back rather than helping you move faster."
+relatedReading:
+  - title: "Form Submission APIs Explained: When to Use Them and Why They Matter"
+    url: "/blog/form-submission-apis-explained-when-to-use-them-and-why-they-matter"
+    readTime: "22 min read"
+  - title: "Form Backend vs Form Builder: What Developers Should Choose in 2026"
+    url: "/blog/form-backend-vs-form-builder"
+    readTime: "18 min read"
+  - title: "How to Make Your Forms Compatible with AI Agents and Automation Tools (2026 Guide)"
+    url: "/blog/how-to-make-your-forms-compatible-with-ai-agents-and-automation-tools"
+    readTime: "23 min read"
 ---
 
 <div class="tldr-box" id="tldr">

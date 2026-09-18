@@ -28,7 +28,7 @@ faq:
   - q: "How many times should a form appear on a longer landing page?"
     a: "For a short, high intent page, once above the fold is often enough. For a longer page that needs to build a case before asking for information, repeating the form at a couple of natural points, such as after the main value proposition and again at the end of the page, tends to capture visitors who convinced themselves partway through rather than only those who were already sure from the first screen."
 wrappingUp:
-  title: "Final Thoughts"
+  title: "Wrapping Up"
   paragraphs:
     - "A landing page succeeds or fails at one single moment: whether a visitor who was interested enough to keep reading completes the form at the bottom. Everything about the page's design, copy, and offer exists to build toward that one moment, and yet the form itself is so often treated as the last, rushed decision rather than the entire point of the exercise."
     - "The good news is that building a reliable, well-protected, properly routed lead capture form no longer requires a backend project, a database, or days of engineering time. A hosted form endpoint, a few honest decisions about which fields you need, sensible spam protection that does not silently eat real leads, and a clear plan for where those leads land once they arrive gets you a production ready setup in a small amount of time."

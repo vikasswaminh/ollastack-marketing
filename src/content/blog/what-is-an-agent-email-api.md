@@ -21,7 +21,40 @@ faq:
     a: "A well-built agent email API extracts one-time codes and links from a message automatically and returns them as structured fields, so the agent doesn't need to parse raw HTML or write fragile regular expressions against an email template that could change at any time."
   - q: "Can an agent reply to an email thread, not just send a new one?"
     a: "Yes, if the API supports threaded replies by preserving the In-Reply-To and References headers from the original message. This keeps the agent's response in the same conversation thread instead of appearing as an unrelated new email to the recipient."
+wrappingUp:
+  title: "Wrapping Up"
+  paragraphs:
+    - "An agent email API is what closing that gap looks like for the inbox specifically: a real, scoped identity an agent owns, that can send, receive, and reply over an authenticated API, with structured data instead of rendered pages and audit trails instead of a shared password nobody remembers granting access to."
+    - "Forms and email keep showing up together for a reason: they're the two oldest, most universal ways the web asks a visitor to exchange structured information. Solve both with the same scoped, authenticated approach, and the whole loop—submit, verify, receive, reply—becomes something an agent can run start to finish without a human relaying information in the middle."
+relatedReading:
+  - title: "Email for AI Agents: Give an Agent Its Own Inbox"
+    url: "/blog/email-for-ai-agents"
+    readTime: "10 min read"
+  - title: "Can AI Agents Submit Forms Safely?"
+    url: "/blog/can-ai-agents-submit-forms-safely"
+    readTime: "21 min read"
+  - title: "Form Backend for AI Agents: Why Forms Break for LLMs"
+    url: "/blog/form-backend-for-ai-agents"
+    readTime: "9 min read"
+  - title: "Test Email in Docker and CI with a Disposable Inbox"
+    url: "/blog/test-inbox-docker"
+    readTime: "7 min read"
 ---
+
+<div class="tldr-box" id="tldr">
+  <div class="tldr-header">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+    </svg>
+    <h2 class="tldr-title" id="tldr-heading">TL;DR</h2>
+  </div>
+  <p>
+    An <strong>agent email API</strong> gives autonomous AI agents a real, addressable email identity they can send from, receive into, and reply through programmatically over HTTP.
+  </p>
+  <p>
+    Unlike traditional transactional senders that only push outbound notifications, an agent email API exposes incoming verification codes, magic links, and threaded replies as structured JSON data so AI workflows can complete end-to-end signup and authentication loops without human intervention.
+  </p>
+</div>
 
 Somewhere around the middle of this decade, a strange gap opened up in how AI agents interact with the world. We gave them browsers, terminals, and the ability to write code, call APIs, and reason for pages at a time before taking a single action. And then we quietly forgot to give most of them the one piece of infrastructure that almost every real workflow eventually depends on: an inbox.
 
@@ -295,13 +328,5 @@ We built Ollastack around exactly that idea: an agent that needs to reach a form
 
 If you're building something that needs to send, receive, or reply to email on behalf of real users — or an agent acting for them — **[start free and give your agent its own inbox](https://login.ollastack.com/register)**; it's on every plan, including the free tier.
 
----
 
-## Related reading
-
-- **[Email for AI agents: give an agent its own inbox](/blog/email-for-ai-agents)** · 10 min read
-- **[Can AI agents submit forms safely?](/blog/can-ai-agents-submit-forms-safely)** · 21 min read
-- **[Form backend for AI agents: why forms break for LLMs](/blog/form-backend-for-ai-agents)** · 9 min read
-- **[Test email in Docker and CI with a disposable inbox](/blog/test-inbox-docker)** · 7 min read
-- **[Assert on email in Playwright and Cypress](/blog/assert-on-email-in-playwright-cypress)** · 7 min read
 

@@ -6,6 +6,21 @@ updated: 2026-08-24
 tags: ["testing", "docker", "ci", "email"]
 author: "Ollastack"
 readingTime: 7
+wrappingUp:
+  title: "Wrapping Up"
+  paragraphs:
+    - "In Docker and CI environments, skip the local SMTP catcher when you need to validate full email deliverability. A disposable inbox over HTTP gives you end-to-end verification of deliverability, authentication headers, and payload content with a single API token."
+    - "Isolate parallel tests by provisioning unique inboxes or subaddresses per worker, and use automatic retention policies to keep CI environments clean."
+relatedReading:
+  - title: "The Best Way to Test Email Flows Without Polluting Your Inbox"
+    url: "/blog/the-best-way-to-test-email-flows-without-polluting-your-inbox"
+    readTime: "25 min read"
+  - title: "How Developers Can Use Disposable Inboxes to Speed Up Testing"
+    url: "/blog/how-developers-can-use-disposable-inboxes-to-speed-up-testing"
+    readTime: "12 min read"
+  - title: "How to Automate OTP Email Testing in CI/CD Pipelines"
+    url: "/blog/how-to-automate-otp-email-testing-in-ci-cd-pipelines"
+    readTime: "18 min read"
 faq:
   - q: "How do I test email from inside a Docker container?"
     a: "Use a disposable inbox over HTTP rather than a local SMTP catcher: create an inbox via the API, point your app at its address, then long-poll the wait endpoint and assert on the extracted code or link. It needs only an OLLASTACK_API_TOKEN env var — no SMTP service in the compose file."
@@ -14,6 +29,21 @@ faq:
   - q: "Does it work in GitHub Actions or GitLab CI?"
     a: "Yes — it's plain HTTP, so it runs from any container or CI runner with just the API token as a secret. No service container to stand up."
 ---
+
+<div class="tldr-box" id="tldr">
+  <div class="tldr-header">TL;DR: The Quick Answer</div>
+  <p>Rather than running complex SMTP catchers inside Docker or CI, test end-to-end email flows using disposable inboxes over HTTP. Provision isolated mailboxes via API, trigger verification emails, long-poll for message arrival, and assert on extracted OTPs or magic links.</p>
+</div>
+
+<div class="takeaways-box" id="key-takeaways">
+  <div class="takeaways-header">Key Takeaways</div>
+  <ul class="takeaways-list">
+    <li><strong>Verify Real Delivery:</strong> Local SMTP mocks only test dispatch, while disposable HTTP inboxes validate actual end-to-end delivery and authentication.</li>
+    <li><strong>Zero Docker Plumbing:</strong> No need to run mock SMTP containers or expose internal ports; tests communicate over plain HTTPS with an API token.</li>
+    <li><strong>Eliminate Flaky Sleeps:</strong> Built-in long-polling wait endpoints return immediately when mail arrives.</li>
+    <li><strong>Parallel Test Isolation:</strong> Assign unique inboxes per CI worker to prevent race conditions and mailbox crosstalk.</li>
+  </ul>
+</div>
 
 You containerized your app and now your email tests are awkward: a local SMTP catcher (Mailhog, Mailpit) runs as another service and only proves your app *tried* to send. To test that email actually delivers and contains the right thing, use a **real disposable inbox over HTTP** — no SMTP service in your compose file.
 
@@ -86,9 +116,3 @@ No service container, no SMTP sink to maintain.
 - **One inbox per test** (or a `+tag` subaddress) so parallel jobs don't read each other's mail.
 - **Bulk-clear** between runs and set a **retention window** so test mail purges itself.
 - Test inboxes are **never spam-filtered**, so a strict transactional email is never dropped from under your assertion.
-
-## The takeaway
-
-In Docker or CI, skip the local SMTP catcher and test the real thing: a disposable inbox over HTTP, created and read with one token. It's the difference between "we tried to send" and "the email actually arrived and was correct." More in [the email testing API](/blog/email-testing-api-for-ci), [testing OTP in CI](/blog/test-otp-email-in-ci), and [the Mailosaur alternative](/blog/mailosaur-alternative).
-
-[Get a test inbox](https://login.ollastack.com/register) — disposable, HTTP-readable, free to start.
