@@ -487,13 +487,34 @@ Once a disposable inbox setup is in place, periodically verify that it is delive
 
 ## A Practical Checklist Before You Ship This
 
-Before pushing your new email testing setup to production CI, run through this quick checklist:
-
-- [ ] Every individual test generates its own fresh, isolated inbox.
-- [ ] Email assertions use server-side long polling instead of fixed `sleep()` pauses.
-- [ ] Inboxes have automatic TTL expiration or explicit `afterEach` teardown handlers.
-- [ ] CI runner has verified outbound HTTPS access to the inbox API.
-- [ ] Both happy paths (valid OTP) and negative paths (expired code, rate limit) are tested.
-- [ ] API keys in CI are scoped specifically to test inbox management.
-- [ ] Token and URL extraction helpers are used instead of brittle regex over raw HTML.
+<div class="interactive-checklist">
+  <label class="checklist-item">
+    <input type="checkbox" class="checklist-checkbox" />
+    <span class="checklist-text">Every individual test generates its own fresh, isolated inbox.</span>
+  </label>
+  <label class="checklist-item">
+    <input type="checkbox" class="checklist-checkbox" />
+    <span class="checklist-text">Email assertions use server-side long polling instead of fixed <code>sleep()</code> pauses.</span>
+  </label>
+  <label class="checklist-item">
+    <input type="checkbox" class="checklist-checkbox" />
+    <span class="checklist-text">Inboxes have automatic TTL expiration or explicit <code>afterEach</code> teardown handlers.</span>
+  </label>
+  <label class="checklist-item">
+    <input type="checkbox" class="checklist-checkbox" />
+    <span class="checklist-text">CI runner has verified outbound HTTPS access to the inbox API.</span>
+  </label>
+  <label class="checklist-item">
+    <input type="checkbox" class="checklist-checkbox" />
+    <span class="checklist-text">Both happy paths (valid OTP) and negative paths (expired code, rate limit) are tested.</span>
+  </label>
+  <label class="checklist-item">
+    <input type="checkbox" class="checklist-checkbox" />
+    <span class="checklist-text">API keys in CI are scoped specifically to test inbox management.</span>
+  </label>
+  <label class="checklist-item">
+    <input type="checkbox" class="checklist-checkbox" />
+    <span class="checklist-text">Token and URL extraction helpers are used instead of brittle regex over raw HTML.</span>
+  </label>
+</div>
 

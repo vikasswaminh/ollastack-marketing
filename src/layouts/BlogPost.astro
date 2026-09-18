@@ -284,6 +284,29 @@ const faqLd =
           <slot />
         </div>
 
+        {faq && faq.length > 0 && (
+          <section class="post-faq" id="faq-section">
+            <div class="faq-head-wrap">
+              <h2>Frequently Asked Questions</h2>
+            </div>
+            <div class="faq-accordion-list">
+              {faq.map((item, idx) => (
+                <details class="faq-card" open={idx === 0}>
+                  <summary class="faq-summary">
+                    <span>{item.q}</span>
+                    <svg class="faq-icon-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </summary>
+                  <div class="faq-body-content">
+                    <p>{item.a}</p>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </section>
+        )}
+
         {wrappingUp && (
           <div class="wrapping-up-box" id="wrapping-up-box">
             <div class="wrapping-up-header">
@@ -328,29 +351,6 @@ const faqLd =
             </ul>
           </section>
         )}
-
-        {faq && faq.length > 0 && (
-          <section class="post-faq" id="faq-section">
-            <div class="faq-head-wrap">
-              <h2>Frequently Asked Questions</h2>
-            </div>
-            <div class="faq-accordion-list">
-              {faq.map((item, idx) => (
-                <details class="faq-card" open={idx === 0}>
-                  <summary class="faq-summary">
-                    <span>{item.q}</span>
-                    <svg class="faq-icon-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="6 9 12 15 18 9"></polyline>
-                    </svg>
-                  </summary>
-                  <div class="faq-body-content">
-                    <p>{item.a}</p>
-                  </div>
-                </details>
-              ))}
-            </div>
-          </section>
-        )}
       </article>
 
       <!-- ================= RIGHT COLUMN: AGENT WORKFLOWS ================= -->
@@ -391,18 +391,34 @@ const faqLd =
   (function () {
     const btn = document.getElementById("copy-link-btn");
     const label = document.getElementById("copy-btn-label");
-    if (!btn || !label) return;
-    btn.addEventListener("click", async () => {
-      try {
-        await navigator.clipboard.writeText(window.location.href);
-        label.textContent = "Copied!";
-        btn.classList.add("copied");
-        setTimeout(() => {
-          label.textContent = "Copy link";
-          btn.classList.remove("copied");
-        }, 2000);
-      } catch (err) {
-        label.textContent = "Copied!";
+    if (btn && label) {
+      btn.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(window.location.href);
+          label.textContent = "Copied!";
+          btn.classList.add("copied");
+          setTimeout(() => {
+            label.textContent = "Copy link";
+            btn.classList.remove("copied");
+          }, 2000);
+        } catch (err) {
+          label.textContent = "Copied!";
+        }
+      });
+    }
+
+    // Enable interactive clicks for markdown task lists / checklists
+    document.querySelectorAll('.body input[type="checkbox"]').forEach((checkbox) => {
+      checkbox.removeAttribute('disabled');
+      const li = checkbox.closest('li') || checkbox.closest('.checklist-item');
+      if (li) {
+        li.style.cursor = 'pointer';
+        li.addEventListener('click', (e) => {
+          if (e.target !== checkbox) {
+            checkbox.checked = !checkbox.checked;
+            checkbox.dispatchEvent(new Event('change'));
+          }
+        });
       }
     });
   })();
@@ -935,6 +951,98 @@ const faqLd =
     color: #334155 !important;
     font-size: 15px !important;
     line-height: 1.65 !important;
+  }
+
+  /* Interactive Checklist / Task List Reset & Styling */
+  .body :global(ul:has(input[type="checkbox"])),
+  .body :global(ul.contains-task-list),
+  .body :global(.interactive-checklist) {
+    list-style: none !important;
+    padding-left: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    margin: 18px 0 24px !important;
+  }
+
+  .body :global(li:has(input[type="checkbox"])),
+  .body :global(li.task-list-item),
+  .body :global(.checklist-item) {
+    list-style: none !important;
+    list-style-type: none !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    background: #ffffff !important;
+    border: 1.5px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    padding: 12px 16px !important;
+    margin-bottom: 0 !important;
+    cursor: pointer !important;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03) !important;
+    transition: all 0.15s ease !important;
+  }
+
+  .body :global(li:has(input[type="checkbox"]):hover),
+  .body :global(li.task-list-item:hover),
+  .body :global(.checklist-item:hover) {
+    background: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06) !important;
+  }
+
+  .body :global(li.task-list-item input[type="checkbox"]),
+  .body :global(li input[type="checkbox"]),
+  .body :global(input[type="checkbox"].checklist-checkbox) {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    width: 20px !important;
+    height: 20px !important;
+    border: 2px solid #cbd5e1 !important;
+    border-radius: 6px !important;
+    background: #ffffff !important;
+    cursor: pointer !important;
+    display: grid !important;
+    place-content: center !important;
+    margin: 2px 0 0 !important;
+    flex-shrink: 0 !important;
+    transition: all 0.15s ease !important;
+  }
+
+  .body :global(li input[type="checkbox"]::before),
+  .body :global(input[type="checkbox"].checklist-checkbox::before) {
+    content: "" !important;
+    width: 10px !important;
+    height: 6px !important;
+    border-left: 2.5px solid #ffffff !important;
+    border-bottom: 2.5px solid #ffffff !important;
+    transform: rotate(-45deg) translate(1px, -1px) scale(0) !important;
+    transition: transform 0.15s ease-in-out !important;
+  }
+
+  .body :global(li input[type="checkbox"]:checked),
+  .body :global(input[type="checkbox"].checklist-checkbox:checked) {
+    background: #ea580c !important;
+    border-color: #ea580c !important;
+  }
+
+  .body :global(li input[type="checkbox"]:checked::before),
+  .body :global(input[type="checkbox"].checklist-checkbox:checked::before) {
+    transform: rotate(-45deg) translate(1px, -1px) scale(1) !important;
+  }
+
+  .body :global(li:has(input[type="checkbox"]:checked)),
+  .body :global(.checklist-item:has(input[type="checkbox"]:checked)) {
+    background: #fffaf5 !important;
+    border-color: #fed7aa !important;
+  }
+
+  .body :global(.checklist-text) {
+    font-size: 15px !important;
+    line-height: 1.6 !important;
+    color: #1e293b !important;
+    flex: 1 !important;
   }
 
   /* RICH NAVY BLUE TABLE BOX */
