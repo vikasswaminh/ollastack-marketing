@@ -2,6 +2,7 @@
    OLLASTACK REDESIGN — Interactive Logic
    ============================================================ */
 
+(function () {
   // 0. Interactive Connected Nodes Background Canvas Motion
   function initNodeNetwork() {
     const canvas = document.getElementById('hero-nodes-canvas');

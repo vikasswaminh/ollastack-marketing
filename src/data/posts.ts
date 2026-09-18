@@ -11,6 +11,17 @@ export interface PostMeta {
 
 export const posts: PostMeta[] = [
   {
+    slug: "the-best-way-to-test-email-flows-without-polluting-your-inbox",
+    title: "The Best Way to Test Email Flows Without Polluting Your Inbox",
+    description:
+      "Testing signup, OTP, and password reset emails shouldn't wreck your real inbox or your CI pipeline. Here's the disposable inbox approach developers use in 2026, explained end to end without a single line of code.",
+    date: "2026-09-18",
+    readingTime: "25 min read",
+    category: "Email Testing",
+    categorySlug: "email-testing",
+    featured: true,
+  },
+  {
     slug: "how-to-capture-form-leads-on-landing-pages-in-minutes",
     title: "How to Capture Form Leads on Landing Pages in Minutes (2026 Guide)",
     description:
