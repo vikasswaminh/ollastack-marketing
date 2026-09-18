@@ -100,9 +100,30 @@ This is what **polluting your inbox** means in practice. It isn't a hypothetical
 So, the real question isn't whether to test email flows. It's how to test them without turning your inbox, or your CI pipeline, into a mess that nobody wants to maintain six months from now.
 
 There's also a quieter cost to this problem that doesn't get talked about enough:
-- When email testing is painful, teams simply do less of it.
-- A developer who must manually check a personal inbox after every deploy will eventually stop checking, especially under deadline pressure.
-- That's how a broken password reset flow ships to production and sits there for three days before a real user complains.
+
+<div class="steps-grid">
+  <div class="step-card">
+    <div class="step-card-header">
+      <span class="step-badge">Impact 1</span>
+      <span class="step-card-title">Reduced Test Coverage</span>
+    </div>
+    <p>When email testing is painful, teams simply do less of it, creating blind spots in core user authentication flows.</p>
+  </div>
+  <div class="step-card">
+    <div class="step-card-header">
+      <span class="step-badge">Impact 2</span>
+      <span class="step-card-title">Skipped Manual Checks</span>
+    </div>
+    <p>A developer who must manually check a personal inbox after every deploy will eventually stop checking, especially under deadline pressure.</p>
+  </div>
+  <div class="step-card">
+    <div class="step-card-header">
+      <span class="step-badge">Impact 3</span>
+      <span class="step-card-title">Silent Production Outages</span>
+    </div>
+    <p>That's how a broken password reset flow ships to production and sits there for days before a real user complains.</p>
+  </div>
+</div>
 
 The pain of testing directly determines how often testing happens, and right now, for most teams, that pain is a lot higher than it needs to be.
 
@@ -158,9 +179,29 @@ Once the failure patterns above become clear, a distinct pattern emerges. Every 
 
 The actual fix needs to satisfy **three conditions simultaneously**:
 
-1. **Every test needs its own inbox:** Not a shared inbox with a filter, an actual separate address that no other test will ever touch. This is what prevents one test's leftover OTP email from being accidentally picked up by a different test running in parallel, which is the single most common cause of flaky, hard-to-reproduce test failures in email flows.
-2. **Readable by code, not humans:** A test suite needs to be able to ask *"has an email arrived yet?"* and get a programmatic answer, ideally over a simple HTTP request rather than an older mail protocol (IMAP/POP3), which is notoriously painful to configure correctly inside a CI environment and often blocked entirely by corporate network policies.
-3. **Disappears when the test is done:** Not eventually cleaned up by a cron job someone half-remembers writing, but ephemeral by design, so that six months from now nobody is scrolling through thousands of leftover test inboxes trying to find something real, or worse, paying storage costs for data nobody will ever look at again.
+<div class="steps-grid">
+  <div class="step-card">
+    <div class="step-card-header">
+      <span class="step-badge">Requirement 1</span>
+      <span class="step-card-title">Every test needs its own inbox</span>
+    </div>
+    <p>Not a shared inbox with a filter, an actual separate address that no other test will ever touch. This is what prevents one test's leftover OTP email from being accidentally picked up by a different test running in parallel, which is the single most common cause of flaky, hard-to-reproduce test failures in email flows.</p>
+  </div>
+  <div class="step-card">
+    <div class="step-card-header">
+      <span class="step-badge">Requirement 2</span>
+      <span class="step-card-title">Readable by code, not humans</span>
+    </div>
+    <p>A test suite needs to be able to ask <em>"has an email arrived yet?"</em> and get a programmatic answer, ideally over a simple HTTP request rather than an older mail protocol (IMAP/POP3), which is notoriously painful to configure correctly inside a CI environment and often blocked entirely by corporate network policies.</p>
+  </div>
+  <div class="step-card">
+    <div class="step-card-header">
+      <span class="step-badge">Requirement 3</span>
+      <span class="step-card-title">Disappears when the test is done</span>
+    </div>
+    <p>Not eventually cleaned up by a cron job someone half-remembers writing, but ephemeral by design, so that six months from now nobody is scrolling through thousands of leftover test inboxes trying to find something real, or worse, paying storage costs for data nobody will ever look at again.</p>
+  </div>
+</div>
 
 This combination—**one inbox per test, accessible programmatically, and disposable by design**—is what is known as the *disposable test inbox* or *ephemeral inbox pattern*. It's the same idea behind email testing APIs built for CI, and it has become the standard approach for anyone serious about testing verification flows in 2026.
 
@@ -190,11 +231,43 @@ The mechanics are simpler than they sound, and understanding them makes the enti
 Assert OTP / Token & Tear Down Inbox
 ```
 
-- **Step 1 — Generate on Demand:** At the start of a test, one request creates a fresh, randomly generated email address that has never existed before and will never be reused. This address exists only for the duration of the test.
-- **Step 2 — Real Application Trigger:** The application then sends its verification email, password reset link, or welcome message to that address, exactly as it would for a real user, because as far as the application is concerned, it is a real user going through a real flow.
-- **Step 3 — Server-Side Long Polling:** The test then checks a simple endpoint asking, in effect, *"has anything arrived at this address yet?"* This is done with a long poll. Rather than checking once and giving up or hammering the endpoint constantly in a tight loop that wastes bandwidth and looks like abuse, the request itself waits on the server side for up to a set number of seconds, returning the moment a message shows up, or timing out cleanly if nothing arrives in that window.
-- **Step 4 — Programmatic Extraction:** Once the email lands, the test receives the full message payload: subject line, sender, HTML and plain text body, and often a pre-parsed extraction of anything that looks like an OTP code or a link, since those are the two things almost every test needs. The test asserts that content directly. No screenshots of an inbox, no manual checking, no fighting with older mail protocols inside a CI runner's networking rules.
-- **Step 5 — Automatic Expiration:** When the test finishes, the inbox is either automatically expired after a short time-to-live (TTL) or explicitly deleted as part of the test's own cleanup step. Either way, it's gone. Nothing accumulates, nothing needs a separate cleanup job, and nothing shows up three months later in an unexplained storage bill.
+<div class="steps-grid">
+  <div class="step-card">
+    <div class="step-card-header">
+      <span class="step-badge">Step 1</span>
+      <span class="step-card-title">Generate on Demand</span>
+    </div>
+    <p>At the start of a test, one request creates a fresh, randomly generated email address that has never existed before and will never be reused. This address exists only for the duration of the test.</p>
+  </div>
+  <div class="step-card">
+    <div class="step-card-header">
+      <span class="step-badge">Step 2</span>
+      <span class="step-card-title">Real Application Trigger</span>
+    </div>
+    <p>The application then sends its verification email, password reset link, or welcome message to that address, exactly as it would for a real user, because as far as the application is concerned, it is a real user going through a real flow.</p>
+  </div>
+  <div class="step-card">
+    <div class="step-card-header">
+      <span class="step-badge">Step 3</span>
+      <span class="step-card-title">Server-Side Long Polling</span>
+    </div>
+    <p>The test then checks a simple endpoint asking, in effect, <em>"has anything arrived at this address yet?"</em> This is done with a long poll. Rather than checking once and giving up or hammering the endpoint constantly in a tight loop that wastes bandwidth and looks like abuse, the request itself waits on the server side for up to a set number of seconds, returning the moment a message shows up, or timing out cleanly if nothing arrives in that window.</p>
+  </div>
+  <div class="step-card">
+    <div class="step-card-header">
+      <span class="step-badge">Step 4</span>
+      <span class="step-card-title">Programmatic Extraction</span>
+    </div>
+    <p>Once the email lands, the test receives the full message payload: subject line, sender, HTML and plain text body, and often a pre-parsed extraction of anything that looks like an OTP code or a link, since those are the two things almost every test needs. The test asserts that content directly. No screenshots of an inbox, no manual checking, no fighting with older mail protocols inside a CI runner's networking rules.</p>
+  </div>
+  <div class="step-card">
+    <div class="step-card-header">
+      <span class="step-badge">Step 5</span>
+      <span class="step-card-title">Automatic Expiration</span>
+    </div>
+    <p>When the test finishes, the inbox is either automatically expired after a short time-to-live (TTL) or explicitly deleted as part of the test's own cleanup step. Either way, it's gone. Nothing accumulates, nothing needs a separate cleanup job, and nothing shows up three months later in an unexplained storage bill.</p>
+  </div>
+</div>
 
 This is exactly the architecture behind agent mailboxes and programmatic OTP reading that CI pipelines rely on now. It's worth noting that this same pattern works whether the consumer checking the email is a test script or an autonomous AI agent verifying an account on its own.
 
@@ -206,13 +279,33 @@ Playwright has become the default choice for a lot of teams doing end-to-end tes
 
 A typical signup test that verifies a real email arrives with a working verification code follows the same three beats every time:
 
-1. **Request the address:** First, the test requests a brand-new disposable address before doing anything else.
-2. **Execute the browser steps:** Second, it drives the actual signup form exactly like a real user would, typing that disposable address into the email field, filling out a password, and submitting.
-3. **Wait for arrival:** Third, instead of pausing for a fixed number of seconds and hoping the email has arrived by then, it calls the wait endpoint for that inbox, which blocks until a message shows up or a generous timeout is reached.
+<div class="steps-grid">
+  <div class="step-card">
+    <div class="step-card-header">
+      <span class="step-badge">Step 1</span>
+      <span class="step-card-title">Request the address</span>
+    </div>
+    <p>First, the test requests a brand-new disposable address before doing anything else.</p>
+  </div>
+  <div class="step-card">
+    <div class="step-card-header">
+      <span class="step-badge">Step 2</span>
+      <span class="step-card-title">Execute the browser steps</span>
+    </div>
+    <p>Second, it drives the actual signup form exactly like a real user would, typing that disposable address into the email field, filling out a password, and submitting.</p>
+  </div>
+  <div class="step-card">
+    <div class="step-card-header">
+      <span class="step-badge">Step 3</span>
+      <span class="step-card-title">Wait for arrival</span>
+    </div>
+    <p>Third, instead of pausing for a fixed number of seconds and hoping the email has arrived by then, it calls the wait endpoint for that inbox, which blocks until a message shows up or a generous timeout is reached.</p>
+  </div>
+</div>
 
 Once the message comes back, the test checks that the subject line matches what's expected, pulls the six-digit code out of the message body using a simple pattern match, types that code into the verification field in the app, and confirms the welcome screen appears.
 
-> Nothing in this flow depends on guessed delays. The test is exactly as fast as the real email delivery—no faster and no slower—and it fails honestly when something is wrong rather than flaking because a timer ran out too early.
+> If the OTP email never arrives, or arrives five minutes late, or lands in spam, a customer is lost at the exact moment they are ready to commit.
 
 A more resilient version of this same test also accounts for the possibility that a user might double-click submit and trigger a duplicate email, which happens more often than most developers assume. Rather than assuming exactly one message will arrive, the test lists every message that landed in the inbox and filters for the one whose subject line matches the verification email specifically. This small adjustment makes test suites noticeably more stable once they've been running in CI for months and start encountering real-world conditions like retried webhooks or duplicate triggers.
 
@@ -227,12 +320,51 @@ Most teams wrap the inbox creation and the waiting step into two small custom co
 - A command that polls the wait endpoint for a given inbox and returns whatever message arrives.
 
 With those two commands in place, an actual test for a password reset flow reads almost like plain English:
-1. Create a disposable inbox.
-2. Visit the *Forgot Password* page.
-3. Type the disposable address into the email field and submit.
-4. Wait for the reset email to arrive.
-5. Confirm the subject line mentions resetting a password.
-6. Pull the reset link out of the email body, visit that link directly, type a new password, submit, and confirm the app shows a message saying the password was updated.
+
+<div class="steps-grid">
+  <div class="step-card">
+    <div class="step-card-header">
+      <span class="step-badge">Step 1</span>
+      <span class="step-card-title">Create a disposable inbox</span>
+    </div>
+    <p>Mint a fresh, isolated mailbox on demand for the test run.</p>
+  </div>
+  <div class="step-card">
+    <div class="step-card-header">
+      <span class="step-badge">Step 2</span>
+      <span class="step-card-title">Visit the Forgot Password page</span>
+    </div>
+    <p>Navigate to the recovery interface in your frontend application.</p>
+  </div>
+  <div class="step-card">
+    <div class="step-card-header">
+      <span class="step-badge">Step 3</span>
+      <span class="step-card-title">Submit the address</span>
+    </div>
+    <p>Type the disposable address into the email input field and submit the reset request.</p>
+  </div>
+  <div class="step-card">
+    <div class="step-card-header">
+      <span class="step-badge">Step 4</span>
+      <span class="step-card-title">Wait for delivery</span>
+    </div>
+    <p>Long-poll the wait endpoint until the password reset message arrives.</p>
+  </div>
+  <div class="step-card">
+    <div class="step-card-header">
+      <span class="step-badge">Step 5</span>
+      <span class="step-card-title">Verify message headers</span>
+    </div>
+    <p>Confirm the sender and subject line explicitly match the expected password reset notification.</p>
+  </div>
+  <div class="step-card">
+    <div class="step-card-header">
+      <span class="step-badge">Step 6</span>
+      <span class="step-card-title">Complete password update</span>
+    </div>
+    <p>Extract the magic link from the email body, navigate directly to it, supply the new password, and verify success state.</p>
+  </div>
+</div>
 
 The pattern holds regardless of framework: **Create an inbox → Trigger the flow → Wait for the message → Extract what's needed → Assert → Move on.** Selenium, WebdriverIO, and Puppeteer users follow the exact same sequence since the underlying service is just a set of simple requests—no special browser extension or custom runner required.
 
