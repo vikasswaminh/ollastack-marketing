@@ -1,8 +1,8 @@
 ---
 title: "The Best Way to Test Email Flows Without Polluting Your Inbox"
 description: "Testing signup, OTP, and password reset emails shouldn't wreck your real inbox or your CI pipeline. Here's the disposable inbox approach developers use in 2026, explained end to end without a single line of code."
-date: 2026-09-21
-updated: 2026-09-21
+date: 2026-09-18
+updated: 2026-09-18
 tags: ["test email flows", "disposable test inbox", "email testing in CI", "OTP testing automation", "Playwright email testing", "Cypress email assertions", "avoid inbox pollution", "temporary email for testing", "automated email verification", "isolated test inbox"]
 author: "Ollastack Engineering Team"
 readingTime: 25
