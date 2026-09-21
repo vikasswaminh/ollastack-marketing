@@ -11,6 +11,17 @@ export interface PostMeta {
 
 export const posts: PostMeta[] = [
   {
+    slug: "why-static-site-forms-break-and-how-to-fix-them-fast",
+    title: "Why Static Site Forms Break and How to Fix Them Fast",
+    description:
+      "Static site forms fail in predictable ways: mailto links, CORS errors, spam floods, missing notifications, and blocked AI agents. Here is why it happens and the fastest fix for each.",
+    date: "2026-09-21",
+    readingTime: "21 min read",
+    category: "Forms",
+    categorySlug: "forms",
+    featured: true,
+  },
+  {
     slug: "the-best-way-to-test-email-flows-without-polluting-your-inbox",
     title: "The Best Way to Test Email Flows Without Polluting Your Inbox",
     description:
