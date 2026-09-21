@@ -15,7 +15,7 @@ export const posts: PostMeta[] = [
     title: "The Best Way to Test Email Flows Without Polluting Your Inbox",
     description:
       "Testing signup, OTP, and password reset emails shouldn't wreck your real inbox or your CI pipeline. Here's the disposable inbox approach developers use in 2026, explained end to end without a single line of code.",
-    date: "2026-09-18",
+    date: "2026-09-21",
     readingTime: "25 min read",
     category: "Email Testing",
     categorySlug: "email-testing",
