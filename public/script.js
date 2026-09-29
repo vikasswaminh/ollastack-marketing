@@ -5,119 +5,188 @@
      OLLASTACK REDESIGN — Interactive Logic
      ============================================================ */
 
-(function () {
   // 0. Interactive Connected Nodes Background Canvas Motion
   function initNodeNetwork() {
     const canvas = document.getElementById('hero-nodes-canvas');
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
     let width = 0, height = 0;
     let particles = [];
-    let mouse = { x: null, y: null, radius: 140 };
+    let mouse = { x: null, y: null, radius: 180, isTouch: false };
+    let animationId = null;
+
+    const colors = [
+      '#EF4444', // Ollastack Red
+      '#DC2626', // Crimson
+      '#3B82F6', // Electric Blue
+      '#2563EB', // Deep Blue
+      '#6366F1'  // Indigo
+    ];
 
     function resize() {
       const hero = canvas.closest('.hero-section') || canvas.parentElement;
       if (!hero) return;
-      width = canvas.width = hero.offsetWidth;
-      height = canvas.height = hero.offsetHeight;
+      const rect = hero.getBoundingClientRect();
+      width = canvas.width = Math.max(rect.width || hero.offsetWidth || window.innerWidth, 320);
+      height = canvas.height = Math.max(rect.height || hero.offsetHeight || 620, 480);
       createParticles();
     }
 
     function createParticles() {
       particles = [];
       const isMobile = window.innerWidth < 768;
-      const count = isMobile ? 24 : Math.max(Math.floor((width * height) / 18000), 35);
+      const count = isMobile ? 32 : Math.max(Math.min(Math.floor((width * height) / 14000), 75), 45);
       for (let i = 0; i < count; i++) {
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const hasPulse = Math.random() < 0.25;
         particles.push({
           x: Math.random() * width,
           y: Math.random() * height,
-          vx: (Math.random() - 0.5) * 0.75,
-          vy: (Math.random() - 0.5) * 0.75,
-          radius: Math.random() * 2 + 1.8,
-          color: Math.random() > 0.5 ? '#DC2626' : '#2563EB'
+          vx: (Math.random() - 0.5) * 0.7,
+          vy: (Math.random() - 0.5) * 0.7,
+          radius: Math.random() * 2.2 + 2.0,
+          color: color,
+          hasPulse: hasPulse,
+          pulsePhase: Math.random() * Math.PI * 2,
+          pulseSpeed: 0.03 + Math.random() * 0.03
         });
       }
     }
 
-    window.addEventListener('resize', resize);
-    window.addEventListener('mousemove', (e) => {
+    function handlePointer(clientX, clientY, isTouch) {
       const rect = canvas.getBoundingClientRect();
       if (
-        e.clientX >= rect.left &&
-        e.clientX <= rect.right &&
-        e.clientY >= rect.top &&
-        e.clientY <= rect.bottom
+        clientX >= rect.left &&
+        clientX <= rect.right &&
+        clientY >= rect.top &&
+        clientY <= rect.bottom
       ) {
-        mouse.x = e.clientX - rect.left;
-        mouse.y = e.clientY - rect.top;
+        mouse.x = clientX - rect.left;
+        mouse.y = clientY - rect.top;
+        mouse.isTouch = !!isTouch;
       } else {
         mouse.x = null;
         mouse.y = null;
       }
-    });
+    }
+
+    window.addEventListener('resize', resize, { passive: true });
+    window.addEventListener('mousemove', (e) => handlePointer(e.clientX, e.clientY, false), { passive: true });
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches && e.touches[0]) {
+        handlePointer(e.touches[0].clientX, e.touches[0].clientY, true);
+      }
+    }, { passive: true });
+    window.addEventListener('touchend', () => { mouse.x = null; mouse.y = null; }, { passive: true });
 
     resize();
+    setTimeout(resize, 200);
+
+    const maxDist = 145;
 
     function animate() {
       ctx.clearRect(0, 0, width, height);
 
-      // Draw connecting lines between particles
+      // 1. Draw connecting lines between particles
       for (let i = 0; i < particles.length; i++) {
+        const p1 = particles[i];
         for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
+          const p2 = particles[j];
+          const dx = p1.x - p2.x;
+          const dy = p1.y - p2.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
 
-          if (dist < 130) {
-            const alpha = (1 - dist / 130) * 0.28;
+          if (dist < maxDist) {
+            const alpha = (1 - dist / maxDist) * 0.42;
             ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
             ctx.strokeStyle = `rgba(148, 163, 184, ${alpha})`;
-            ctx.lineWidth = 1;
+            ctx.lineWidth = 1.1;
             ctx.stroke();
           }
         }
       }
 
-      // Draw interactive connections to mouse cursor
+      // 2. Draw interactive connections & gentle attraction to mouse/touch cursor
       if (mouse.x !== null && mouse.y !== null) {
         for (let i = 0; i < particles.length; i++) {
-          const dx = particles[i].x - mouse.x;
-          const dy = particles[i].y - mouse.y;
+          const p = particles[i];
+          const dx = p.x - mouse.x;
+          const dy = p.y - mouse.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           if (dist < mouse.radius) {
-            const alpha = (1 - dist / mouse.radius) * 0.4;
+            const alpha = (1 - dist / mouse.radius) * 0.65;
             ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.moveTo(p.x, p.y);
             ctx.lineTo(mouse.x, mouse.y);
-            ctx.strokeStyle = `rgba(37, 99, 235, ${alpha})`;
-            ctx.lineWidth = 1.2;
+            ctx.strokeStyle = `rgba(220, 38, 38, ${alpha})`;
+            ctx.lineWidth = 1.4;
             ctx.stroke();
+
+            // Subtle attraction pull toward cursor
+            if (dist > 30) {
+              p.x -= (dx / dist) * 0.35;
+              p.y -= (dy / dist) * 0.35;
+            }
           }
         }
+
+        // Draw cursor glow point
+        ctx.beginPath();
+        ctx.arc(mouse.x, mouse.y, 4.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#DC2626';
+        ctx.shadowColor = 'rgba(220, 38, 38, 0.6)';
+        ctx.shadowBlur = 10;
+        ctx.fill();
+        ctx.shadowBlur = 0;
       }
 
-      // Draw and update particle positions
+      // 3. Draw and update particle positions
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
         p.x += p.vx;
         p.y += p.vy;
 
-        if (p.x < 0 || p.x > width) p.vx *= -1;
-        if (p.y < 0 || p.y > height) p.vy *= -1;
+        if (p.x < -10) p.x = width + 10;
+        else if (p.x > width + 10) p.x = -10;
 
+        if (p.y < -10) p.y = height + 10;
+        else if (p.y > height + 10) p.y = -10;
+
+        // Pulse ring for select nodes
+        if (p.hasPulse) {
+          p.pulsePhase += p.pulseSpeed;
+          const pulseScale = (Math.sin(p.pulsePhase) + 1) / 2; // 0..1
+          const ringRadius = p.radius + pulseScale * 8;
+          const ringAlpha = (1 - pulseScale) * 0.45;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, ringRadius, 0, Math.PI * 2);
+          ctx.strokeStyle = p.color;
+          ctx.globalAlpha = ringAlpha;
+          ctx.lineWidth = 1.0;
+          ctx.stroke();
+          ctx.globalAlpha = 1.0;
+        }
+
+        // Particle core
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
-        ctx.globalAlpha = 0.55;
+        ctx.globalAlpha = 0.85;
+        ctx.shadowColor = p.color;
+        ctx.shadowBlur = 4;
         ctx.fill();
+        ctx.shadowBlur = 0;
         ctx.globalAlpha = 1.0;
       }
 
-      requestAnimationFrame(animate);
+      animationId = requestAnimationFrame(animate);
     }
 
     animate();
