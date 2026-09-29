@@ -201,9 +201,6 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
-  max-width: 100%;
-  padding: 0 16px;
 }
 
 .logo-lockup {
@@ -3017,6 +3014,20 @@ html, body {
     align-items: center !important;
     padding: 10px 0 !important;
     position: relative !important;
+  }
+  .logo-lockup {
+    display: inline-flex !important;
+    align-items: center !important;
+    flex-shrink: 0 !important;
+    text-decoration: none !important;
+  }
+  .nav-brand-logo,
+  .brand-logo-img {
+    height: 42px !important;
+    max-height: 46px !important;
+    width: auto !important;
+    display: block !important;
+    flex-shrink: 0 !important;
   }
   .nav-mobile {
     display: none;
