@@ -2949,3 +2949,376 @@ button {
   color: #DC2626 !important;
   transform: translateX(2px) !important;
 }
+
+/* ============================================================
+   COMPREHENSIVE MOBILE & TABLET RESPONSIVE OVERRIDES
+   ============================================================ */
+@keyframes mobileNavFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+html, body {
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+}
+
+/* Global Container Breakpoints */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 16px !important;
+  }
+}
+
+/* 1. Top Announcement Bar */
+@media (max-width: 768px) {
+  .announce-bar {
+    padding: 6px 0 !important;
+    font-size: 0.76rem !important;
+  }
+  .announce-tag {
+    font-size: 0.65rem !important;
+    padding: 2px 6px !important;
+  }
+}
+
+/* 2. Navigation Bar & Mobile Drawer */
+@media (max-width: 960px) {
+  .nav-pill, .nav-signin {
+    display: none !important;
+  }
+  .nav-burger {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 42px !important;
+    height: 42px !important;
+    border-radius: 10px !important;
+    border: 2px solid #000000 !important;
+    box-shadow: 2px 2px 0px #000000 !important;
+    background: #FFFFFF !important;
+    color: #09090B !important;
+    cursor: pointer !important;
+    transition: all 0.15s ease !important;
+  }
+  .nav-burger:hover {
+    transform: translate(-1px, -1px) !important;
+    box-shadow: 3px 3px 0px #000000 !important;
+  }
+  .nav-inner {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 10px 0 !important;
+    position: relative !important;
+  }
+  .nav-mobile {
+    display: none;
+    position: absolute !important;
+    top: calc(100% + 1px) !important;
+    left: 0 !important;
+    width: 100% !important;
+    background: #FFFFFF !important;
+    border-top: 1.5px solid #000000 !important;
+    border-bottom: 2px solid #000000 !important;
+    padding: 16px 20px 24px 20px !important;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.15) !important;
+    z-index: 99999 !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  .nav-mobile.open {
+    display: flex !important;
+    animation: mobileNavFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  }
+  .nav-mobile-link {
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    color: #09090B !important;
+    padding: 10px 14px !important;
+    border-radius: 8px !important;
+    text-decoration: none !important;
+    transition: all 0.15s ease !important;
+    display: block !important;
+  }
+  .nav-mobile-link:hover, .nav-mobile-link.active {
+    background: #FEF2F2 !important;
+    color: #DC2626 !important;
+    transform: translateX(3px) !important;
+  }
+  .nav-mobile-actions {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    margin-top: 10px !important;
+    padding-top: 16px !important;
+    border-top: 1.5px solid #E2E8F0 !important;
+  }
+  .nav-mobile-cta {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 12px 20px !important;
+    font-size: 0.95rem !important;
+    font-weight: 800 !important;
+    border-radius: 9999px !important;
+  }
+}
+
+/* 3. Hero Section */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 20px 0 28px 0 !important;
+  }
+  .hero-layout {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+  .hero-content {
+    max-width: 100% !important;
+    text-align: center !important;
+  }
+  .hero-tag-badge {
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    margin-bottom: 16px !important;
+  }
+  .badge-feature-item {
+    font-size: 0.72rem !important;
+    padding: 4px 10px !important;
+  }
+  .hero-main-title {
+    font-size: clamp(1.85rem, 7.5vw, 2.75rem) !important;
+    line-height: 1.16 !important;
+    letter-spacing: -0.02em !important;
+    margin-bottom: 14px !important;
+  }
+  .hero-main-title span {
+    display: inline !important;
+  }
+  .hero-description {
+    font-size: 0.96rem !important;
+    line-height: 1.52 !important;
+    margin-bottom: 22px !important;
+    padding: 0 4px !important;
+    color: #475569 !important;
+  }
+  .hero-cta-buttons {
+    flex-direction: column !important;
+    width: 100% !important;
+    max-width: 320px !important;
+    margin: 0 auto 20px auto !important;
+    gap: 10px !important;
+  }
+  .btn-hero-primary, .btn-hero-secondary {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 12px 20px !important;
+    font-size: 0.95rem !important;
+    text-align: center !important;
+  }
+  .hero-geo-callout {
+    font-size: 0.82rem !important;
+    padding: 10px 14px !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+  }
+}
+
+/* 4. Live Demo Section */
+@media (max-width: 960px) {
+  .demo-interactive-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    padding: 0 !important;
+  }
+  .demo-input-card, .demo-output-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 20px 16px !important;
+  }
+  .demo-flow-indicator {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    transform: rotate(90deg) !important;
+    padding: 6px 0 !important;
+    margin: 0 auto !important;
+  }
+  .demo-output-card .meta-row {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    padding: 10px 12px !important;
+  }
+  .demo-output-card .meta-col-value {
+    word-break: break-word !important;
+  }
+  .demo-output-card #live-lead-id {
+    word-break: break-all !important;
+    font-size: 0.78rem !important;
+  }
+}
+
+/* 5. One Platform Cards & Mobile Flip Support */
+@media (max-width: 1024px) {
+  .platform-cards-row {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+  .platform-feature-card {
+    min-height: 440px !important;
+    height: auto !important;
+  }
+  .platform-feature-card.flip-card.flipped .flip-card-inner {
+    transform: rotateY(180deg) !important;
+  }
+}
+
+/* 6. Trusted By Builders Grid */
+@media (max-width: 768px) {
+  .trusted-static-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    width: 100% !important;
+  }
+  .static-builder-card {
+    width: 100% !important;
+    padding: 10px 12px !important;
+    font-size: 0.84rem !important;
+    justify-content: center !important;
+  }
+}
+@media (max-width: 420px) {
+  .trusted-static-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+}
+
+/* 7. API Sandbox Console */
+@media (max-width: 768px) {
+  .console-box {
+    border-radius: 14px !important;
+    margin: 0 auto !important;
+  }
+  .console-tab-bar {
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    padding: 8px 10px !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .c-tab-btn {
+    padding: 6px 10px !important;
+    font-size: 0.78rem !important;
+    white-space: nowrap !important;
+  }
+  .c-openapi-link {
+    margin-left: auto !important;
+    font-size: 0.75rem !important;
+    padding: 4px 8px !important;
+  }
+  .terminal-code {
+    padding: 14px 12px !important;
+    font-size: 0.78rem !important;
+    overflow-x: auto !important;
+    line-height: 1.5 !important;
+  }
+  .terminal-bar {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    padding: 8px 12px !important;
+  }
+  .terminal-note {
+    font-size: 0.74rem !important;
+  }
+  .terminal-response {
+    padding: 12px !important;
+    font-size: 0.76rem !important;
+    overflow-x: auto !important;
+    line-height: 1.45 !important;
+  }
+}
+
+/* 8. Code Integrations Tabs & Snippets */
+@media (max-width: 768px) {
+  .code-tabs-header {
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    padding: 8px 10px !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .code-tab-nav {
+    padding: 6px 12px !important;
+    font-size: 0.78rem !important;
+    white-space: nowrap !important;
+  }
+  .code-snippet {
+    padding: 14px 12px !important;
+    font-size: 0.78rem !important;
+    overflow-x: auto !important;
+  }
+}
+
+/* 9. Onboarding Steps & Features List */
+@media (max-width: 900px) {
+  .steps-grid-3 {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .features-list-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+}
+
+/* 10. Pricing Cards Grid */
+@media (max-width: 960px) {
+  .pricing-cards-grid {
+    grid-template-columns: 1fr !important;
+    max-width: 400px !important;
+    margin: 0 auto !important;
+    gap: 20px !important;
+  }
+}
+
+/* 11. CTA Banner & Footer */
+@media (max-width: 768px) {
+  .cta-inner-box {
+    padding: 28px 16px !important;
+  }
+  .cta-heading {
+    font-size: 1.45rem !important;
+    line-height: 1.25 !important;
+  }
+  .cta-buttons-wrap {
+    flex-direction: column !important;
+    width: 100% !important;
+    max-width: 300px !important;
+    margin: 0 auto !important;
+    gap: 10px !important;
+  }
+  .cta-buttons-wrap .btn {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+  .footer-layout {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+  }
+}
+

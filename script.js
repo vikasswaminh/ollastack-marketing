@@ -1,6 +1,9 @@
-/* ============================================================
-   OLLASTACK REDESIGN — Interactive Logic
-   ============================================================ */
+(function () {
+  'use strict';
+
+  /* ============================================================
+     OLLASTACK REDESIGN — Interactive Logic
+     ============================================================ */
 
 (function () {
   // 0. Interactive Connected Nodes Background Canvas Motion
@@ -23,7 +26,8 @@
 
     function createParticles() {
       particles = [];
-      const count = Math.max(Math.floor((width * height) / 18000), 35);
+      const isMobile = window.innerWidth < 768;
+      const count = isMobile ? 24 : Math.max(Math.floor((width * height) / 18000), 35);
       for (let i = 0; i < count; i++) {
         particles.push({
           x: Math.random() * width,
@@ -141,6 +145,14 @@
         burger.setAttribute('aria-expanded', 'false');
       }
     });
+
+    // Close when clicking any navigation link inside mobile drawer
+    mobileNav.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileNav.classList.remove('open');
+        burger.setAttribute('aria-expanded', 'false');
+      });
+    });
   }
 
   // 2. Interactive Live Demo Form Submission
@@ -225,7 +237,17 @@
       // Fallback stays as "Bengaluru, India 🇮🇳"
     });
 
-  // 3. API Sandbox Console Tabs
+  // 3. Flip Card Click / Tap support for Mobile & Touch Devices
+  const flipCards = document.querySelectorAll('.platform-feature-card.flip-card');
+  flipCards.forEach(card => {
+    card.addEventListener('click', (e) => {
+      // If clicking directly on a link inside back card, allow standard navigation
+      if (e.target.closest('a')) return;
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // 4. API Sandbox Console Tabs
   const cTabBtns = document.querySelectorAll('.c-tab-btn');
   const cTabPanels = document.querySelectorAll('.c-tab-panel');
   cTabBtns.forEach(btn => {
@@ -241,7 +263,7 @@
     });
   });
 
-  // 4. API Sandbox Live Run Buttons
+  // 5. API Sandbox Live Run Buttons
   const runFormsBtn = document.getElementById('run-forms-btn');
   const resFormsOut = document.getElementById('res-forms-output');
   if (runFormsBtn && resFormsOut) {
@@ -280,7 +302,7 @@
     });
   }
 
-  // 5. Code Integration Snippet Tabs
+  // 6. Code Integration Snippet Tabs
   const codeNavs = document.querySelectorAll('.code-tab-nav');
   const codeContents = document.querySelectorAll('.code-tab-content');
   codeNavs.forEach(nav => {
@@ -291,7 +313,7 @@
     });
   });
 
-  // 6. Test Inbox Copy Action
+  // 7. Test Inbox Copy Action
   const copyInboxBtn = document.getElementById('btn-copy-test-inbox');
   if (copyInboxBtn) {
     copyInboxBtn.addEventListener('click', () => {
