@@ -3,6 +3,7 @@ import fs from 'fs';
 fs.copyFileSync('style.css', 'src/styles/style.css');
 fs.copyFileSync('style.css', 'public/style.css');
 fs.copyFileSync('script.js', 'public/script.js');
+fs.copyFileSync('script.js', 'public/script.v3.js');
 
 const html = fs.readFileSync('index.html', 'utf8');
 const bodyMatch = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
@@ -12,7 +13,8 @@ if (!bodyMatch) {
 }
 
 let bodyContent = bodyMatch[1];
-bodyContent = bodyContent.replace(/src="script\.js"/g, 'src="/script.js" defer');
+bodyContent = bodyContent.replace(/src="script\.js"/g, 'src="/script.v3.js" defer');
+bodyContent = bodyContent.replace(/src="\/script\.js[^"]*"/g, 'src="/script.v3.js" defer');
 bodyContent = bodyContent.replace(/\{/g, '&#123;');
 bodyContent = bodyContent.replace(/\}/g, '&#125;');
 
