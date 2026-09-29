@@ -15,7 +15,6 @@
 
     let width = 0, height = 0;
     let particles = [];
-    let mouse = { x: null, y: null, radius: 180, isTouch: false };
     let animationId = null;
 
     const colors = [
@@ -38,59 +37,35 @@
     function createParticles() {
       particles = [];
       const isMobile = window.innerWidth < 768;
-      const count = isMobile ? 32 : Math.max(Math.min(Math.floor((width * height) / 14000), 75), 45);
+      const count = isMobile ? 14 : 26;
       for (let i = 0; i < count; i++) {
         const color = colors[Math.floor(Math.random() * colors.length)];
-        const hasPulse = Math.random() < 0.25;
+        const hasPulse = Math.random() < 0.2;
         particles.push({
           x: Math.random() * width,
           y: Math.random() * height,
-          vx: (Math.random() - 0.5) * 0.7,
-          vy: (Math.random() - 0.5) * 0.7,
-          radius: Math.random() * 2.2 + 2.0,
+          vx: (Math.random() - 0.5) * 0.55,
+          vy: (Math.random() - 0.5) * 0.55,
+          radius: Math.random() * 2.0 + 2.2,
           color: color,
           hasPulse: hasPulse,
           pulsePhase: Math.random() * Math.PI * 2,
-          pulseSpeed: 0.03 + Math.random() * 0.03
+          pulseSpeed: 0.025 + Math.random() * 0.025
         });
       }
     }
 
-    function handlePointer(clientX, clientY, isTouch) {
-      const rect = canvas.getBoundingClientRect();
-      if (
-        clientX >= rect.left &&
-        clientX <= rect.right &&
-        clientY >= rect.top &&
-        clientY <= rect.bottom
-      ) {
-        mouse.x = clientX - rect.left;
-        mouse.y = clientY - rect.top;
-        mouse.isTouch = !!isTouch;
-      } else {
-        mouse.x = null;
-        mouse.y = null;
-      }
-    }
-
     window.addEventListener('resize', resize, { passive: true });
-    window.addEventListener('mousemove', (e) => handlePointer(e.clientX, e.clientY, false), { passive: true });
-    window.addEventListener('touchmove', (e) => {
-      if (e.touches && e.touches[0]) {
-        handlePointer(e.touches[0].clientX, e.touches[0].clientY, true);
-      }
-    }, { passive: true });
-    window.addEventListener('touchend', () => { mouse.x = null; mouse.y = null; }, { passive: true });
 
     resize();
     setTimeout(resize, 200);
 
-    const maxDist = 145;
+    const maxDist = 160;
 
     function animate() {
       ctx.clearRect(0, 0, width, height);
 
-      // 1. Draw connecting lines between particles
+      // 1. Draw connecting lines between particles with rich gradients and clear visibility
       for (let i = 0; i < particles.length; i++) {
         const p1 = particles[i];
         for (let j = i + 1; j < particles.length; j++) {
@@ -100,53 +75,24 @@
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           if (dist < maxDist) {
-            const alpha = (1 - dist / maxDist) * 0.42;
+            const alpha = (1 - dist / maxDist) * 0.72;
+            const grad = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y);
+            grad.addColorStop(0, p1.color);
+            grad.addColorStop(1, p2.color);
+
             ctx.beginPath();
             ctx.moveTo(p1.x, p1.y);
             ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(148, 163, 184, ${alpha})`;
-            ctx.lineWidth = 1.1;
+            ctx.strokeStyle = grad;
+            ctx.globalAlpha = alpha;
+            ctx.lineWidth = dist < 80 ? 1.8 : 1.3;
             ctx.stroke();
+            ctx.globalAlpha = 1.0;
           }
         }
       }
 
-      // 2. Draw interactive connections & gentle attraction to mouse/touch cursor
-      if (mouse.x !== null && mouse.y !== null) {
-        for (let i = 0; i < particles.length; i++) {
-          const p = particles[i];
-          const dx = p.x - mouse.x;
-          const dy = p.y - mouse.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-
-          if (dist < mouse.radius) {
-            const alpha = (1 - dist / mouse.radius) * 0.65;
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(mouse.x, mouse.y);
-            ctx.strokeStyle = `rgba(220, 38, 38, ${alpha})`;
-            ctx.lineWidth = 1.4;
-            ctx.stroke();
-
-            // Subtle attraction pull toward cursor
-            if (dist > 30) {
-              p.x -= (dx / dist) * 0.35;
-              p.y -= (dy / dist) * 0.35;
-            }
-          }
-        }
-
-        // Draw cursor glow point
-        ctx.beginPath();
-        ctx.arc(mouse.x, mouse.y, 4.5, 0, Math.PI * 2);
-        ctx.fillStyle = '#DC2626';
-        ctx.shadowColor = 'rgba(220, 38, 38, 0.6)';
-        ctx.shadowBlur = 10;
-        ctx.fill();
-        ctx.shadowBlur = 0;
-      }
-
-      // 3. Draw and update particle positions
+      // 2. Draw and update particle positions
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
         p.x += p.vx;
@@ -162,14 +108,14 @@
         if (p.hasPulse) {
           p.pulsePhase += p.pulseSpeed;
           const pulseScale = (Math.sin(p.pulsePhase) + 1) / 2; // 0..1
-          const ringRadius = p.radius + pulseScale * 8;
-          const ringAlpha = (1 - pulseScale) * 0.45;
+          const ringRadius = p.radius + pulseScale * 9;
+          const ringAlpha = (1 - pulseScale) * 0.55;
 
           ctx.beginPath();
           ctx.arc(p.x, p.y, ringRadius, 0, Math.PI * 2);
           ctx.strokeStyle = p.color;
           ctx.globalAlpha = ringAlpha;
-          ctx.lineWidth = 1.0;
+          ctx.lineWidth = 1.2;
           ctx.stroke();
           ctx.globalAlpha = 1.0;
         }
@@ -178,9 +124,9 @@
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
-        ctx.globalAlpha = 0.85;
+        ctx.globalAlpha = 0.95;
         ctx.shadowColor = p.color;
-        ctx.shadowBlur = 4;
+        ctx.shadowBlur = 5;
         ctx.fill();
         ctx.shadowBlur = 0;
         ctx.globalAlpha = 1.0;
