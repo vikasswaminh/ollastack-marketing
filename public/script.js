@@ -46,7 +46,7 @@
           y: Math.random() * height,
           vx: (Math.random() - 0.5) * 0.55,
           vy: (Math.random() - 0.5) * 0.55,
-          radius: Math.random() * 2.0 + 2.2,
+          radius: Math.random() * 0.8 + 1.2,
           color: color,
           hasPulse: hasPulse,
           pulsePhase: Math.random() * Math.PI * 2,
@@ -60,7 +60,7 @@
     resize();
     setTimeout(resize, 200);
 
-    const maxDist = 160;
+    const maxDist = 155;
 
     function animate() {
       ctx.clearRect(0, 0, width, height);
@@ -75,7 +75,7 @@
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           if (dist < maxDist) {
-            const alpha = (1 - dist / maxDist) * 0.72;
+            const alpha = (1 - dist / maxDist) * 0.65;
             const grad = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y);
             grad.addColorStop(0, p1.color);
             grad.addColorStop(1, p2.color);
@@ -85,7 +85,7 @@
             ctx.lineTo(p2.x, p2.y);
             ctx.strokeStyle = grad;
             ctx.globalAlpha = alpha;
-            ctx.lineWidth = dist < 80 ? 1.8 : 1.3;
+            ctx.lineWidth = dist < 80 ? 1.2 : 0.85;
             ctx.stroke();
             ctx.globalAlpha = 1.0;
           }
@@ -108,14 +108,14 @@
         if (p.hasPulse) {
           p.pulsePhase += p.pulseSpeed;
           const pulseScale = (Math.sin(p.pulsePhase) + 1) / 2; // 0..1
-          const ringRadius = p.radius + pulseScale * 9;
-          const ringAlpha = (1 - pulseScale) * 0.55;
+          const ringRadius = p.radius + pulseScale * 4.5;
+          const ringAlpha = (1 - pulseScale) * 0.45;
 
           ctx.beginPath();
           ctx.arc(p.x, p.y, ringRadius, 0, Math.PI * 2);
           ctx.strokeStyle = p.color;
           ctx.globalAlpha = ringAlpha;
-          ctx.lineWidth = 1.2;
+          ctx.lineWidth = 0.8;
           ctx.stroke();
           ctx.globalAlpha = 1.0;
         }
@@ -124,9 +124,9 @@
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
-        ctx.globalAlpha = 0.95;
+        ctx.globalAlpha = 0.9;
         ctx.shadowColor = p.color;
-        ctx.shadowBlur = 5;
+        ctx.shadowBlur = 2;
         ctx.fill();
         ctx.shadowBlur = 0;
         ctx.globalAlpha = 1.0;
