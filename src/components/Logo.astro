@@ -6,7 +6,7 @@ interface Props {
   withWordmark?: boolean;
 }
 const { size = 46, variant = "light" } = Astro.props;
-const logoSrc = variant === "dark" ? "/logo-white.svg" : "/logo.svg";
+const logoSrc = variant === "dark" ? "/logo-white.svg?v=2" : "/logo.svg?v=2";
 ---
 
 <a href="/" aria-label="Ollastack — Built for AI Agents" class="logo-lockup">
